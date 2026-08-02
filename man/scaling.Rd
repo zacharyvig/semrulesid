@@ -58,15 +58,11 @@ indicating whether each latent variable is correctly scaled.
 }
 \description{
 This function checks whether latent variables in the model are scaled,
-which is a necessary condition for model identification. A latent variable
-with one indicator is not scaled, though there are methods to achieve identification
-using a known reliability coefficient (see Bollen, 2026). This function always
-returns \code{FALSE} in the case of one indicator. A latent variable with two indicators
-is scaled if both loadings are fixed. A latent variable with three or more indicators is
-scaled if (a) it has a scaling indicator (an indicator with a fixed loading) which
-also has a fixed mean, (b) it has a scaling indicator and its variance is fixed,
-or (c) both its mean and variance are fixed. If any latent variable is not scaled,
-the model is not identified.
+which is a necessary condition for model identification. A latent variable is
+scaled if it has a fixed loading on a scaling indicator or the latent variable
+has a fixed variance. When mean structure is present, the scaling indicator must
+also have a fixed intercept or the latent variable must also have a fixed mean.
+If any latent variable is not scaled, the model is not identified.
 }
 \examples{
 \dontrun{

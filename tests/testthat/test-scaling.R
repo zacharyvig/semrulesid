@@ -25,42 +25,43 @@ test_that("scaling returns logical and object outputs", {
   expect_s3_class(object_out, "semscale")
   expect_true(object_out$Scaling[[1]]$scaled)
   expect_identical(object_out$Scaling[[1]]$lv, "L1")
+  expect_false(object_out$Scaling[[1]]$mean.structure)
 })
 
-test_that("scaling does not treat a two-indicator factor with one fixed loading as scaled", {
-  model <- paste(
-    "f1 =~ x1 + x2",
-    "x1 ~~ x1",
-    "x2 ~~ x2",
-    sep = "\n"
-  )
-
-  out <- scaling(lavaan::lavaanify(model, warn = FALSE, auto = TRUE, model.type = "sem"),
-                 lv = "f1",
-                 return.type = "logical")
-
-  expect_identical(out, c(f1 = FALSE))
-})
-
-test_that("scaling printing shows success and failure details", {
+test_that("scaling printing shows mean structure and the revised messages", {
   pass_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_scaling_pass), lv = "L1"),
-      include.msgs = TRUE
+      include.msgs = TRUE,
+      window = 120
+    )
+  )
+  mean_out <- capture.output(
+    print(
+      scaling(make_partable(test_models$sem_scaling_mean_pass), lv = "f1"),
+      include.msgs = TRUE,
+      window = 120
     )
   )
   fail_out <- capture.output(
     print(
-      scaling(make_partable(test_models$sem_two_emitted_paths_fail), lv = "L1"),
-      include.msgs = TRUE
+      scaling(make_partable(test_models$sem_scaling_fail), lv = "L1"),
+      include.msgs = TRUE,
+      window = 120
     )
   )
 
   expect_true(any(grepl("Latent Variable Scaling", pass_out)))
-  expect_true(any(grepl("Scaling method", pass_out)))
+  expect_true(any(grepl("LV is scaled? Yes", pass_out, fixed = TRUE)))
+  expect_true(any(grepl("Mean structure? No", pass_out, fixed = TRUE)))
+  expect_true(any(grepl("Scaling method(s):", pass_out, fixed = TRUE)))
   expect_true(any(grepl("L1", pass_out)))
+
+  expect_true(any(grepl("LV is scaled? Yes", mean_out, fixed = TRUE)))
+  expect_true(any(grepl("Mean structure? Yes", mean_out, fixed = TRUE)))
+  expect_true(any(grepl("Scaling method(s):", mean_out, fixed = TRUE)))
 
   expect_true(any(grepl("Latent Variable Scaling", fail_out)))
   expect_true(any(grepl("Scaling error", fail_out)))
-  expect_true(any(grepl("One indicator", fail_out)))
+  expect_true(any(grepl("Neither scaling indicator nor fixed latent variance", fail_out, fixed = TRUE)))
 })

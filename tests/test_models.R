@@ -39,6 +39,10 @@ test_models <- list(
                 type = "sem",
                 model = "L1 =~ Y1 + Y2 + Y3\nL1 <~ X1\nL1 ~~ L1"
         ),
+        sem_scaling_mean_pass = list(
+                type = "sem",
+                model = "f1 =~ y1 + y2 + y3\nf1 ~~ 1*f1\nf1 ~ 0*1"
+        ),
         sem_scaling_fail = list(
                 type = "sem",
                 model = "L1 =~ NA*Y1 + NA*Y2 + NA*Y3\nL1 ~~ L1"

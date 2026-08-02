@@ -1,15 +1,11 @@
 #' Check if latent variables are correctly scaled
 #'
 #' This function checks whether latent variables in the model are scaled,
-#' which is a necessary condition for model identification. A latent variable
-#' with one indicator is not scaled, though there are methods to achieve identification
-#' using a known reliability coefficient (see Bollen, 2026). This function always
-#' returns \code{FALSE} in the case of one indicator. A latent variable with two indicators
-#' is scaled if both loadings are fixed. A latent variable with three or more indicators is
-#' scaled if (a) it has a scaling indicator (an indicator with a fixed loading) which
-#' also has a fixed mean, (b) it has a scaling indicator and its variance is fixed,
-#' or (c) both its mean and variance are fixed. If any latent variable is not scaled,
-#' the model is not identified.
+#' which is a necessary condition for model identification. A latent variable is
+#' scaled if it has a fixed loading on a scaling indicator or the latent variable
+#' has a fixed variance. When mean structure is present, the scaling indicator must
+#' also have a fixed intercept or the latent variable must also have a fixed mean.
+#' If any latent variable is not scaled, the model is not identified.
 #'
 #' @param x A \code{lavaan} parameter table or a \code{semID} ID object.
 #' @param call A character string specifying the call you intend to use to fit
@@ -137,6 +133,7 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
       scaled = NA,
       n.indicators = NA_integer_,
       scaling.indicator = NA_character_,
+      mean.structure = NA,
       fail.reason = NA_character_,
       scaling.method = NA_character_
     )
@@ -146,100 +143,77 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     names(out) <- lv
   }
 
-  meanstructure <- any(x$op == "~1")
-
   for (i in seq_along(lv)) {
     var <- lv[i]
     if (return.type == "object") {
       scaling.tables[[i]]$lv <- var
     }
-    # one-indicator case
-    one.ind <- sum(with(x, lhs == var & op == "=~" & rhs != var)) == 1
-    if (one.ind) {
-      if (return.type == "object") {
-        scaling.tables[[i]]$scaled <- FALSE
-        scaling.tables[[i]]$n.indicators <- 1
-        scaling.tables[[i]]$fail.reason <- "One indicator"
-      } else {
-        out[var] <- FALSE
-      }
-      next
-    }
-    # two-indicator case / no lv correlations
-    two.ind <- sum(with(x, lhs == var & op == "=~")) == 2
-    cov.lv <- any(with(x, ((lhs == var & rhs != var) |
-               (rhs == var & lhs != var)) & op == "~~"))
-    if (two.ind && !cov.lv) {
-      check0 <- sum(
-        with(x, lhs == var & op == "=~" & free == 0)
-        ) == 2
-      if (return.type == "object") {
-        scaling.tables[[i]]$scaled <- check0
-        scaling.tables[[i]]$n.indicators <- 2
-        if (!check0) {
-          scaling.tables[[i]]$fail.reason <- "Two indicators but one or both loadings not fixed"
-        } else {
-          scaling.tables[[i]]$scaling.method <- "Two indicators with fixed loadings"
-        }
-      } else {
-        out[var] <- check0
-      }
-      next
-    }
-    # scaling indicator?
-    scale.ind.idx <- with(x, lhs == var & op == "=~" &
-                            free == 0 & rhs != var)
-    check1 <- check2 <- any(scale.ind.idx)                            
-    if (check1) {
-      scale.ind <- with(x, rhs[scale.ind.idx])
-      # scaling indicator mean fixed?
-      check2 <- ifelse(
-        meanstructure,
-        any(with(x, lhs %in% scale.ind & op == "~1" & free == 0)),
-        TRUE
-      )
-    }
-    # latent variance fixed?
-    check3 <- any(
-      with(x, lhs == var & rhs == var & op == "~~" & free == 0)
-    )
-    # latent mean fixed?
-    check4 <- ifelse(
-      meanstructure,
-      with(x, lhs == var & op == "~1" & free == 0),
+
+    meanstructure <- any(with(x, lhs == var & op == "~1"))
+
+    scale.ind.idx <- with(x, lhs == var & op == "=~" & free == 0 & rhs != var)
+    has.scale.ind <- any(scale.ind.idx)
+    scale.ind <- if (has.scale.ind) with(x, rhs[scale.ind.idx]) else character(0)
+
+    scale.ind.intercept.fixed <- if (has.scale.ind && meanstructure) {
+      any(with(x, lhs %in% scale.ind & op == "~1" & free == 0))
+    } else {
       TRUE
-    )
-    # final check: either (1 and 2) or (3 and 4) or (1 and 3)
-    final_check <- c(check1 && check2, check3 && check4, check1 && check3)
+    }
+    latent.var.fixed <- any(with(x, lhs == var & rhs == var & op == "~~" & free == 0))
+    latent.mean.fixed <- if (meanstructure) {
+      any(with(x, lhs == var & op == "~1" & free == 0))
+    } else {
+      TRUE
+    }
+
+    units.assigned <- has.scale.ind || latent.var.fixed
+    origin.assigned <- if (meanstructure) latent.mean.fixed || (has.scale.ind && scale.ind.intercept.fixed) else TRUE
+    scaled <- units.assigned && origin.assigned
     if (return.type == "logical") {
-      out[var] <- any(final_check)
+      out[var] <- scaled
       next
     }
-    # if table requested...
-    scaling.tables[[i]]$scaled <- TRUE
+
+    scaling.tables[[i]]$mean.structure <- meanstructure
+    scaling.tables[[i]]$scaled <- scaled
     scaling.tables[[i]]$n.indicators <- sum(with(x, lhs == var & op == "=~" & rhs != var))
-    if (check1) {
+    if (has.scale.ind) {
       scaling.tables[[i]]$scaling.indicator <- scale.ind
     }
-    scaling.methods <- c("Scaling indicator with fixed mean",
-                         "Latent variable with fixed mean and variance",
-                         "Scaling indicator with fixed latent variable variance")
-    scaling.tables[[i]]$scaling.method <- scaling.methods[which(final_check)]
 
-    if (!any(final_check)) {
-      scaling.tables[[i]]$scaled <- FALSE
-      if (!check1) {
-        if (check3 && !check4) {
-          scaling.tables[[i]]$fail.reason <- "Latent variance fixed but no scaling indicator/fixed latent mean"
-        } else if (!check3 && check4) {
-          scaling.tables[[i]]$fail.reason <- "Latent mean fixed but latent variance not fixed"
-        } else {
-          scaling.tables[[i]]$fail.reason <- "Neither scaling indicator nor fixed latent variance/mean"
+    if (scaled) {
+      scaling.method <- c(
+        if (has.scale.ind) "scaling indicator",
+        if (latent.var.fixed) "fixed latent-variable variance",
+        if (has.scale.ind && scale.ind.intercept.fixed) {
+          "fixed scaling-indicator intercept"
+        },
+        if (meanstructure && latent.mean.fixed) "fixed latent-variable mean"
+      )
+      scaling.method <- scaling.method[nzchar(scaling.method)]
+      scaling.method <- paste(scaling.method, collapse = ", ")
+
+      # Capitalize only the first character
+      scaling.method <- paste0(
+        toupper(substr(scaling.method, 1, 1)),
+        substr(scaling.method, 2, nchar(scaling.method))
+      )
+      scaling.tables[[i]]$scaling.method <- scaling.method
+    } else {
+      fail.reason <- c(
+        if (!units.assigned) {
+          "Neither scaling indicator nor fixed latent variance"
+        },
+        if (meanstructure && !origin.assigned) {
+          ", and scaling indicator mean and/or latent variable mean must be fixed"
         }
-      } else {
-        scaling.tables[[i]]$fail.reason <- "Scaling indicator mean and/or latent variable mean must be fixed"
-      }
+      )
+      fail.reason <- fail.reason[nzchar(fail.reason)]
+      fail.reason <- paste(fail.reason, collapse = "")
+      scaling.tables[[i]]$fail.reason <- fail.reason
     }
+
   }
 
   if (return.type == "logical") {

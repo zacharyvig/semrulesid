@@ -54,8 +54,8 @@ You can install the development version of semID from
 
 - `scaling()` prints output about how, and if so why, latent variables in
   the model are scaled. It relays which indicator is the scaling
-  indicator (if applicable) and reasons why the latent variable is or is
-  not scaled.
+  indicator (if applicable), whether the model has a mean structure, and
+  reasons why the latent variable is or is not scaled.
 
 > E.g., `scaling(my_model, include.msgs = TRUE, call = "cfa")`
 

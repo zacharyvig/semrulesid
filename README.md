@@ -45,8 +45,8 @@ You can install the development version of semID from
 
 - `scaling()` prints output about how, and if so why, latent variables
   in the model are scaled. It relays which indicator is the scaling
-  indicator (if applicable) and reasons why the latent variable is or is
-  not scaled.
+  indicator (if applicable), whether the model has a mean structure, and
+  reasons why the latent variable is or is not scaled.
 
 > E.g., `scaling(my_model, include.msgs = TRUE, call = "cfa")`
 
@@ -70,7 +70,8 @@ You can install the development version of semID from
 
 ``` r
 library(semID)
-#> semID 0.4.0 is still in the development phase
+#> semID 0.4.0 is still in the development phase.
+#> Please report any bugs or edge cases to the GitHub repository.
 
 # Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3
@@ -103,28 +104,34 @@ scaling(HS.model, include.msgs = TRUE, call = "cfa",
 #> semID 0.4.0 Latent Variable Scaling
 #> 
 #> visual
-#>   LV is scaled: Yes
+#>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x1
+#>   Mean structure? No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator with fixed mean
+#>   - Scaling indicator, fixed scaling-indicator
+#>     intercept
 #> 
 #> 
 #> textual
-#>   LV is scaled: Yes
+#>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x4
+#>   Mean structure? No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator with fixed mean
+#>   - Scaling indicator, fixed scaling-indicator
+#>     intercept
 #> 
 #> 
 #> speed
-#>   LV is scaled: Yes
+#>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x7
+#>   Mean structure? No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator with fixed mean
+#>   - Scaling indicator, fixed scaling-indicator
+#>     intercept
 ```

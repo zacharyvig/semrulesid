@@ -195,10 +195,17 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
     scale.ind <- ifelse(
       is.na(scaling[[i]]$scaling.indicator), empty.lab, scaling[[i]]$scaling.indicator
     )
+    mean.structure <- switch(
+      as.character(scaling[[i]]$mean.structure),
+      "NA" = na.lab,
+      "TRUE" = pos.lab,
+      "FALSE" = neg.lab
+    )
 
-    cat(sprintf("%sLV is scaled: %s\n", indents[2], is.scaled))
+    cat(sprintf("%sLV is scaled? %s\n", indents[2], is.scaled))
     cat(sprintf("%sNo. of indicators: %s\n", indents[2], n.ind))
-    cat(sprintf("%sScaling indicator: %s\n\n", indents[2], scale.ind))
+    cat(sprintf("%sScaling indicator: %s\n", indents[2], scale.ind))
+    cat(sprintf("%sMean structure? %s\n\n", indents[2], mean.structure))
 
     if (include.msgs) {
       prefix <- paste0(bullet, " ")
