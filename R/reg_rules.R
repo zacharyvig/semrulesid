@@ -1,10 +1,10 @@
 #' Rules for simultaneous equations/regression models
-#' 
+#'
 #' Simultaneous equations models are structural models without any latent
 #' variables. Regression models are a subset of these models with a single
 #' outcome, while the general simultaneous equations model can accomodate
 #' multiple outcomes
-#' 
+#'
 #' \describe{
 #'  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
 #'  endogenous variable. Sufficient but not necessary.}
@@ -18,9 +18,9 @@
 #' }
 #'
 #' @name reg_rules
-#' 
+#'
 #' @param partable A \code{lavaan} parameter table
-#' 
+#'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @references Brito, C., & Pearl, J. (2002). A new identification condition
 #' for recursive models with correlated errors.
@@ -41,7 +41,10 @@ rule_reg_null_byy <- function(partable) {
       rule = rule,
       pass = NA,
       cond = NA_character_,
-      msgs = "[Info] This rule only applies when there are no latent variables in the model"
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies when there are no latent variables in the model",
+        levels = "1"
+      )
     )
     return(out)
   }
@@ -50,9 +53,10 @@ rule_reg_null_byy <- function(partable) {
   # build output
   if (any(nox_ox[!is.na(nox_ox)])) {
     pass <- FALSE
-    msgs <- paste(
-      "[Fail] One or more endogenous variables appear as regression predictors:",
-      paste(ov.nox[nox_ox], collapse = ", ")
+    msgs <- add_rule_msgs(
+      new_msgs = paste("[Fail] One or more endogenous variables appear as regression predictors:",
+                       paste(ov.nox[nox_ox], collapse = ", ")),
+      levels = 2
     )
   } else {
     pass <- TRUE
