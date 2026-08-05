@@ -73,13 +73,16 @@ library(semidentify)
 #> semidentify 0.4.0 is still in the development phase.
 #> Please report any bugs or edge cases to the GitHub repository.
 
-# Holzinger and Swineford (1939) example
-HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
+my_model <- ' L1 =~ x1 + x2 + x3
+              L2 =~ x4 + x5 + x6
+              L3 =~ x7 + x8 + x9
+              L2 ~ L1
+              L3 ~ L2 '
 
-id(HS.model, include.msgs = TRUE, call = "cfa", 
+id(my_model, include.msgs = TRUE, call = "cfa", 
    meanstructure = FALSE) # check identification rules
+#> Warning in id.data.frame(partable, include.msgs = include.msgs, call = call, :
+#> `sem()` or `lavaan()` may be more appropriate calls for this type of model
 #> semidentify 0.4.0 Rule Check
 #> 
 #>                        Pass Necessary Sufficient Message 
@@ -87,23 +90,25 @@ id(HS.model, include.msgs = TRUE, call = "cfa",
 #> Latent Scaling Rule     Yes       Yes         No 
 #> Exogenous X Rule          -         -          -       1 
 #> 2+ Emitted Paths Rule   Yes       Yes         No 
-#> Three Indicator Rule    Yes        No        Yes 
-#> Two Indicator Rule      Yes        No        Yes 
-#> Fully Recursive Rule      -         -          -       2 
-#> Null B_YY Rule            -         -          -       2 
-#> Recur/Corr Err Rule       -         -          -       2 
+#> Three Indicator Rule      -         -          -       2 
+#> Two Indicator Rule        -         -          -       2 
+#> Fully Recursive Rule      -         -          -       3 
+#> Null B_YY Rule            -         -          -       3 
+#> Recur/Corr Err Rule       -         -          -       3 
 #> ---
 #> Messages
 #> 1 - [Info] This rule only applies when causal
 #>     indicators are in the model
-#> 2 - [Info] This rule only applies when there are no
+#> 2 - [Info] This rule only applies to confirmatory
+#>     factor analysis models
+#> 3 - [Info] This rule only applies when there are no
 #>     latent variables in the model
 
-scaling(HS.model, include.msgs = TRUE, call = "cfa", 
+scaling(my_model, include.msgs = TRUE, call = "cfa", 
         meanstructure = FALSE) # check latent variable scaling
 #> semidentify 0.4.0 Latent Variable Scaling
 #> 
-#> visual
+#> L1
 #>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x1
@@ -114,7 +119,7 @@ scaling(HS.model, include.msgs = TRUE, call = "cfa",
 #>     intercept
 #> 
 #> 
-#> textual
+#> L2
 #>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x4
@@ -125,7 +130,7 @@ scaling(HS.model, include.msgs = TRUE, call = "cfa",
 #>     intercept
 #> 
 #> 
-#> speed
+#> L3
 #>   LV is scaled? Yes
 #>   No. of indicators: 3
 #>   Scaling indicator: x7

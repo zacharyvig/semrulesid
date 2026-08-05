@@ -50,13 +50,15 @@
 #' or \code{id2} is called. See details.)
 #'
 #' @examples
-#' # Holzinger and Swineford (1939) example
-#' HS.model <- ' visual  =~ x1 + x2 + x3
-#'               textual =~ x4 + x5 + x6
-#'               speed   =~ x7 + x8 + x9 '
-#' id(HS.model, include.msgs = TRUE, call = "cfa", 
+#' my_model <- ' L1 =~ x1 + x2 + x3
+#'               L2 =~ x4 + x5 + x6
+#'               L3 =~ x7 + x8 + x9
+#'               L2 ~ L1
+ #'              L3 ~ L2 '
+#' id(my_model, include.msgs = TRUE, call = "cfa", 
 #'    meanstructure = FALSE)
-#' 
+#' id2(my_model, include.msgs = TRUE, call = "cfa",
+#'    meanstructure = FALSE)
 #' @name id
 #' @export
 id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
@@ -207,6 +209,17 @@ id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #' 
 #' @param x A character string model in Mplus syntax, or a path to an Mplus input file.
 #' @inheritParams id
+#' 
+#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}).
+#' 
+#' @examples
+#' my_model <- ' L1 BY x1 x2 x3;
+#'               L2 BY x4 x5 x6;
+#'               L3 BY x7 x8 x9;
+#'               L2 ON L1;
+#'               L3 ON L2; '
+#' id_mplus(my_model, include.msgs = TRUE, call = "cfa", 
+#'    meanstructure = FALSE)
 #' 
 #' @export
 id_mplus <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {

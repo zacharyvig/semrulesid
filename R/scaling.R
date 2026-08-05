@@ -37,12 +37,13 @@
 #' @export
 #' @name scaling
 #' @examples
-#' \dontrun{
-#'  mod1 <- ' l1 =~ x1 + x2
-#'            l2 =~ x3 + x4 + x5 '
-#'  mod1.partable <- lavaan::lavaanify(mod1, auto = TRUE, model.type = "sem")
-#'  mod1.scaled <- scaling(mod1.partable, lv = "l2")
-#' }
+#' my_model <- ' L1 =~ x1 + x2 + x3
+#'               L2 =~ x4 + x5 + x6
+#'               L3 =~ x7 + x8 + x9
+#'               L2 ~ L1
+#'               L3 ~ L2 '
+#' scaling(my_model, include.msgs = TRUE, call = "cfa",
+#'         meanstructure = FALSE)
 #'
 scaling <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
                     return.type = c("object", "logical"), ...) {                  

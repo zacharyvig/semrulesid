@@ -25,7 +25,20 @@ instead of the usual one-step. See details. Default: \code{FALSE}.}
 \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
 tables or fitted model objects are supplied, these arguments are ignored.}
 }
+\value{
+An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}).
+}
 \description{
 This is a wrapper function for \code{\link{id}} that accomodates Mplus model syntax
 (as a string) or Mplus input files (with extension ".inp").
+}
+\examples{
+my_model <- ' L1 BY x1 x2 x3;
+              L2 BY x4 x5 x6;
+              L3 BY x7 x8 x9;
+              L2 ON L1;
+              L3 ON L2; '
+id_mplus(my_model, include.msgs = TRUE, call = "cfa", 
+   meanstructure = FALSE)
+
 }

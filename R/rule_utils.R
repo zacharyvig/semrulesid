@@ -95,9 +95,10 @@ sem_to_reg <- function(partable) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'   rules <- get_rules(rule = "*", model_type = "cfa")
-#' }
+#' # Get all rules for a CFA model
+#' rules <- get_rules(rule = "*", model_type = "cfa")
+#' # Get a specific rule for a SEM model
+#' latent_scaling_rule <- get_rules(rule = "rule_sem_latent_scaling", model_type = "sem")
 #'
 get_rules <- function(rule = "*", model_type = "*") {
   stopifnot(

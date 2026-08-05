@@ -1,27 +1,30 @@
 Package: semidentify
 Type: Package
-Title: Evaluate SEM Identification Rules
+Title: Evaluate Structural Equation Model Identification Rules
 Version: 0.4.0
 Authors@R: c(
     person(
       "Zach", "Vig",
-      email = "zachvig@unc.edu",
-      role = c("aut", "cre")
+      email = "zachvig@rocketmail.com",
+      role = c("aut", "cre", "cph")
     )
   )
-Description: Provides rule-based checks for selected necessary and sufficient
-    identification conditions in structural equation models (SEMs), including
-    latent-variable scaling constraints. Diagnostic messages explain rule
-    failures and support model specification and respecification.
+Description: Evaluate selected necessary and sufficient identification
+    conditions in structural equation models (SEMs), including
+  latent-variable scaling constraints. Printed output reports rule
+  status and applicability, and provides diagnostic messages to
+  support model specification and respecification. The package is
+  intended as a diagnostic aid and does not implement a universal
+  identification algorithm.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports: 
     lavaan
 Suggests: 
-  knitr,
-  rmarkdown,
-  testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Language: en-US

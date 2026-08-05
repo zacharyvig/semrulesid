@@ -67,11 +67,13 @@ variable/structural model, and evaluates the identification rules on each. If bo
 parts are identified, the whole model is identified.
 }
 \examples{
-# Holzinger and Swineford (1939) example
-HS.model <- ' visual  =~ x1 + x2 + x3
-              textual =~ x4 + x5 + x6
-              speed   =~ x7 + x8 + x9 '
-id(HS.model, include.msgs = TRUE, call = "cfa", 
+my_model <- ' L1 =~ x1 + x2 + x3
+              L2 =~ x4 + x5 + x6
+              L3 =~ x7 + x8 + x9
+              L2 ~ L1
+             L3 ~ L2 '
+id(my_model, include.msgs = TRUE, call = "cfa", 
    meanstructure = FALSE)
-
+id2(my_model, include.msgs = TRUE, call = "cfa",
+   meanstructure = FALSE)
 }

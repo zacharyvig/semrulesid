@@ -44,11 +44,11 @@ used to (a) edit functions and documentation for clarity, (b) implement the Dept
 }
 
 \author{
-\strong{Maintainer}: Zach Vig \email{zachvig@unc.edu}
+\strong{Maintainer}: Zach Vig \email{zachvig@rocketmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Zach Vig \email{zachvig@unc.edu}
+  \item Zach Vig \email{zachvig@rocketmail.com} [copyright holder]
 }
 
 }

@@ -25,8 +25,9 @@ The `semidentify` package stores identification rule functions internally. This
 function makes them available to the user as a list.
 }
 \examples{
-\dontrun{
-  rules <- get_rules(rule = "*", model_type = "cfa")
-}
+# Get all rules for a CFA model
+rules <- get_rules(rule = "*", model_type = "cfa")
+# Get a specific rule for a SEM model
+latent_scaling_rule <- get_rules(rule = "rule_sem_latent_scaling", model_type = "sem")
 
 }
