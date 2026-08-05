@@ -19,7 +19,13 @@ outstanding model-specification concerns.
 
 ## Installation
 
-You can install the development version of semidentify from
+You can install `semidentify` from CRAN:
+
+``` r
+install.packages("semidentify")
+```
+
+You can install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
