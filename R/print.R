@@ -37,8 +37,8 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   midx <- 0L # global message index
 
   if (print.version) {
-    version <- utils::packageVersion("semID")
-    cat(sprintf("semID %s Rule Check\n\n", version))
+    version <- utils::packageVersion("semidentify")
+    cat(sprintf("semidentify %s Rule Check\n\n", version))
   }
 
   cat(names, strrep("\n", 1L))
@@ -124,8 +124,8 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
                          step.titles = c("Step 1", "Step 2")) {
 
-  version <- utils::packageVersion("semID")
-  cat(sprintf("semID %s Two-Step Rule Check\n\n", version))
+  version <- utils::packageVersion("semidentify")
+  cat(sprintf("semidentify %s Two-Step Rule Check\n\n", version))
 
   cat(paste0(step.titles[1], ": ", step.names[1], "\n\n"))
   print(x$id.cfa, print.version = FALSE, ...)
@@ -177,8 +177,8 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
   scaling <- x$Scaling
   indents <- strrep(" ", indent.lens)
 
-  version <- utils::packageVersion("semID")
-  cat(sprintf("semID %s Latent Variable Scaling\n\n", version))
+  version <- utils::packageVersion("semidentify")
+  cat(sprintf("semidentify %s Latent Variable Scaling\n\n", version))
 
   for (i in seq_along(scaling)) {
     var <- scaling[[i]]$lv

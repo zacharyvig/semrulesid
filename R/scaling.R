@@ -7,7 +7,8 @@
 #' also have a fixed intercept or the latent variable must also have a fixed mean.
 #' If any latent variable is not scaled, the model is not identified.
 #'
-#' @param x A \code{lavaan} parameter table or a \code{semID} ID object.
+#' @param x \code{lavaan} model syntax, a \code{lavaan} parameter table or a
+#'  \code{semidentify} ID object.
 #' @param call A character string specifying the call you intend to use to fit
 #'  the model. This will ensure the correct model defaults are specified. Options
 #'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit

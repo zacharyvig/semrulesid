@@ -1,30 +1,30 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# semID
+# semidentify
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/zacharyvig/semidentify/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zacharyvig/semidentify/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-`semID` allows the user to input a Structural Equation Model (SEM) in
-[`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check it
-against a number of identification rules from the literature. Rules are
-specified as being necessary and/or sufficient and specific reasons are
-given when a rule is broken. Caution is given to the user in using the
-output of the package as the sole determinant of model identification –
-instead, it should be used as a “quick check” for any outstanding issues
-with the model.
+`semidentify` allows the user to input a Structural Equation Model (SEM)
+in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check
+it against a number of identification rules from the literature. Rules
+are specified as being necessary and/or sufficient and specific reasons
+are given when a rule is broken. Users should not treat the package
+output as the sole determinant of model identification. Instead, should
+be used as a quick check for potential identification issues and
+outstanding model-specification concerns.
 
 ## Installation
 
-You can install the development version of semID from
+You can install the development version of semidentify from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
-# pak::pak("zacharyvig/semID")
+# pak::pak("zacharyvig/semidentify")
 ```
 
 ## Functions
@@ -69,8 +69,8 @@ You can install the development version of semID from
 ## Example
 
 ``` r
-library(semID)
-#> semID 0.4.0 is still in the development phase.
+library(semidentify)
+#> semidentify 0.4.0 is still in the development phase.
 #> Please report any bugs or edge cases to the GitHub repository.
 
 # Holzinger and Swineford (1939) example
@@ -80,7 +80,7 @@ HS.model <- ' visual  =~ x1 + x2 + x3
 
 id(HS.model, include.msgs = TRUE, call = "cfa", 
    meanstructure = FALSE) # check identification rules
-#> semID 0.4.0 Rule Check
+#> semidentify 0.4.0 Rule Check
 #> 
 #>                        Pass Necessary Sufficient Message 
 #> N_theta Rule            Yes       Yes         No 
@@ -101,7 +101,7 @@ id(HS.model, include.msgs = TRUE, call = "cfa",
 
 scaling(HS.model, include.msgs = TRUE, call = "cfa", 
         meanstructure = FALSE) # check latent variable scaling
-#> semID 0.4.0 Latent Variable Scaling
+#> semidentify 0.4.0 Latent Variable Scaling
 #> 
 #> visual
 #>   LV is scaled? Yes

@@ -24,7 +24,8 @@ scaling(
 )
 }
 \arguments{
-\item{x}{A \code{lavaan} parameter table or a \code{semID} ID object.}
+\item{x}{\code{lavaan} model syntax, a \code{lavaan} parameter table or a
+\code{semidentify} ID object.}
 
 \item{call}{A character string specifying the call you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options

@@ -28,7 +28,7 @@ of structural/directional relations, latent variables, or both.
  \item{N_theta Rule}{The number of free parameters must be less than or equal to
  the number of sample means, variances, and covariances. Necessary but not sufficient}
  \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
- must be correctly scaled (see \link[semID]{scaling}). Necessary but not sufficient.}
+ must be correctly scaled (see \link[semidentify]{scaling}). Necessary but not sufficient.}
  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent variables
  must emit two paths, either to other latent variables or to observed variables. This
  rule only applies to latent variables that have free variances and whose downstream

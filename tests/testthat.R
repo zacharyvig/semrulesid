@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(semID)
+library(semidentify)
 
-test_check("semID")
+test_check("semidentify")

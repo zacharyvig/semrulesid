@@ -2,7 +2,7 @@
 #' 
 #' Confirmatory Factor Analysis (CFA) models are models with latent variables
 #' but no structural paths between latent variables. CFA rules assume each 
-#' latent variable is correctly scaled (see \link[semID]{scaling}).
+#' latent variable is correctly scaled (see \link[semidentify]{scaling}).
 #' 
 #' \describe{
 #'  \item{Two Indicator Rule}{In a model with more than one latent variable, each

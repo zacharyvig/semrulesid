@@ -21,7 +21,7 @@ in the package.}
 A list object with the rule function(s) specified by the user.
 }
 \description{
-The `semID` package stores identification rule functions internally. This
+The `semidentify` package stores identification rule functions internally. This
 function makes them available to the user as a list.
 }
 \examples{

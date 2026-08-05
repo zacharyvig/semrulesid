@@ -1,6 +1,6 @@
 #' Evaluate common Structural Equation Model (SEM) identification rules
 #'
-#' This is the "workhorse" function of the \code{semID} package. The user supplies
+#' This is the "workhorse" function of the \code{semidentify} package. The user supplies
 #' a model string in \code{lavaan} syntax (see \link[lavaan]{model.syntax} for more
 #' details) and the function prints an informative table to the console about the
 #' status of the model on a variety of common identification rules.
