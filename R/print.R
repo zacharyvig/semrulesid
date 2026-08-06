@@ -45,7 +45,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 
   if (print.call) {
     call <- x$call
-    cat(sprintf("Call function: %s\n", format_call(call)))
+    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
   }
 
   if (print.version || print.call) {
@@ -145,7 +145,7 @@ print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Var
   }
   if (print.call) {
     call <- x$call
-    cat(sprintf("Call function: %s\n", format_call(call)))
+    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
   }
   if (print.version || print.call) {
     cat("\n")
@@ -213,7 +213,7 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces
 
   if (print.call) {
     call <- x$call
-    cat(sprintf("Call function: %s\n", format_call(call)))
+    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
   }
 
   if (print.version || print.call) {

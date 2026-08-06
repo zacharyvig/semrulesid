@@ -54,7 +54,7 @@ get_lavaan_call <- function(obj) {
 #' @keywords internal
 #' @param call A character string of the function call
 #' @return A formatted character string of the function call
-format_call <- function(call) {
+format_lavaan_call <- function(call) {
   if (is.null(call) || !is.character(call)) {
     return(NULL)
   }

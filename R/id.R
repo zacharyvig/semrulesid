@@ -92,7 +92,7 @@ id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...
   call.orig <- get_lavaan_call(x)
   if (call.orig != call) {
     warning(
-      paste0("The fitted lavaan object was created with ", format_call(call.orig),
+      paste0("The fitted lavaan object was created with ", format_lavaan_call(call.orig),
              ", but you specified `call = '", call,
              "'`. This may lead to unexpected results.")
     )
