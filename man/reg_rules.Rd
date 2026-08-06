@@ -31,8 +31,8 @@ multiple outcomes
  Sufficient but not necessary.}
  \item{Recursive with Correlated Errors Rule}{The model has no feedback loops
  (i.e., is recursive) but can have correlated errors as long as the errors are
- not for terms between which exists a structural/directional path. Sufficient
- but not necessary.}
+ not for terms between which exists a direct structural/directional path.
+ Sufficient but not necessary.}
 }
 }
 \references{

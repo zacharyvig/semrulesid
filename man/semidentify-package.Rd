@@ -6,7 +6,7 @@
 \alias{semidentify-package}
 \title{semidentify package outline}
 \description{
-Provides rule-based checks for selected necessary and sufficient identification conditions in structural equation models (SEMs), including latent-variable scaling constraints. Diagnostic messages explain rule failures and support model specification and respecification.
+Evaluate selected necessary and sufficient identification conditions in structural equation models (SEMs), including latent-variable scaling constraints. Printed output reports rule status and applicability, and provides diagnostic messages to support model specification and respecification. The package is intended as a diagnostic aid and does not implement a universal identification algorithm.
 }
 \section{Purpose}{
 
