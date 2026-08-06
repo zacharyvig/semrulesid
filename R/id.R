@@ -32,22 +32,22 @@
 #' parts are identified, the whole model is identified.
 #'
 #' @param x A character string model in \code{lavaan} syntax, a
-#'  \code{lavaan} parameter table, or a fitted \code{lavaan} object.
+#'        \code{lavaan} parameter table, or a fitted \code{lavaan} object.
 #' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
-#' does not pass or is not applicable, along with any other helpful information.
-#' Default: \code{TRUE}.
+#'        does not pass or is not applicable, along with any other helpful information.
+#'        Default: \code{TRUE}.
 #' @param call A character string specifying the call you intend to use to fit
-#'  the model. This will ensure the correct model defaults are specified. Options
-#'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-#'  object are supplied, this argument is ignored. Default: "sem".
+#'        the model. This will ensure the correct model defaults are specified. Options
+#'        currently include "lavaan", "sem", or "cfa". If a parameter table for fit
+#'        object are supplied, this argument is ignored. Default: "sem".
 #' @param twostep A logical indicating whether to use the two-step identification rule
-#' instead of the usual one-step. See details. Default: \code{FALSE}.
+#'        instead of the usual one-step. See details. Default: \code{FALSE}.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
-#'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
-#'  tables or fitted model objects are supplied, these arguments are ignored.
+#'        \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
+#'        tables or fitted model objects are supplied, these arguments are ignored.
 #'
 #' @return An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
-#' or \code{id2} is called. See details.)
+#'         or \code{id2} is called. See details.)
 #'
 #' @examples
 #' my_model <- ' L1 =~ x1 + x2 + x3
@@ -55,9 +55,9 @@
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
  #'              L3 ~ L2 '
-#' id(my_model, include.msgs = TRUE, call = "cfa", 
+#' id(my_model, include.msgs = TRUE, call = "sem", 
 #'    meanstructure = FALSE)
-#' id2(my_model, include.msgs = TRUE, call = "cfa",
+#' id2(my_model, include.msgs = TRUE, call = "sem",
 #'    meanstructure = FALSE)
 #' @name id
 #' @export
@@ -89,6 +89,14 @@ id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...
   if (length(dotdotdot) > 0) {
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
   }
+  call.orig <- get_lavaan_call(x)
+  if (call.orig != call) {
+    warning(
+      paste0("The fitted lavaan object was created with ", format_call(call.orig),
+             ", but you specified `call = '", call,
+             "'`. This may lead to unexpected results.")
+    )
+  }
   partable <- as.data.frame(
     x@ParTable,
     stringsAsFactors = FALSE
@@ -104,7 +112,7 @@ id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, 
   }
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
-    warning("Only `model.type='sem'` is currently supported")
+    warning("Only `model.type = 'sem'` is currently supported")
   }
   if (isTRUE(dotdotdot$debug)) {
     dotdotdot[["debug"]] <- NULL
@@ -153,6 +161,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
       id.cfa = id(partable.cfa),
       id.reg = id(partable.reg),
       partable = partable,
+      call = call,
       print.options = list(
         include.msgs = include.msgs
       )
@@ -180,6 +189,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
     model.type = model.type,
     Rules = rules,
     partable = partable,
+    call = call,
     print.options = list(
       include.msgs = include.msgs
     )
@@ -205,7 +215,9 @@ id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #' Evaluate identification rules for an Mplus model
 #'
 #' This is a wrapper function for \code{\link{id}} that accomodates Mplus model syntax
-#' (as a string) or Mplus input files (with extension ".inp").
+#' (as a string) or Mplus input files (with extension ".inp"). It internally converts
+#' the Mplus model to a lavaan model, then calls \code{\link{id}} using the specified
+#' arguments.
 #' 
 #' @param x A character string model in Mplus syntax, or a path to an Mplus input file.
 #' @inheritParams id
@@ -218,7 +230,7 @@ id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #'               L3 BY x7 x8 x9;
 #'               L2 ON L1;
 #'               L3 ON L2; '
-#' id_mplus(my_model, include.msgs = TRUE, call = "cfa", 
+#' id_mplus(my_model, include.msgs = TRUE, call = "sem", 
 #'    meanstructure = FALSE)
 #' 
 #' @export

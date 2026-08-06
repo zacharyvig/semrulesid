@@ -8,7 +8,9 @@
   x,
   ...,
   step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-  step.titles = c("Step 1", "Step 2")
+  step.titles = c("Step 1", "Step 2"),
+  print.version = TRUE,
+  print.call = TRUE
 )
 }
 \arguments{
@@ -19,6 +21,12 @@
 \item{step.names}{Character. The names of each step/block.}
 
 \item{step.titles}{Character. The labels to be given to each step.}
+
+\item{print.version}{Logical. If \code{TRUE}, the version of the package is
+printed in a header before the rules output.}
+
+\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+header before the rules output.}
 }
 \description{
 Printing function for two-step rules lists

@@ -13,6 +13,8 @@
 #' @param na.lab Character. The label for NA/blank cells.
 #' @param print.version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
+#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#'        header before the rules output.
 #' @param ... Not currently used.
 #'
 #' @export
@@ -20,7 +22,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
                         include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
                         msgs.levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-",
-                        print.version = TRUE) {
+                        print.version = TRUE, print.call = TRUE) {
   if (!is.null(x$print.options$include.msgs)) {
     if (x$print.options$include.msgs != include.msgs) {
       warning("The `include.msgs` argument in the print method is overriding the `include.msgs` argument in the semid object.")
@@ -38,7 +40,16 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 
   if (print.version) {
     version <- utils::packageVersion("semidentify")
-    cat(sprintf("semidentify %s Rule Check\n\n", version))
+    cat(sprintf("semidentify %s Rule Check\n", version))
+  }
+
+  if (print.call) {
+    call <- x$call
+    cat(sprintf("Call function: %s\n", format_call(call)))
+  }
+
+  if (print.version || print.call) {
+    cat("\n")
   }
 
   cat(names, strrep("\n", 1L))
@@ -119,19 +130,32 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 #' @param ... Arguments to be passed to print.semid.
 #' @param step.titles Character. The labels to be given to each step.
 #' @param step.names Character. The names of each step/block.
-#' 
+#' @param print.version Logical. If \code{TRUE}, the version of the package is
+#'        printed in a header before the rules output.
+#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#'        header before the rules output.
 #' @export
 print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-                         step.titles = c("Step 1", "Step 2")) {
+                         step.titles = c("Step 1", "Step 2"), print.version = TRUE, print.call = TRUE) {
 
-  version <- utils::packageVersion("semidentify")
-  cat(sprintf("semidentify %s Two-Step Rule Check\n\n", version))
-
+  # preliminary printing
+  if (print.version) {
+    version <- utils::packageVersion("semidentify")
+  cat(sprintf("semidentify %s Two-Step Rule Check\n", version))
+  }
+  if (print.call) {
+    call <- x$call
+    cat(sprintf("Call function: %s\n", format_call(call)))
+  }
+  if (print.version || print.call) {
+    cat("\n")
+  }
+  
   cat(paste0(step.titles[1], ": ", step.names[1], "\n\n"))
-  print(x$id.cfa, print.version = FALSE, ...)
+  print(x$id.cfa, print.version = FALSE, ..., print.call = FALSE)
 
   cat(paste0(step.titles[2], ": ", step.names[2], "\n\n"))
-  print(x$id.reg, print.version = FALSE, ...)
+  print(x$id.reg, print.version = FALSE, ..., print.call = FALSE)
 
   return(invisible(x))
 
@@ -141,23 +165,28 @@ print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Var
 #' Printing function for scaling table
 #' 
 #' @param x A \code{semscale} object, i.e., a list of scaling information
-#' for each latent variable in the model.
+#'        for each latent variable in the model.
 #' @param include.msgs Logical. If \code{TRUE} messages are printed.
 #' @param window Integer. The width of the output window.
+#' @param sep.spaces Integer. The number of spaces to separate the row names from the row values.
 #' @param indent.lens Integer vector of length 3. The number of spaces to indent
-#' for each level of information (currently there are three supported).
+#'        for each level of information (currently there are three supported).
 #' @param na.lab Character. The label for NA/blank cells.
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".
 #' @param empty.lab Character. The label for empty cells, e.g., "None".
 #' @param bullet Character. The bullet symbol for messages, e.g., "-".
+#' @param print.version Logical. If \code{TRUE}, the version of the package is printed in a
+#'        header before the rules output.
+#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#'        header before the rules output.
 #' @param ... Not currently used.
 #'
 #' @export
-print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
+print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces = 3L,
                            indent.lens = c(0L, 2L, 2L), na.lab = "na",
                            pos.lab = "Yes", neg.lab = "No", empty.lab = "None",
-                           bullet = "-") {
+                           bullet = "-", print.version = TRUE, print.call = TRUE) {
                             
   stopifnot("`indent.lens` must be three equal or ascending integers" =
     length(indent.lens) == 3 && indent.lens[2] >= indent.lens[1] && indent.lens[3] >= indent.lens[2])
@@ -177,8 +206,19 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
   scaling <- x$Scaling
   indents <- strrep(" ", indent.lens)
 
-  version <- utils::packageVersion("semidentify")
-  cat(sprintf("semidentify %s Latent Variable Scaling\n\n", version))
+  if (print.version) {
+    version <- utils::packageVersion("semidentify")
+    cat(sprintf("semidentify %s Latent Variable Scaling\n", version))
+  }
+
+  if (print.call) {
+    call <- x$call
+    cat(sprintf("Call function: %s\n", format_call(call)))
+  }
+
+  if (print.version || print.call) {
+    cat("\n")
+  }
 
   for (i in seq_along(scaling)) {
     var <- scaling[[i]]$lv
@@ -206,10 +246,22 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
       "FALSE" = neg.lab
     )
 
-    cat(sprintf("%sLV is scaled? %s\n", indents[2], is.scaled))
-    cat(sprintf("%sNo. of indicators: %s\n", indents[2], n.ind))
-    cat(sprintf("%sScaling indicator(s): %s\n", indents[2], scale.ind))
-    cat(sprintf("%sMean structure? %s\n\n", indents[2], mean.structure))
+    row.names <- c(
+      "LV is scaled?",
+      "No. of indicators:",
+      "Scaling indicator(s):",
+      "Mean structure?"
+    )
+    row.names.nchar <- nchar(row.names)
+    row.values.nspaces <- max(row.names.nchar) - row.names.nchar + sep.spaces
+    row.values.spaces <- strrep(" ", row.values.nspaces)
+    row.values <- c(is.scaled, n.ind, scale.ind, mean.structure)
+    row.values <- paste0(row.values.spaces, row.values)
+
+    cat(sprintf("%s%s %s\n", indents[2], row.names[1], row.values[1]))
+    cat(sprintf("%s%s %s\n", indents[2], row.names[2], row.values[2]))
+    cat(sprintf("%s%s %s\n", indents[2], row.names[3], row.values[3]))
+    cat(sprintf("%s%s %s\n\n", indents[2], row.names[4], row.values[4]))
 
     if (include.msgs) {
       prefix <- paste0(bullet, " ")

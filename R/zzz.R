@@ -3,8 +3,13 @@
     file = system.file("DESCRIPTION", package = pkgname),
     fields = "Version"
   )[1]
+  bugreport <- read.dcf(
+    file = system.file("DESCRIPTION", package = pkgname),
+    fields = "BugReports"
+  )[1]
   packageStartupMessage(
-    paste(pkgname, version, "is still in the development phase.\nPlease report any bugs or edge cases to the GitHub repository.")
+    pkgname, " ", version, "\nPlease report any bugs or edge cases at:\n",
+    bugreport
   )
 }
 

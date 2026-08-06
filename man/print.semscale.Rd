@@ -9,12 +9,15 @@
   ...,
   include.msgs = TRUE,
   window = 56L,
+  sep.spaces = 3L,
   indent.lens = c(0L, 2L, 2L),
   na.lab = "na",
   pos.lab = "Yes",
   neg.lab = "No",
   empty.lab = "None",
-  bullet = "-"
+  bullet = "-",
+  print.version = TRUE,
+  print.call = TRUE
 )
 }
 \arguments{
@@ -26,6 +29,8 @@ for each latent variable in the model.}
 \item{include.msgs}{Logical. If \code{TRUE} messages are printed.}
 
 \item{window}{Integer. The width of the output window.}
+
+\item{sep.spaces}{Integer. The number of spaces to separate the row names from the row values.}
 
 \item{indent.lens}{Integer vector of length 3. The number of spaces to indent
 for each level of information (currently there are three supported).}
@@ -39,6 +44,12 @@ for each level of information (currently there are three supported).}
 \item{empty.lab}{Character. The label for empty cells, e.g., "None".}
 
 \item{bullet}{Character. The bullet symbol for messages, e.g., "-".}
+
+\item{print.version}{Logical. If \code{TRUE}, the version of the package is printed in a
+header before the rules output.}
+
+\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+header before the rules output.}
 }
 \description{
 Printing function for scaling table

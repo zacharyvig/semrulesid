@@ -76,8 +76,9 @@ You can install the development version from
 
 ``` r
 library(semidentify)
-#> semidentify 0.4.0 is still in the development phase.
-#> Please report any bugs or edge cases to the GitHub repository.
+#> semidentify 0.4.0
+#> Please report any bugs or edge cases at:
+#> https://github.com/zacharyvig/semidentify/issues
 
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
@@ -85,11 +86,10 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L2 ~ L1
               L3 ~ L2 '
 
-id(my_model, include.msgs = TRUE, call = "cfa", 
+id(my_model, include.msgs = TRUE, call = "sem", 
    meanstructure = FALSE) # check identification rules
-#> Warning in id.data.frame(partable, include.msgs = include.msgs, call = call, :
-#> `sem()` or `lavaan()` may be more appropriate calls for this type of model
 #> semidentify 0.4.0 Rule Check
+#> Call function: `lavaan::sem()`
 #> 
 #>                        Pass Necessary Sufficient Message 
 #> N_theta Rule            Yes       Yes         No 
@@ -110,39 +110,37 @@ id(my_model, include.msgs = TRUE, call = "cfa",
 #> 3 - [Info] This rule only applies when there are no
 #>     latent variables in the model
 
-scaling(my_model, include.msgs = TRUE, call = "cfa", 
+scaling(my_model, include.msgs = TRUE, call = "sem", 
         meanstructure = FALSE) # check latent variable scaling
 #> semidentify 0.4.0 Latent Variable Scaling
+#> Call function: `lavaan::sem()`
 #> 
 #> L1
-#>   LV is scaled? Yes
-#>   No. of indicators: 3
-#>   Scaling indicator: x1
-#>   Mean structure? No
+#>   LV is scaled?            Yes
+#>   No. of indicators:       3
+#>   Scaling indicator(s):    x1
+#>   Mean structure?          No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator, fixed scaling-indicator
-#>     intercept
+#>   - Scaling indicator
 #> 
 #> 
 #> L2
-#>   LV is scaled? Yes
-#>   No. of indicators: 3
-#>   Scaling indicator: x4
-#>   Mean structure? No
+#>   LV is scaled?            Yes
+#>   No. of indicators:       3
+#>   Scaling indicator(s):    x4
+#>   Mean structure?          No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator, fixed scaling-indicator
-#>     intercept
+#>   - Scaling indicator
 #> 
 #> 
 #> L3
-#>   LV is scaled? Yes
-#>   No. of indicators: 3
-#>   Scaling indicator: x7
-#>   Mean structure? No
+#>   LV is scaled?            Yes
+#>   No. of indicators:       3
+#>   Scaling indicator(s):    x7
+#>   Mean structure?          No
 #> 
 #>   Scaling method(s):
-#>   - Scaling indicator, fixed scaling-indicator
-#>     intercept
+#>   - Scaling indicator
 ```

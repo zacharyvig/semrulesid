@@ -82,13 +82,13 @@ sem_to_reg <- function(partable) {
 #' function makes them available to the user as a list.
 #'
 #' @param rule A string specifying the name of the rule as it's defined
-#'  in the package. Use "*" to get all rules (or all rules of the defined
-#'  model type). Partial matches are acceptable.
+#'        in the package. Use "*" to get all rules (or all rules of the defined
+#'        model type). Partial matches are acceptable.
 #' @param model_type A string specifying the model sub-type from which to get
-#'  rules. Sub-types include "reg" (simultaneous equations models/regression
-#'  models) and "cfa" (confirmatory factor analysis models). Use "sem" to get
-#'  rules that apply to all structural equation models. Use "*" to get all rules
-#'  in the package.
+#'        rules. Sub-types include "reg" (simultaneous equations models/regression
+#'        models) and "cfa" (confirmatory factor analysis models). Use "sem" to get
+#'        rules that apply to all structural equation models. Use "*" to get all rules
+#'        in the package.
 #'
 #' @return A list object with the rule function(s) specified by the user.
 #'

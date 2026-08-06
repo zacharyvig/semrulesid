@@ -34,3 +34,30 @@ classify_model <- function(partable = NULL) {
     stop("Cannot classify model!")
   }
 }
+
+#' Extracts the call from a lavaan fitted object for internal use
+#' @keywords internal
+#' @param obj A fitted lavaan object
+#' @return The call used to fit the model
+get_lavaan_call <- function(obj) {
+  if (!inherits(obj, "lavaan")) {
+    stop("`obj` must be a fitted lavaan object")
+  }
+  call <- obj@call$cmd
+  if (is.null(call)) {
+    call <- "lavaan"
+  }
+  return(call)
+}
+
+#' Format a call for printing for internal use
+#' @keywords internal
+#' @param call A character string of the function call
+#' @return A formatted character string of the function call
+format_call <- function(call) {
+  if (is.null(call) || !is.character(call)) {
+    return(NULL)
+  }
+  call <- paste0("`lavaan::", call, "()`")
+  return(call)
+}

@@ -31,7 +31,7 @@ tables or fitted model objects are supplied, these arguments are ignored.}
 }
 \value{
 An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
-or \code{id2} is called. See details.)
+        or \code{id2} is called. See details.)
 }
 \description{
 This is the "workhorse" function of the \code{semidentify} package. The user supplies
@@ -72,8 +72,8 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
              L3 ~ L2 '
-id(my_model, include.msgs = TRUE, call = "cfa", 
+id(my_model, include.msgs = TRUE, call = "sem", 
    meanstructure = FALSE)
-id2(my_model, include.msgs = TRUE, call = "cfa",
+id2(my_model, include.msgs = TRUE, call = "sem",
    meanstructure = FALSE)
 }

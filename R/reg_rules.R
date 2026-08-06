@@ -54,7 +54,7 @@ rule_reg_null_byy <- function(partable) {
   if (any(nox_ox[!is.na(nox_ox)])) {
     pass <- FALSE
     msgs <- add_rule_msgs(
-      new_msgs = paste("[Fail] One or more endogenous variables appear as regression predictors:",
+      new_msgs = paste("One or more endogenous variables appear as regression predictors:",
                        paste(ov.nox[nox_ox], collapse = ", ")),
       levels = 2
     )

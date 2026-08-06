@@ -16,7 +16,8 @@
   pos.lab = "Yes",
   neg.lab = "No",
   na.lab = "-",
-  print.version = TRUE
+  print.version = TRUE,
+  print.call = TRUE
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 
 \item{print.version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
+
+\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+header before the rules output.}
 }
 \description{
 Printing function for rules list

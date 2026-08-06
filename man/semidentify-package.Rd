@@ -43,6 +43,14 @@ used to (a) edit functions and documentation for clarity, (b) implement the Dept
 (c) help fix bugs, and (d) help write the test suite.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/zacharyvig/semidentify}
+  \item Report bugs at \url{https://github.com/zacharyvig/semidentify/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Zach Vig \email{zachvig@rocketmail.com} [copyright holder]
 

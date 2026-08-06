@@ -52,13 +52,14 @@ test_that("scaling printing shows mean structure and the revised messages", {
   )
 
   expect_true(any(grepl("Latent Variable Scaling", pass_out)))
-  expect_true(any(grepl("LV is scaled? Yes", pass_out, fixed = TRUE)))
-  expect_true(any(grepl("Mean structure? No", pass_out, fixed = TRUE)))
+  expect_true(any(grepl("LV is scaled\\?\\s*Yes", pass_out)))
+  expect_true(any(grepl("Mean structure\\?\\s*No", pass_out)))
   expect_true(any(grepl("Scaling method(s):", pass_out, fixed = TRUE)))
   expect_true(any(grepl("L1", pass_out)))
 
-  expect_true(any(grepl("LV is scaled? Yes", mean_out, fixed = TRUE)))
-  expect_true(any(grepl("Mean structure? Yes", mean_out, fixed = TRUE)))
+
+  expect_true(any(grepl("LV is scaled\\?\\s*Yes", mean_out)))
+  expect_true(any(grepl("Mean structure\\?\\s*Yes", mean_out)))
   expect_true(any(grepl("Scaling method(s):", mean_out, fixed = TRUE)))
 
   expect_true(any(grepl("Latent Variable Scaling", fail_out)))

@@ -30,3 +30,5 @@ VignetteBuilder: knitr
 Language: en-US
 Config/roxygen2/version: 8.0.0
 RoxygenNote: 8.0.0
+URL: https://github.com/zacharyvig/semidentify
+BugReports: https://github.com/zacharyvig/semidentify/issues

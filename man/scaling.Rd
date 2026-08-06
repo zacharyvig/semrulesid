@@ -29,7 +29,7 @@ scaling(
 
 \item{call}{A character string specifying the call you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
-currently include "lavaan", "sem", or "cfa". If a parameter table for fit
+currently include "lavaan", "sem", or "cfa". If a parameter table or fitted model
 object are supplied, this argument is ignored.}
 
 \item{include.msgs}{Logical. If \code{TRUE} the output will print why a 
@@ -71,7 +71,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
               L3 ~ L2 '
-scaling(my_model, include.msgs = TRUE, call = "cfa",
+scaling(my_model, include.msgs = TRUE, call = "sem",
         meanstructure = FALSE)
 
 }
