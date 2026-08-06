@@ -61,7 +61,7 @@ rule_cfa_three_indicator <- function(partable) {
       rule = rule,
       pass = NA,
       msgs = add_rule_msgs(
-        new_msgs = paste("This rule only applies when all latent variables have more than three indicators:",
+        new_msgs = paste("This rule only applies when all latent variables have three or more indicators:",
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
@@ -169,7 +169,7 @@ rule_cfa_two_indicator <- function(partable) {
       rule = rule,
       pass = NA,
       msgs = add_rule_msgs(
-        new_msgs = paste("This rule only applies when all latent variables have more than two indicators:",
+        new_msgs = paste("This rule only applies when all latent variables have two or more indicators:",
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
@@ -226,7 +226,7 @@ rule_cfa_two_indicator <- function(partable) {
     msgs <- add_rule_msgs(
       msgs = msgs,
       new_msgs = paste("Some latent variables are not correlated with another latent variable:",
-              paste(vars$lv[idx.fof & !cor.lv] , collapse = ", ")),
+              paste(vars$lv[idx.fof][!cor.lv] , collapse = ", ")),
       levels = "2"
     )
   }

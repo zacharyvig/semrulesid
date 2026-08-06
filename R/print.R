@@ -192,9 +192,13 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
     )
     
     n.ind <- as.integer(scaling[[i]]$n.indicators)
-    scale.ind <- ifelse(
-      is.na(scaling[[i]]$scaling.indicator), empty.lab, scaling[[i]]$scaling.indicator
-    )
+    scale.ind <- scaling[[i]]$scaling.indicator
+    # in case of multiple scaling indicators
+    scale.ind <- if (all(is.na(scale.ind))) {
+      empty.lab
+    } else {
+      paste(scale.ind, collapse = ", ")
+    }
     mean.structure <- switch(
       as.character(scaling[[i]]$mean.structure),
       "NA" = na.lab,
@@ -204,7 +208,7 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
 
     cat(sprintf("%sLV is scaled? %s\n", indents[2], is.scaled))
     cat(sprintf("%sNo. of indicators: %s\n", indents[2], n.ind))
-    cat(sprintf("%sScaling indicator: %s\n", indents[2], scale.ind))
+    cat(sprintf("%sScaling indicator(s): %s\n", indents[2], scale.ind))
     cat(sprintf("%sMean structure? %s\n\n", indents[2], mean.structure))
 
     if (include.msgs) {

@@ -13,8 +13,8 @@
 #'  Sufficient but not necessary.}
 #'  \item{Recursive with Correlated Errors Rule}{The model has no feedback loops
 #'  (i.e., is recursive) but can have correlated errors as long as the errors are
-#'  not for terms between which exists a structural/directional path. Sufficient
-#'  but not necessary.}
+#'  not for terms between which exists a direct structural/directional path.
+#'  Sufficient but not necessary.}
 #' }
 #'
 #' @name reg_rules
@@ -104,7 +104,7 @@ rule_reg_fully_recursive <- function(partable) {
     )
   } else if (any(cor_err.ov.nox)) {
     pass <- FALSE
-    viol <- paste(c(covs$lhs[cor_err.ov.nox], covs$rhs[cor_err.ov.nox]), sep = "/")
+    viol <- paste(covs$lhs[cor_err.ov.nox], covs$rhs[cor_err.ov.nox], sep = "/")
     msgs <- add_rule_msgs(
       new_msgs = paste("The model is recursive but some endogenous variables have correlated errors:",
                    paste(viol, collapse = ", ")),

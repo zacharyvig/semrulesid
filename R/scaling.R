@@ -153,7 +153,15 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
 
     meanstructure <- any(with(x, lhs == var & op == "~1"))
 
-    scale.ind.idx <- with(x, lhs == var & op == "=~" & free == 0 & rhs != var)
+    scale.ind.idx <- with(
+      x,
+      lhs == var &
+        op == "=~" &
+        free == 0 &
+        rhs != var &
+        !is.na(ustart) &
+        ustart != 0
+    )
     has.scale.ind <- any(scale.ind.idx)
     scale.ind <- if (has.scale.ind) with(x, rhs[scale.ind.idx]) else character(0)
 
@@ -162,7 +170,17 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     } else {
       TRUE
     }
-    latent.var.fixed <- any(with(x, lhs == var & rhs == var & op == "~~" & free == 0))
+    latent.var.fixed <- any(
+      with(
+        x,
+        lhs == var &
+          rhs == var &
+          op == "~~" &
+          free == 0 &
+          !is.na(ustart) &
+          ustart > 0
+      )
+    )
     latent.mean.fixed <- if (meanstructure) {
       any(with(x, lhs == var & op == "~1" & free == 0))
     } else {
@@ -188,7 +206,7 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
       scaling.method <- c(
         if (has.scale.ind) "scaling indicator",
         if (latent.var.fixed) "fixed latent-variable variance",
-        if (has.scale.ind && scale.ind.intercept.fixed) {
+        if (meanstructure && has.scale.ind && scale.ind.intercept.fixed) {
           "fixed scaling-indicator intercept"
         },
         if (meanstructure && latent.mean.fixed) "fixed latent-variable mean"
@@ -205,14 +223,19 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     } else {
       fail.reason <- c(
         if (!units.assigned) {
-          "Neither scaling indicator nor fixed latent variance"
+          "neither scaling indicator nor fixed latent variance"
         },
         if (meanstructure && !origin.assigned) {
-          ", and scaling indicator mean and/or latent variable mean must be fixed"
+          "neither fixed scaling indicator intercept nor fixed latent variable mean"
         }
       )
       fail.reason <- fail.reason[nzchar(fail.reason)]
-      fail.reason <- paste(fail.reason, collapse = "")
+      fail.reason <- paste(fail.reason, collapse = ", and ")
+      # capitalize first character
+      fail.reason <- paste0(
+        toupper(substr(fail.reason, 1, 1)),
+        substr(fail.reason, 2, nchar(fail.reason))
+      )
       scaling.tables[[i]]$fail.reason <- fail.reason
     }
 

@@ -139,7 +139,7 @@ get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
 #' @noRd
 build_rule_out <- function(rule, pass, msgs = NA_character_, cond = c("N", "S", "NS", NA_character_)) {
   cond <- match.arg(cond)
-  msgs <- if (pass || !is.na(msgs)) msgs else NA_character_
+  msgs <- if (isTRUE(pass) || any(!is.na(msgs))) msgs else NA_character_
   out <- list(
     rule = rule,
     pass = pass,
