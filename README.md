@@ -3,11 +3,6 @@
 
 # semidentify
 
-<!-- badges: start -->
-
-[![R-CMD-check](https://github.com/zacharyvig/semidentify/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zacharyvig/semidentify/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
-
 `semidentify` allows the user to input a Structural Equation Model (SEM)
 in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check
 it against a number of identification rules from the literature. Rules
