@@ -19,7 +19,7 @@ test_that("id2 returns the two-step object structure", {
   )
 
   expect_s3_class(out, "semid2")
-  expect_named(out, c("id.cfa", "id.reg", "partable", "call", "print.options"))
+  expect_named(out, c("id.cfa", "id.reg", "partable", "lav_fun", "print.options"))
   expect_s3_class(out$id.cfa, "semid")
   expect_s3_class(out$id.reg, "semid")
 })

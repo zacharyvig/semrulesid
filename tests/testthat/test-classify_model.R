@@ -32,20 +32,20 @@ test_that("classify_model identifies reg, cfa, sem, and mlm parts", {
   )
 })
 
-test_that("get_lavaan_call returns the correct call", {
+test_that("get_lavaan_cmd returns the correct cmd", {
   fit <- lavaan::lavaan(
     test_models$sem_scaling_pass$model,
     model.type = test_models$sem_scaling_pass$type
   )
-  expect_identical(get_lavaan_call(fit), "lavaan")
+  expect_identical(get_lavaan_cmd(fit), "lavaan")
   fit_sem <- lavaan::sem(
     test_models$sem_scaling_pass$model,
     model.type = test_models$sem_scaling_pass$type
   )
-  expect_identical(get_lavaan_call(fit_sem), "sem")
+  expect_identical(get_lavaan_cmd(fit_sem), "sem")
   fit_cfa <- lavaan::cfa(
     test_models$cfa_three_pass$model,
     model.type = test_models$cfa_three_pass$type
   )
-  expect_identical(get_lavaan_call(fit_cfa), "cfa")
+  expect_identical(get_lavaan_cmd(fit_cfa), "cfa")
 })

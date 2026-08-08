@@ -17,7 +17,7 @@
   neg.lab = "No",
   na.lab = "-",
   print.version = TRUE,
-  print.call = TRUE
+  print.lav_fun = TRUE
 )
 }
 \arguments{
@@ -47,7 +47,7 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 \item{print.version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{

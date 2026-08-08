@@ -17,7 +17,7 @@
   empty.lab = "None",
   bullet = "-",
   print.version = TRUE,
-  print.call = TRUE
+  print.lav_fun = TRUE
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ for each level of information (currently there are three supported).}
 \item{print.version}{Logical. If \code{TRUE}, the version of the package is printed in a
 header before the rules output.}
 
-\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{

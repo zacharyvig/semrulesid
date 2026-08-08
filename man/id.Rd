@@ -5,9 +5,9 @@
 \alias{id2}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
+id(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
 
-id2(x, include.msgs = TRUE, call = "sem", ...)
+id2(x, include.msgs = TRUE, lav_fun = "sem", ...)
 }
 \arguments{
 \item{x}{A character string model in \code{lavaan} syntax, a
@@ -17,7 +17,7 @@ id2(x, include.msgs = TRUE, call = "sem", ...)
 does not pass or is not applicable, along with any other helpful information.
 Default: \code{TRUE}.}
 
-\item{call}{A character string specifying the call you intend to use to fit
+\item{lav_fun}{A character string specifying the lavaan function you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
 currently include "lavaan", "sem", or "cfa". If a parameter table for fit
 object are supplied, this argument is ignored. Default: "sem".}
@@ -55,10 +55,10 @@ conditions may not apply as usual.
 Messages are identified by a number, and corresponding message numbers are listed
 in the "Messages" column of the table.
 
-\code{call} takes character values "lavaan", "sem", or "cfa", specifying which
+\code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying which
 \code{lavaan} function the user intends to call (and thus which defaults should)
 be used) when fitting the model in the case a model string is supplied. Supplying
-a parameter table or fitted model object ignores the \code{call} argument since
+a parameter table or fitted model object ignores the \code{lav_fun} argument since
 defaults will have already been implemented.
 
 \code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
@@ -72,8 +72,8 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
              L3 ~ L2 '
-id(my_model, include.msgs = TRUE, call = "sem", 
+id(my_model, include.msgs = TRUE, lav_fun = "sem", 
    meanstructure = FALSE)
-id2(my_model, include.msgs = TRUE, call = "sem",
+id2(my_model, include.msgs = TRUE, lav_fun = "sem",
    meanstructure = FALSE)
 }

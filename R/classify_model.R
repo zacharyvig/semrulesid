@@ -35,29 +35,29 @@ classify_model <- function(partable = NULL) {
   }
 }
 
-#' Extracts the call from a lavaan fitted object for internal use
+#' Extracts the cmd object from a lavaan fitted object for internal use
 #' @keywords internal
 #' @param obj A fitted lavaan object
-#' @return The call used to fit the model
-get_lavaan_call <- function(obj) {
+#' @return The function/command used to fit the model
+get_lavaan_cmd <- function(obj) {
   if (!inherits(obj, "lavaan")) {
     stop("`obj` must be a fitted lavaan object")
   }
-  call <- obj@call$cmd
-  if (is.null(call)) {
-    call <- "lavaan"
+  cmd <- obj@call$cmd
+  if (is.null(cmd)) {
+    cmd <- "lavaan"
   }
-  return(call)
+  return(cmd)
 }
 
-#' Format a call for printing for internal use
+#' Format a function call for printing for internal use
 #' @keywords internal
-#' @param call A character string of the function call
+#' @param fun A character string of the function call
 #' @return A formatted character string of the function call
-format_lavaan_call <- function(call) {
-  if (is.null(call) || !is.character(call)) {
+format_lavaan_fun <- function(fun) {
+  if (is.null(fun) || !is.character(fun)) {
     return(NULL)
   }
-  call <- paste0("`lavaan::", call, "()`")
-  return(call)
+  fun <- paste0("`lavaan::", fun, "()`")
+  return(fun)
 }

@@ -13,7 +13,7 @@
 #' @param na.lab Character. The label for NA/blank cells.
 #' @param print.version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
-#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @param ... Not currently used.
 #'
@@ -22,7 +22,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
                         include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
                         msgs.levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-",
-                        print.version = TRUE, print.call = TRUE) {
+                        print.version = TRUE, print.lav_fun = TRUE) {
   if (!is.null(x$print.options$include.msgs)) {
     if (x$print.options$include.msgs != include.msgs) {
       warning("The `include.msgs` argument in the print method is overriding the `include.msgs` argument in the semid object.")
@@ -43,12 +43,12 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
     cat(sprintf("semidentify %s Rule Check\n", version))
   }
 
-  if (print.call) {
-    call <- x$call
-    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
+  if (print.lav_fun) {
+    lav_fun <- x$lav_fun
+    cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
 
-  if (print.version || print.call) {
+  if (print.version || print.lav_fun) {
     cat("\n")
   }
 
@@ -132,30 +132,30 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 #' @param step.names Character. The names of each step/block.
 #' @param print.version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
-#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @export
 print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-                         step.titles = c("Step 1", "Step 2"), print.version = TRUE, print.call = TRUE) {
+                         step.titles = c("Step 1", "Step 2"), print.version = TRUE, print.lav_fun = TRUE) {
 
   # preliminary printing
   if (print.version) {
     version <- utils::packageVersion("semidentify")
   cat(sprintf("semidentify %s Two-Step Rule Check\n", version))
   }
-  if (print.call) {
-    call <- x$call
-    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
+  if (print.lav_fun) {
+    lav_fun <- x$lav_fun
+    cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
-  if (print.version || print.call) {
+  if (print.version || print.lav_fun) {
     cat("\n")
   }
   
   cat(paste0(step.titles[1], ": ", step.names[1], "\n\n"))
-  print(x$id.cfa, print.version = FALSE, ..., print.call = FALSE)
+  print(x$id.cfa, print.version = FALSE, ..., print.lav_fun = FALSE)
 
   cat(paste0(step.titles[2], ": ", step.names[2], "\n\n"))
-  print(x$id.reg, print.version = FALSE, ..., print.call = FALSE)
+  print(x$id.reg, print.version = FALSE, ..., print.lav_fun = FALSE)
 
   return(invisible(x))
 
@@ -178,7 +178,7 @@ print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Var
 #' @param bullet Character. The bullet symbol for messages, e.g., "-".
 #' @param print.version Logical. If \code{TRUE}, the version of the package is printed in a
 #'        header before the rules output.
-#' @param print.call Logical. If \code{TRUE}, the function call is printed in a
+#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @param ... Not currently used.
 #'
@@ -186,7 +186,7 @@ print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Var
 print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces = 3L,
                            indent.lens = c(0L, 2L, 2L), na.lab = "na",
                            pos.lab = "Yes", neg.lab = "No", empty.lab = "None",
-                           bullet = "-", print.version = TRUE, print.call = TRUE) {
+                           bullet = "-", print.version = TRUE, print.lav_fun = TRUE) {
                             
   stopifnot("`indent.lens` must be three equal or ascending integers" =
     length(indent.lens) == 3 && indent.lens[2] >= indent.lens[1] && indent.lens[3] >= indent.lens[2])
@@ -211,12 +211,12 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces
     cat(sprintf("semidentify %s Latent Variable Scaling\n", version))
   }
 
-  if (print.call) {
-    call <- x$call
-    cat(sprintf("Call function: %s\n", format_lavaan_call(call)))
+  if (print.lav_fun) {
+    lav_fun <- x$lav_fun
+    cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
 
-  if (print.version || print.call) {
+  if (print.version || print.lav_fun) {
     cat("\n")
   }
 

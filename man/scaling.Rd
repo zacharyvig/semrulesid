@@ -7,7 +7,7 @@
 \usage{
 scaling(
   x,
-  call = "sem",
+  lav_fun = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -16,7 +16,7 @@ scaling(
 
 \method{scaling}{lavaan}(
   x,
-  call = "sem",
+  lav_fun = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -27,7 +27,7 @@ scaling(
 \item{x}{\code{lavaan} model syntax, a \code{lavaan} parameter table or a
 \code{semidentify} ID object.}
 
-\item{call}{A character string specifying the call you intend to use to fit
+\item{lav_fun}{A character string specifying the function you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
 currently include "lavaan", "sem", or "cfa". If a parameter table or fitted model
 object are supplied, this argument is ignored.}
@@ -71,7 +71,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
               L3 ~ L2 '
-scaling(my_model, include.msgs = TRUE, call = "sem",
+scaling(my_model, include.msgs = TRUE, lav_fun = "sem",
         meanstructure = FALSE)
 
 }

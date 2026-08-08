@@ -9,7 +9,7 @@
 #'
 #' @param x \code{lavaan} model syntax, a \code{lavaan} parameter table or a
 #'        \code{semidentify} ID object.
-#' @param call A character string specifying the call you intend to use to fit
+#' @param lav_fun A character string specifying the function you intend to use to fit
 #'        the model. This will ensure the correct model defaults are specified. Options
 #'        currently include "lavaan", "sem", or "cfa". If a parameter table or fitted model
 #'        object are supplied, this argument is ignored.
@@ -42,11 +42,12 @@
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
 #'               L3 ~ L2 '
-#' scaling(my_model, include.msgs = TRUE, call = "sem",
+#' scaling(my_model, include.msgs = TRUE, lav_fun = "sem",
 #'         meanstructure = FALSE)
 #'
-scaling <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
-                    return.type = c("object", "logical"), ...) {                  
+scaling <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL, 
+                    return.type = c("object", "logical"), ...) {       
+  match.arg(return.type)           
   stopifnot(
     "Argument `lv` must be a character vector or NULL" =
       is.character(lv) || is.null(lv)
@@ -56,32 +57,36 @@ scaling <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
       is.logical(include.msgs)
   )
   stopifnot(
-    "Unknown `call` or `call` currently not supported" =
-      call %in% c("lavaan", "sem", "cfa")
+    "Argument `lav_fun` must be a character string" =
+      is.character(lav_fun)
+  )
+  stopifnot(
+    "Unknown `lav_fun` or `lav_fun` currently not supported" =
+      lav_fun %in% c("lavaan", "sem", "cfa")
   )
   UseMethod("scaling")
 }
 
 #' @export
-scaling.semid <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
+scaling.semid <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL, 
                           return.type = c("object", "logical"), ...) {
   print.semid(x)
-  return(scaling.data.frame(x$partable, call = call, include.msgs = include.msgs, lv = lv, return.type = return.type))
+  return(scaling.data.frame(x$partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @rdname scaling
 #' @export
-scaling.lavaan <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+scaling.lavaan <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                            return.type = c("object", "logical"), ...) {
   dotdotdot <- list(...)
   if (length(dotdotdot) > 0) {
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
   }
-  call.orig <- get_lavaan_call(x)
-  if (call.orig != call) {
+  lav_fun.orig <- get_lavaan_cmd(x)
+  if (lav_fun.orig != lav_fun) {
     warning(
-      paste0("The fitted lavaan object was created with ", format_lavaan_call(call.orig),
-             ", but you specified `call = '", call,
+      paste0("The fitted lavaan object was created with ", format_lavaan_fun(lav_fun.orig),
+             ", but you specified `lav_fun = '", lav_fun,
              "'`. This may lead to unexpected results.")
     )
   }
@@ -89,23 +94,23 @@ scaling.lavaan <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     x@ParTable,
     stringsAsFactors = FALSE
   )
-  return(scaling.data.frame(partable, call = call, include.msgs = include.msgs, lv = lv, return.type = return.type))
+  return(scaling.data.frame(partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @export
-scaling.character <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+scaling.character <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                               return.type = c("object", "logical"), ...) {
   dotdotdot <- list(...)
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
-    warning("Only `model.type='sem'` is currently supported")
+    warning("Only `model.type = 'sem'` is currently supported")
   }
   if (isTRUE(dotdotdot$debug)) {
     dotdotdot[["debug"]] <- NULL
     warning("Ignoring `debug`")
   }
   if (is.null(dotdotdot$auto)) {
-    dotdotdot$auto <- (call != "lavaan")
+    dotdotdot$auto <- (lav_fun != "lavaan")
   }
   args <- c(
     list(
@@ -117,11 +122,11 @@ scaling.character <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     dotdotdot
   )
   partable <- do.call(lavaan::lavaanify, args)
-  return(scaling.data.frame(partable, call = call, include.msgs = include.msgs, lv = lv, return.type = return.type))
+  return(scaling.data.frame(partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @export
-scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+scaling.data.frame <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                                return.type = c("object", "logical"), ...) {
   return.type <- match.arg(return.type) 
   if (!(is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx))) {
@@ -255,7 +260,7 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     out <- list(
       Scaling = scaling.tables,
       partable = x,
-      call = call,
+      lav_fun = lav_fun,
       print.options = list(
         include.msgs = include.msgs
       )
@@ -266,16 +271,16 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
 }
 
 #' @export
-scaling.default <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+scaling.default <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                             return.type = c("table", "logical"), ...) {
   stop("Unknown object type. Please supply a model string, lavaan parameter table, or fitted model object.")
 }
 
 
 #' @export
-scaling.semid2 <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+scaling.semid2 <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                            return.type = c("object", "logical"), ...) {
   print.semid2(x)
   cat("\n")
-  scaling(x$partable, call = call, include.msgs = include.msgs, lv = lv, return.type = return.type)
+  scaling(x$partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type)
 }

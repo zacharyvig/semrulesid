@@ -20,10 +20,10 @@
 #' Messages are identified by a number, and corresponding message numbers are listed
 #' in the "Messages" column of the table.
 #'
-#' \code{call} takes character values "lavaan", "sem", or "cfa", specifying which
+#' \code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying which
 #' \code{lavaan} function the user intends to call (and thus which defaults should)
 #' be used) when fitting the model in the case a model string is supplied. Supplying
-#' a parameter table or fitted model object ignores the \code{call} argument since
+#' a parameter table or fitted model object ignores the \code{lav_fun} argument since
 #' defaults will have already been implemented.
 #' 
 #' \code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
@@ -36,7 +36,7 @@
 #' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
 #'        does not pass or is not applicable, along with any other helpful information.
 #'        Default: \code{TRUE}.
-#' @param call A character string specifying the call you intend to use to fit
+#' @param lav_fun A character string specifying the lavaan function you intend to use to fit
 #'        the model. This will ensure the correct model defaults are specified. Options
 #'        currently include "lavaan", "sem", or "cfa". If a parameter table for fit
 #'        object are supplied, this argument is ignored. Default: "sem".
@@ -55,20 +55,24 @@
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
  #'              L3 ~ L2 '
-#' id(my_model, include.msgs = TRUE, call = "sem", 
+#' id(my_model, include.msgs = TRUE, lav_fun = "sem", 
 #'    meanstructure = FALSE)
-#' id2(my_model, include.msgs = TRUE, call = "sem",
+#' id2(my_model, include.msgs = TRUE, lav_fun = "sem",
 #'    meanstructure = FALSE)
 #' @name id
 #' @export
-id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   stopifnot(
     "Argument `include.msgs` must be a logical" =
       is.logical(include.msgs)
   )
   stopifnot(
-    "Unknown `call` or `call` currently not supported" =
-      call %in% c("lavaan", "sem", "cfa")
+    "Argument `lav_fun` must be a character string" =
+      is.character(lav_fun)
+  )
+  stopifnot(
+    "Unknown `lav_fun` or `lav_fun` currently not supported" =
+      lav_fun %in% c("lavaan", "sem", "cfa")
   )
   stopifnot(
     "Argument `twostep` must be a logical" =
@@ -78,22 +82,22 @@ id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
 }
 
 #' @export
-id.semscale <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id.semscale <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   print(x)
-  return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
+  return(id.data.frame(x$partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...))
 }
 
 #' @export
-id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id.lavaan <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
   if (length(dotdotdot) > 0) {
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
   }
-  call.orig <- get_lavaan_call(x)
-  if (call.orig != call) {
+  lav_fun.orig <- get_lavaan_cmd(x)
+  if (lav_fun.orig != lav_fun) {
     warning(
-      paste0("The fitted lavaan object was created with ", format_lavaan_call(call.orig),
-             ", but you specified `call = '", call,
+      paste0("The fitted lavaan object was created with ", format_lavaan_fun(lav_fun.orig),
+             ", but you specified `lav_fun = '", lav_fun,
              "'`. This may lead to unexpected results.")
     )
   }
@@ -101,11 +105,11 @@ id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...
     x@ParTable,
     stringsAsFactors = FALSE
   )
-  return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
+  return(id.data.frame(partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...))
 }
 
 #' @export
-id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id.character <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
   if (grepl("\\.inp$", x, ignore.case = TRUE)) {
     stop("This looks like an Mplus input file. Did you mean to use `id_mplus()` instead?")
@@ -119,7 +123,7 @@ id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, 
     warning("Ignoring `debug`")
   }
   if (is.null(dotdotdot$auto)) {
-    dotdotdot$auto <- (call != "lavaan")
+    dotdotdot$auto <- (lav_fun != "lavaan")
   }
   args <- c(
     list(
@@ -131,11 +135,11 @@ id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, 
     dotdotdot
   )
   partable <- do.call(lavaan::lavaanify, args)
-  return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
+  return(id.data.frame(partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...))
 }
 
 #' @export
-id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id.data.frame <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   if (is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
     partable <- x
   } else {
@@ -144,8 +148,8 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
 
   # STEP 1 - Classify model
   model.type <- classify_model(partable) # errors are handled in this function
-  if (call == "cfa" && model.type != "cfa") {
-      warning("`sem()` or `lavaan()` may be more appropriate calls for this type of model")
+  if (lav_fun == "cfa" && model.type != "cfa") {
+      warning("`sem()` or `lavaan()` may be more appropriate functions for this type of model")
   }
 
   if (twostep) {
@@ -161,7 +165,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
       id.cfa = id(partable.cfa),
       id.reg = id(partable.reg),
       partable = partable,
-      call = call,
+      lav_fun = lav_fun,
       print.options = list(
         include.msgs = include.msgs
       )
@@ -189,7 +193,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
     model.type = model.type,
     Rules = rules,
     partable = partable,
-    call = call,
+    lav_fun = lav_fun,
     print.options = list(
       include.msgs = include.msgs
     )
@@ -202,14 +206,14 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
 }
 
 #' @export
-id.default <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id.default <- function(x, include.msgs = TRUE, lav_fun = "sem", ...) {
   stop("Unknown model format. Please supply a model string, lavaan parameter table, or fitted model object.")
 }
 
 #' @rdname id
 #' @export
-id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
-  id(x, include.msgs = include.msgs, call = call, twostep = TRUE, ...)
+id2 <- function(x, include.msgs = TRUE, lav_fun = "sem", ...) {
+  id(x, include.msgs = include.msgs, lav_fun = lav_fun, twostep = TRUE, ...)
 }
 
 #' Evaluate identification rules for an Mplus model
@@ -230,15 +234,16 @@ id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #'               L3 BY x7 x8 x9;
 #'               L2 ON L1;
 #'               L3 ON L2; '
-#' id_mplus(my_model, include.msgs = TRUE, call = "sem", 
+#' @examples
+#' id_mplus(my_model, include.msgs = TRUE, lav_fun = "sem", 
 #'    meanstructure = FALSE)
 #' 
 #' @export
-id_mplus <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+id_mplus <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   if (grepl("\\.inp$", x, ignore.case = TRUE)) {
     lav <- lavaan::lav_mplus_lavaan(x)
   } else {
     lav <- lavaan::lav_mplus_syntax_model(x)
   }
-  id(lav, include.msgs = include.msgs, call = call, twostep = twostep, ...)
+  id(lav, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...)
 }

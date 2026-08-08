@@ -4,7 +4,7 @@
 \alias{id_mplus}
 \title{Evaluate identification rules for an Mplus model}
 \usage{
-id_mplus(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
+id_mplus(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
 }
 \arguments{
 \item{x}{A character string model in Mplus syntax, or a path to an Mplus input file.}
@@ -13,7 +13,7 @@ id_mplus(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 does not pass or is not applicable, along with any other helpful information.
 Default: \code{TRUE}.}
 
-\item{call}{A character string specifying the call you intend to use to fit
+\item{lav_fun}{A character string specifying the lavaan function you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
 currently include "lavaan", "sem", or "cfa". If a parameter table for fit
 object are supplied, this argument is ignored. Default: "sem".}
@@ -40,7 +40,7 @@ my_model <- ' L1 BY x1 x2 x3;
               L3 BY x7 x8 x9;
               L2 ON L1;
               L3 ON L2; '
-id_mplus(my_model, include.msgs = TRUE, call = "sem", 
+id_mplus(my_model, include.msgs = TRUE, lav_fun = "sem", 
    meanstructure = FALSE)
 
 }

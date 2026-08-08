@@ -10,7 +10,7 @@
   step.names = c("Measurement Model", "Latent Variable/Structural Model"),
   step.titles = c("Step 1", "Step 2"),
   print.version = TRUE,
-  print.call = TRUE
+  print.lav_fun = TRUE
 )
 }
 \arguments{
@@ -25,7 +25,7 @@
 \item{print.version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print.call}{Logical. If \code{TRUE}, the function call is printed in a
+\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{
