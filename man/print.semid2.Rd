@@ -7,10 +7,10 @@
 \method{print}{semid2}(
   x,
   ...,
-  step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-  step.titles = c("Step 1", "Step 2"),
-  print.version = TRUE,
-  print.lav_fun = TRUE
+  step_names = c("Measurement Model", "Latent Variable/Structural Model"),
+  step_titles = c("Step 1", "Step 2"),
+  print_version = TRUE,
+  print_lav_fun = TRUE
 )
 }
 \arguments{
@@ -18,14 +18,14 @@
 
 \item{...}{Arguments to be passed to print.semid.}
 
-\item{step.names}{Character. The names of each step/block.}
+\item{step_names}{Character. The names of each step/block.}
 
-\item{step.titles}{Character. The labels to be given to each step.}
+\item{step_titles}{Character. The labels to be given to each step.}
 
-\item{print.version}{Logical. If \code{TRUE}, the version of the package is
+\item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{

@@ -9,10 +9,12 @@ check_recursion(partable, start)
 \arguments{
 \item{partable}{A lavaan parameter table}
 
-\item{start}{A character vector of variable names from which to start the algorithm.}
+\item{start}{A character vector of variable names from which to start the
+algorithm.}
 }
 \value{
-A logical value indicating whether the model is recursive (TRUE) or not (FALSE).
+A logical value indicating whether the model is recursive (TRUE) or
+not (FALSE).
 }
 \description{
 Check recursion using Depth-First Search algorithm

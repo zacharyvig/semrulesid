@@ -1,7 +1,9 @@
 #' Check recursion using Depth-First Search algorithm
 #' @param partable A lavaan parameter table
-#' @param start A character vector of variable names from which to start the algorithm.
-#' @return A logical value indicating whether the model is recursive (TRUE) or not (FALSE).
+#' @param start A character vector of variable names from which to start the
+#'              algorithm.
+#' @return A logical value indicating whether the model is recursive (TRUE) or
+#' not (FALSE).
 #' @keywords internal
 check_recursion <- function(partable, start) {
   # regressions
@@ -48,14 +50,15 @@ sem_to_cfa <- function(partable) {
   partable$op[lv.regs] <- "~~"
   type <- classify_model(partable)
   if (type != "cfa") {
-    stop("`sem_to_cfa()` failed. This is an internal error. Please report this issue to the package maintainer.")
+    stop(gettext("sem_to_cfa() failed. This is an internal error. Please report this issue to the package maintainer."))
   }
-  return(partable)
+  partable
 }
 
 #' Convert a SEM into a Simultaneous Equations Model for the two-step rule
 #' @param partable A lavaan parameter table
-#' @return A lavaan parameter table that has been converted to a simultaneous equations model.
+#' @return A lavaan parameter table that has been converted to a simultaneous
+#' equations model.
 #' @noRd
 sem_to_reg <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
@@ -74,24 +77,24 @@ sem_to_reg <- function(partable) {
   partable$op[partable$op == "<~"] <- "~"
   type <- classify_model(partable)
   if (type != "reg") {
-    stop("`sem_to_reg()` failed. This is an internal error. Please report this issue to the package maintainer.")
+    stop(gettext("sem_to_reg() failed. This is an internal error. Please report this issue to the package maintainer."))
   }
-  return(partable)
+  partable
 }
 
 #' Gather identification rules as a list
 #'
-#' The `semidentify` package stores identification rule functions internally. This
-#' function makes them available to the user as a list.
+#' The `semidentify` package stores identification rule functions internally.
+#' This function makes them available to the user as a list.
 #'
 #' @param rule A string specifying the name of the rule as it's defined
 #'        in the package. Use "*" to get all rules (or all rules of the defined
 #'        model type). Partial matches are acceptable.
 #' @param model_type A string specifying the model sub-type from which to get
-#'        rules. Sub-types include "reg" (simultaneous equations models/regression
-#'        models) and "cfa" (confirmatory factor analysis models). Use "sem" to get
-#'        rules that apply to all structural equation models. Use "*" to get all rules
-#'        in the package.
+#'        rules. Sub-types include "reg" (simultaneous equations
+#'        models/regression models) and "cfa" (confirmatory factor analysis
+#'        models). Use "sem" to get rules that apply to all structural equation
+#'        models. Use "*" to get all rules in the package.
 #'
 #' @return A list object with the rule function(s) specified by the user.
 #'
@@ -129,7 +132,7 @@ get_rules <- function(rule = "*", model_type = "*") {
   }
 }
 
-#' internal function for extracting rule function names
+# internal function for extracting rule function names
 #' @noRd
 get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
   model_type <- match.arg(model_type)
@@ -143,44 +146,43 @@ get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
   grep(prefix, objs, value = TRUE)
 }
 
-#' internal function for building rule output lists
+# internal function for building rule output lists
 #' @noRd
-build_rule_out <- function(rule, pass, msgs = NA_character_, cond = c("N", "S", "NS", NA_character_)) {
+build_rule_out <- function(rule, pass, msgs = NA_character_,
+                           cond = c("N", "S", "NS", NA_character_)) {
   cond <- match.arg(cond)
   msgs <- if (isTRUE(pass) || any(!is.na(msgs))) msgs else NA_character_
-  out <- list(
+  list(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }
 
-#' internal function to get certain variables from a lavaan parameter table
+# internal function to get certain variables from a lavaan parameter table
 #' @noRd
 get_partable_vars <- function(partable, vars, var_names = NA) {
   lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # tally variables assuming one block
   out <- lapply(vars, function(var) {
-    out <- vnames[[var]][[1]]
-    return(out)
+    vnames[[var]][[1]]
   })
   if (!all(is.na(var_names))) {
     names(out) <- var_names
   } else {
     names(out) <- vars
   }
-  return(out)
+  out
 }
 
-#' Internal function for adding messages to rule output
+# internal function for adding messages to rule output
 #' @noRd
 add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
   if (is.na(msgs)) msgs <- c()
   stopifnot(length(new_msgs) == length(levels))
-  level.labels <- c(
+  level_labels <- c(
     "1" = "Info",
     "2" = "Reason",
     "3" = "WARNING"
@@ -189,28 +191,35 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
   new_msgs <- ifelse(
     is.na(levels),
     new_msgs,
-    sprintf("[%s] %s", level.labels[as.character(levels)], new_msgs)
+    sprintf("[%s] %s", level_labels[as.character(levels)], new_msgs)
   )
   out <- c(msgs[!is.na(msgs)], new_msgs)
-  return(out)
+  out
 }
 
-#' More advanced version of lavaan::lav_partable_npar() that accounts for equality constraints
+# More advanced version of lavaan::lav_partable_npar() that
+# accounts for equality constraints
 #' @noRd
 get_ntheta <- function(partable) {
+  # select rows with free parameters
   free_rows <- partable$free > 0
+  # extract user-supplied labels (matching ones indicate equality constraints)
   keys <- partable$label[free_rows]
-  keys[is.na(keys) | keys == ""] <- partable$plabel[free_rows][is.na(keys) | keys == ""]
+  # select internal labels for remaining parameters
+  na_key_plabels <- partable$plabel[free_rows][is.na(keys) | keys == ""]
+  # fill in missing keys with internal labels
+  keys[is.na(keys) | keys == ""] <- na_key_plabels
+  # count unique keys only--user supplied equalities are not double-counted
   length(unique(keys))
 }
 
-#' Wrapper for lavaan::lav_partable_ndat() in case it ever needs to be modified
+# wrapper for lavaan::lav_partable_ndat() in case it ever needs to be modified
 #' @noRd
 get_ndata <- function(partable) {
   lavaan::lav_partable_ndat(partable)
 }
 
-#' Function for ordering rules in id() output
+# internal function for ordering rules in id() output
 #' @noRd
 order_rules <- function(rule_names) {
   # preferred order is to start with ntheta, scaling, and all sem rules
@@ -223,5 +232,11 @@ order_rules <- function(rule_names) {
     setdiff(sem_rules, c(ntheta_rule, scaling_rule)),
     setdiff(rule_names, sem_rules)
   )
-  return(rule_names_ord)
+  rule_names_ord
+}
+
+# internal function for checking if an object is a lavaan parameter table
+#' @noRd
+is_lavaan_partable <- function(x) {
+   is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)
 }

@@ -13,13 +13,13 @@ test_that("scaling returns logical and object outputs", {
   logical_out <- scaling(
     make_partable(test_models$sem_scaling_pass),
     lv = "L1",
-    return.type = "logical",
+    return_type = "logical",
     lav_fun = NA
   )
   object_out <- scaling(
     make_partable(test_models$sem_scaling_pass),
     lv = "L1",
-    return.type = "object",
+    return_type = "object",
     lav_fun = NA
   )
 
@@ -27,28 +27,28 @@ test_that("scaling returns logical and object outputs", {
   expect_s3_class(object_out, "semscale")
   expect_true(object_out$Scaling[[1]]$scaled)
   expect_identical(object_out$Scaling[[1]]$lv, "L1")
-  expect_false(object_out$Scaling[[1]]$mean.structure)
+  expect_false(object_out$Scaling[[1]]$mean_structure)
 })
 
 test_that("scaling printing shows mean structure and the revised messages", {
   pass_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_scaling_pass), lv = "L1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )
   mean_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_scaling_mean_pass), lv = "f1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )
   fail_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_scaling_fail), lv = "L1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )
@@ -73,21 +73,21 @@ test_that("scaling printing handles edge cases", {
   two_scaling_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_two_scaling_ind), lv = "L1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )
   zero_loading_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_zero_loading), lv = "L1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )
   negative_loading_out <- capture.output(
     print(
       scaling(make_partable(test_models$sem_negative_loading), lv = "L1", lav_fun = NA),
-      include.msgs = TRUE,
+      print_msgs = TRUE,
       window = 120
     )
   )

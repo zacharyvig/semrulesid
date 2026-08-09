@@ -8,12 +8,12 @@
 #' \describe{
 #'  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
 #'  endogenous variable. Sufficient but not necessary.}
-#'  \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e.,
-#'  is recursive) and there are no correlated errors ("fully" recursive).
+#'  \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e., is
+#'  recursive) and there are no correlated errors ("fully" recursive).
 #'  Sufficient but not necessary.}
 #'  \item{Recursive with Correlated Errors Rule}{The model has no feedback loops
-#'  (i.e., is recursive) but can have correlated errors as long as the errors are
-#'  not for terms between which exists a direct structural/directional path.
+#'  (i.e., is recursive) but can have correlated errors as long as the errors
+#'  are not for terms between which exists a direct structural/directional path.
 #'  Sufficient but not necessary.}
 #' }
 #'
@@ -62,13 +62,12 @@ rule_reg_null_byy <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
-  return(out)
 }
 
 # Fully Recursive model rule
@@ -114,13 +113,12 @@ rule_reg_fully_recursive <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
-  return(out)
 }
 
 # Recursive model with correlated errors rule
@@ -172,11 +170,10 @@ rule_reg_recursive_corr_err <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
-  return(out)
 }

@@ -1,38 +1,42 @@
 #' Check if latent variables are correctly scaled
 #'
-#' This function checks whether latent variables in the model are scaled,
-#' which is a necessary condition for model identification. A latent variable is
-#' scaled if it has a fixed loading on a scaling indicator or the latent variable
-#' has a fixed variance. When mean structure is present, the scaling indicator must
-#' also have a fixed intercept or the latent variable must also have a fixed mean.
-#' If any latent variable is not scaled, the model is not identified.
+#' This function checks whether latent variables in the model are scaled, which
+#' is a necessary condition for model identification. A latent variable is
+#' scaled if it has a fixed loading on a scaling indicator or the latent
+#' variable has a fixed variance. When mean structure is present, the scaling
+#' indicator must also have a fixed intercept or the latent variable must also
+#' have a fixed mean. If any latent variable is not scaled, the model is not
+#' identified.
 #'
 #' @param x \code{lavaan} model syntax, a \code{lavaan} parameter table or a
 #'        \code{semidentify} ID object.
-#' @param lav_fun A character string specifying the function you intend to use to fit
-#'        the model. This will ensure the correct model defaults are specified. Options
-#'        currently include "lavaan", "sem", or "cfa". If a parameter table or fitted model
-#'        object are supplied, this argument is ignored.
-#' @param include.msgs Logical. If \code{TRUE} the output will print why a 
-#'        latent variable is not scaled when applicable and the method or methods
-#'        by which it is scaled when it is scaled. If \code{FALSE}, the output will
-#'        only print whether the latent variable is scaled or not and a few other
-#'        descriptives.
+#' @param lav_fun A character string specifying the function you intend to use
+#'        to fit the model. This will ensure the correct model defaults are
+#'        specified. Options currently include "lavaan", "sem", or "cfa". If a
+#'        parameter table or fitted model object are supplied, this argument is
+#'        ignored.
+#' @param print_msgs Logical. If \code{TRUE} the output will print why a latent
+#'        variable is not scaled when applicable and the method or methods by
+#'        which it is scaled when it is scaled. If \code{FALSE}, the output will
+#'        only print whether the latent variable is scaled or not and a few
+#'        other descriptives.
 #' @param lv An optional character vector of the specific latent variables you
-#'        would like to check. Otherwise, all latent variables are extracted from the
-#'        parameter table
-#' @param return.type A character string specifying the type of output. Options
-#'        include "logical" (a logical vector specifying whether each latent variable is
-#'        correctly scaled) or "object" (an object with additional information about the
-#'        scaling of each latent variable). The latter is of type \code{semscale} and
-#'        has a custom print method for additional diagnosis of identification issues.
+#'        would like to check. Otherwise, all latent variables are extracted
+#'        from the parameter table
+#' @param return_type A character string specifying the type of output. Options
+#'        include "logical" (a logical vector specifying whether each latent
+#'        variable is correctly scaled) or "object" (an object with additional
+#'        information about the scaling of each latent variable). The latter is
+#'        of type \code{semscale} and has a custom print method for additional
+#'        diagnosis of identification issues.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
-#'        \code{lavaan}. See \link[lavaan]{lavaanify} for more information. These are
-#'        only used when a model string is supplied. Otherwise, they are ignored.
+#'        \code{lavaan}. See \link[lavaan]{lavaanify} for more information.
+#'        These are only used when a model string is supplied. Otherwise, they
+#'        are ignored.
 #'
-#' @return An object of class \code{semscale} with all scaling information
-#' (if \code{return.type = "object"}), or a logical vector (if \code{return.type = "logical"})
-#' indicating whether each latent variable is correctly scaled.
+#' @return An object of class \code{semscale} with all scaling information (if
+#' \code{return_type = "object"}), or a logical vector (if \code{return_type =
+#' "logical"}) indicating whether each latent variable is correctly scaled.
 #'
 #' @export
 #' @name scaling
@@ -42,128 +46,102 @@
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
 #'               L3 ~ L2 '
-#' scaling(my_model, include.msgs = TRUE, lav_fun = "sem",
+#' scaling(my_model, print_msgs = TRUE, lav_fun = "sem",
 #'         meanstructure = FALSE)
 #'
-scaling <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                    return.type = c("object", "logical"), ...) {
-  match.arg(return.type)
-  stopifnot(
-    "Argument `lv` must be a character vector or NULL" =
-      is.character(lv) || is.null(lv)
-  )
-  stopifnot(
-    "Argument `include.msgs` must be a logical" =
-      is.logical(include.msgs)
-  )
-  stopifnot(
-    "Argument `lav_fun` must be a character string" =
-      is.character(lav_fun) || is.na(lav_fun)
-  )
-  stopifnot(
-    "Unknown `lav_fun` or `lav_fun` currently not supported" =
-      is.na(lav_fun) || lav_fun %in% c("lavaan", "sem", "cfa")
-  )
-  if (!is.na(lav_fun) && is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
-    warning("`lav_fun` is ignored when a parameter table is supplied")
+scaling <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                    return_type = c("object", "logical"), ...) {
+  return_type <- match.arg(return_type)
+  if (!is.character(lv) && !is.null(lv)) {
+    stop(gettext("lv= must be a character vector or NULL"))
   }
+  if (!is.logical(print_msgs) || length(print_msgs) != 1) {
+    stop(gettext("print_msgs= must be a logical"))
+  }
+  if (!is.character(return_type) || length(return_type) != 1 ||
+  !(return_type %in% c("object", "logical"))) {
+    stop(
+      gettext("return_type= must be a character string and one of 'object' or 'logical'")
+    )
+  }
+  lav_fun <- validate_lav_fun(lav_fun)
+  lav_fun <- validate_lav_fun(lav_fun)
   UseMethod("scaling")
 }
 
 #' @export
-scaling.semid <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL, 
-                          return.type = c("object", "logical"), ...) {
+scaling.semid <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL, 
+                          return_type = c("object", "logical"), ...) {
   print.semid(x)
-  return(scaling.data.frame(x$partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
+  scaling.data.frame(
+    x = x$partable,
+    lav_fun = lav_fun,
+    print_msgs = print_msgs,
+    lv = lv,
+    return_type = return_type,
+    ...
+  )
 }
 
 #' @rdname scaling
 #' @export
-scaling.lavaan <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                           return.type = c("object", "logical"), ...) {
-  dotdotdot <- list(...)
-  if (length(dotdotdot) > 0) {
-    warning("Additional arguments are ignored when a fitted lavaan object is supplied")
-  }
-  lav_fun.orig <- get_lavaan_cmd(x)
-  if (!is.na(lav_fun) && lav_fun.orig != lav_fun) {
-    warning(
-      paste0("The fitted lavaan object was created with ", format_lavaan_fun(lav_fun.orig),
-             ", but you specified `lav_fun = '", lav_fun,
-             "'`. This may lead to unexpected results.")
-    )
-  }
-  partable <- as.data.frame(
-    x@ParTable,
-    stringsAsFactors = FALSE
+scaling.lavaan <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                           return_type = c("object", "logical"), ...) {
+  out <- lavaan_obj_to_partable(x, lav_fun = lav_fun, ...)
+  scaling.data.frame(
+    x = out$partable,
+    lav_fun = out$lav_fun,
+    print_msgs = print_msgs,
+    lv = lv,
+    return_type = return_type,
+    ...
   )
-  return(scaling.data.frame(partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @export
-scaling.character <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                              return.type = c("object", "logical"), ...) {
-  dotdotdot <- list(...)
-  if (isTRUE(dotdotdot$model_type == "efa")) {
-    dotdotdot[["model_type"]] <- NULL
-    warning("Only `model_type = 'sem'` is currently supported")
-  }
-  if (isTRUE(dotdotdot$debug)) {
-    dotdotdot[["debug"]] <- NULL
-    warning("Ignoring `debug`")
-  }
-  if (is.na(lav_fun)) {
-    warning("`lav_fun` is NA. Defaulting to `lav_fun = 'sem'`")
-    lav_fun <- "sem"
-  }
-  if (is.null(dotdotdot$auto)) {
-    dotdotdot$auto <- (lav_fun != "lavaan")
-  }
-  args <- c(
-    list(
-      model = x,
-      warn = TRUE,
-      debug = FALSE,
-      model.type = "sem"
-    ),
-    dotdotdot
+scaling.character <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                              return_type = c("object", "logical"), ...) {
+  out <- lavaan_syntax_to_partable(x, lav_fun = lav_fun, ...)
+  scaling.data.frame(
+    x = out$partable,
+    lav_fun = out$lav_fun,
+    print_msgs = print_msgs,
+    lv = lv,
+    return_type = return_type,
+    ...
   )
-  partable <- do.call(lavaan::lavaanify, args)
-  id.model.type <- classify_model(partable) # errors are handled in this function
-  if (lav_fun == "cfa" && id.model.type != "cfa") {
-    warning("`sem()` or `lavaan()` may be more appropriate functions for this type of model")
-  }
-  return(scaling.data.frame(partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @export
-scaling.data.frame <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                               return.type = c("object", "logical"), ...) {
-  return.type <- match.arg(return.type) 
-  if (!(is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx))) {
-    stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
+scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                               return_type = c("object", "logical"), ...) {
+  return_type <- match.arg(return_type)
+  if (is_lavaan_partable(x)) {
+  partable <- x
+  } else {
+    stop(gettext("Unknown input type."))
   }
-  
+
   if (is.null(lv)) {
     # retrieve attributes and variable names
-    vars <- get_partable_vars(x, "lv")
+    vars <- get_partable_vars(partable, "lv")
     lv <- vars$lv
   }
   if (length(lv) == 0) {
-    stop("Scaling only applies to models with latent variables")
+    stop(gettext("Scaling only applies to models with latent variables."))
   }
 
-  if (return.type == "object") {
-    scaling.table <- list(
+  if (return_type == "object") {
+    scaling_table <- list(
       lv = NA_character_,
       scaled = NA,
-      n.indicators = NA_integer_,
-      scaling.indicator = NA_character_,
-      mean.structure = NA,
-      fail.reason = NA_character_,
-      scaling.method = NA_character_
+      n_indicators = NA_integer_,
+      scaling_indicator = NA_character_,
+      mean_structure = NA,
+      fail_reason = NA_character_,
+      scaling_method = NA_character_
     )
-    scaling.tables <- replicate(length(lv), scaling.table, simplify = FALSE)
+    scaling_tables <- replicate(length(lv), scaling_table, simplify = FALSE)
   } else {
     out <- vector(length = length(lv))
     names(out) <- lv
@@ -171,14 +149,14 @@ scaling.data.frame <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NUL
 
   for (i in seq_along(lv)) {
     var <- lv[i]
-    if (return.type == "object") {
-      scaling.tables[[i]]$lv <- var
+    if (return_type == "object") {
+      scaling_tables[[i]]$lv <- var
     }
 
-    mean.structure <- any(with(x, lhs == var & op == "~1"))
+    mean_structure <- any(with(x, lhs == var & op == "~1"))
 
-    scale.ind.idx <- with(
-      x,
+    scale_ind_idx <- with(
+      partable,
       lhs == var &
         op == "=~" &
         free == 0 &
@@ -186,17 +164,21 @@ scaling.data.frame <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NUL
         !is.na(ustart) &
         ustart != 0
     )
-    has.scale.ind <- any(scale.ind.idx)
-    scale.ind <- if (has.scale.ind) with(x, rhs[scale.ind.idx]) else character(0)
+    has_scale_ind <- any(scale_ind_idx)
+    scale.ind <- if (has_scale_ind) {
+      with(partable, rhs[scale_ind_idx])
+    } else {
+      character(0)
+    }
 
-    scale.ind.intercept.fixed <- if (has.scale.ind && mean.structure) {
-      any(with(x, lhs %in% scale.ind & op == "~1" & free == 0))
+    scale_ind_intercept_fixed <- if (has_scale_ind && mean_structure) {
+      any(with(partable, lhs %in% scale.ind & op == "~1" & free == 0))
     } else {
       TRUE
     }
-    latent.var.fixed <- any(
+    latent_variance_fixed <- any(
       with(
-        x,
+        partable,
         lhs == var &
           rhs == var &
           op == "~~" &
@@ -205,93 +187,105 @@ scaling.data.frame <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NUL
           ustart > 0
       )
     )
-    latent.mean.fixed <- if (mean.structure) {
-      any(with(x, lhs == var & op == "~1" & free == 0))
+    latent_mean_fixed <- if (mean_structure) {
+      any(with(partable, lhs == var & op == "~1" & free == 0))
     } else {
       TRUE
     }
 
-    units.assigned <- has.scale.ind || latent.var.fixed
-    origin.assigned <- if (mean.structure) latent.mean.fixed || (has.scale.ind && scale.ind.intercept.fixed) else TRUE
-    scaled <- units.assigned && origin.assigned
-    if (return.type == "logical") {
+    units_assigned <- has_scale_ind || latent_variance_fixed
+    origin_assigned <- if (mean_structure) {
+      latent_mean_fixed || (has_scale_ind && scale_ind_intercept_fixed)
+      } else {
+        TRUE
+      }
+    scaled <- units_assigned && origin_assigned
+    if (return_type == "logical") {
       out[var] <- scaled
       next
     }
 
-    scaling.tables[[i]]$mean.structure <- mean.structure
-    scaling.tables[[i]]$scaled <- scaled
-    scaling.tables[[i]]$n.indicators <- sum(with(x, lhs == var & op == "=~" & rhs != var))
-    if (has.scale.ind) {
-      scaling.tables[[i]]$scaling.indicator <- scale.ind
+    # populate scaling table
+    scaling_tables[[i]]$mean_structure <- mean_structure
+    scaling_tables[[i]]$scaled <- scaled
+    indicator_rows <- with(partable, lhs == var & op == "=~" & rhs != var)
+    scaling_tables[[i]]$n_indicators <- sum(indicator_rows)
+    if (has_scale_ind) {
+      scaling_tables[[i]]$scaling_indicator <- scale.ind
     }
 
     if (scaled) {
-      scaling.method <- c(
-        if (has.scale.ind) "scaling indicator",
-        if (latent.var.fixed) "fixed latent-variable variance",
-        if (mean.structure && has.scale.ind && scale.ind.intercept.fixed) {
+      scaling_method <- c(
+        if (has_scale_ind) "scaling indicator",
+        if (latent_variance_fixed) "fixed latent-variable variance",
+        if (mean_structure && has_scale_ind && scale_ind_intercept_fixed) {
           "fixed scaling-indicator intercept"
         },
-        if (mean.structure && latent.mean.fixed) "fixed latent-variable mean"
+        if (mean_structure && latent_mean_fixed) "fixed latent-variable mean"
       )
-      scaling.method <- scaling.method[nzchar(scaling.method)]
-      scaling.method <- paste(scaling.method, collapse = ", ")
+      scaling_method <- scaling_method[nzchar(scaling_method)]
+      scaling_method <- paste(scaling_method, collapse = ", ")
 
-      # Capitalize only the first character
-      scaling.method <- paste0(
-        toupper(substr(scaling.method, 1, 1)),
-        substr(scaling.method, 2, nchar(scaling.method))
+      # capitalize only the first character
+      scaling_method <- paste0(
+        toupper(substr(scaling_method, 1, 1)),
+        substr(scaling_method, 2, nchar(scaling_method))
       )
-      scaling.tables[[i]]$scaling.method <- scaling.method
+      scaling_tables[[i]]$scaling_method <- scaling_method
     } else {
-      fail.reason <- c(
-        if (!units.assigned) {
+      fail_reason <- c(
+        if (!units_assigned) {
           "neither scaling indicator nor fixed latent variance"
         },
-        if (mean.structure && !origin.assigned) {
+        if (mean_structure && !origin_assigned) {
           "neither fixed scaling indicator intercept nor fixed latent variable mean"
         }
       )
-      fail.reason <- fail.reason[nzchar(fail.reason)]
-      fail.reason <- paste(fail.reason, collapse = ", and ")
+      fail_reason <- fail_reason[nzchar(fail_reason)]
+      fail_reason <- paste(fail_reason, collapse = ", and ")
       # capitalize first character
-      fail.reason <- paste0(
-        toupper(substr(fail.reason, 1, 1)),
-        substr(fail.reason, 2, nchar(fail.reason))
+      fail_reason <- paste0(
+        toupper(substr(fail_reason, 1, 1)),
+        substr(fail_reason, 2, nchar(fail_reason))
       )
-      scaling.tables[[i]]$fail.reason <- fail.reason
+      scaling_tables[[i]]$fail_reason <- fail_reason
     }
 
   }
 
-  if (return.type == "logical") {
-    return(out)
+  if (return_type == "logical") {
+    out
   } else {
     out <- list(
-      Scaling = scaling.tables,
-      partable = x,
+      Scaling = scaling_tables,
+      partable = partable,
       lav_fun = lav_fun,
-      print.options = list(
-        include.msgs = include.msgs
+      print_options = list(
+        print_msgs = print_msgs
       )
     )
     class(out) <- c("semscale")
-    return(out)
+    out
   }
 }
 
 #' @export
-scaling.default <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                            return.type = c("table", "logical"), ...) {
-  stop("Unknown object type. Please supply a model string, lavaan parameter table, or fitted model object.")
+scaling.default <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                            return_type = c("table", "logical"), ...) {
+  stop(gettext("Unknown input type."))
 }
 
 
 #' @export
-scaling.semid2 <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
-                           return.type = c("object", "logical"), ...) {
+scaling.semid2 <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
+                           return_type = c("object", "logical"), ...) {
   print.semid2(x)
   cat("\n")
-  scaling(x$partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type)
+  scaling(
+    x = x$partable,
+    lav_fun = lav_fun,
+    print_msgs = print_msgs,
+    lv = lv,
+    return_type = return_type
+  )
 }

@@ -13,4 +13,5 @@
   )
 }
 
-utils::globalVariables(c("op", "free", "lhs", "rhs")) # for compatibility with columns in lavaan parameter tables
+# for compatibility with columns in lavaan parameter tables
+utils::globalVariables(c("op", "free", "lhs", "rhs"))

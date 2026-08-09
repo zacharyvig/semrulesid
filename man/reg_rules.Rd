@@ -26,12 +26,12 @@ multiple outcomes
 \describe{
  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
  endogenous variable. Sufficient but not necessary.}
- \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e.,
- is recursive) and there are no correlated errors ("fully" recursive).
+ \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e., is
+ recursive) and there are no correlated errors ("fully" recursive).
  Sufficient but not necessary.}
  \item{Recursive with Correlated Errors Rule}{The model has no feedback loops
- (i.e., is recursive) but can have correlated errors as long as the errors are
- not for terms between which exists a direct structural/directional path.
+ (i.e., is recursive) but can have correlated errors as long as the errors
+ are not for terms between which exists a direct structural/directional path.
  Sufficient but not necessary.}
 }
 }

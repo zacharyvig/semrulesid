@@ -4,26 +4,29 @@
 \alias{id_mplus}
 \title{Evaluate identification rules for an Mplus model}
 \usage{
-id_mplus(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
+id_mplus(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
 }
 \arguments{
 \item{x}{A character string model in Mplus syntax, or a path to an Mplus input file.}
 
-\item{include.msgs}{Logical. If \code{TRUE}, the output will include why a rule 
-does not pass or is not applicable, along with any other helpful information.
-Default: \code{TRUE}.}
+\item{print_msgs}{Logical. If \code{TRUE}, the output will include why a rule
+does not pass or is not applicable, along with any other helpful
+information. Default: \code{TRUE}.}
 
-\item{lav_fun}{A character string specifying the lavaan function you intend to use to fit
-the model. This will ensure the correct model defaults are specified. Options
-currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-object are supplied, this argument is ignored. Default: "sem".}
+\item{lav_fun}{A character string specifying the lavaan function you intend
+to use to fit the model. This will ensure the correct model defaults
+are specified. Options currently include "lavaan", "sem", or "cfa". If
+a parameter table for fit object are supplied, this argument is
+ignored. Default: "sem".}
 
-\item{twostep}{A logical indicating whether to use the two-step identification rule
-instead of the usual one-step. See details. Default: \code{FALSE}.}
+\item{twostep}{A logical indicating whether to use the two-step
+identification rule instead of the usual one-step. See details.
+Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
-\code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
-tables or fitted model objects are supplied, these arguments are ignored.}
+\code{lavaan}. See \link[lavaan]{lavaanify} for more information. If
+parameter tables or fitted model objects are supplied, these arguments
+are ignored.}
 }
 \value{
 An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}).
@@ -40,7 +43,7 @@ my_model <- ' L1 BY x1 x2 x3;
               L3 BY x7 x8 x9;
               L2 ON L1;
               L3 ON L2; '
-id_mplus(my_model, include.msgs = TRUE, lav_fun = "sem", 
+id_mplus(my_model, print_msgs = TRUE, lav_fun = "sem",
    meanstructure = FALSE)
 
 }

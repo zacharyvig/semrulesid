@@ -1,29 +1,29 @@
 #' Rules for confirmatory factor analysis models
-#' 
+#'
 #' Confirmatory Factor Analysis (CFA) models are models with latent variables
 #' but no structural paths between latent variables. CFA rules assume each 
 #' latent variable is correctly scaled (see \link[semidentify]{scaling}).
-#' 
+#'
 #' \describe{
-#'  \item{Two Indicator Rule}{In a model with more than one latent variable, each
-#'  latent variable can have just two indicators if each indicator loads on exactly
-#'  one variable, none of the errors of the indicators are correlated, and each
-#'  latent variable correlates with at least one other latent variable. Sufficient
-#'  but not necessary, unless higher-order factors are present in which case
-#'  sufficiency cannot be established.}
-#'  \item{Three Indicator Rule}{In a model with one or more latent variables, each
-#'  latent variable can have just three indicators if each indicator loads on exactly
-#'  one variable and none of the errors of the indicators are correlated. Sufficient
-#'  but not necessary, unless higher-order factors are present in which case
-#'  sufficiency cannot be established.}
+#'  \item{Two Indicator Rule}{In a model with more than one latent variable,
+#'  each latent variable can have just two indicators if each indicator loads on
+#'  exactly one variable, none of the errors of the indicators are correlated,
+#'  and each latent variable correlates with at least one other latent variable.
+#'  Sufficient but not necessary, unless higher-order factors are present in
+#'  which case sufficiency cannot be established.}
+#'  \item{Three Indicator Rule}{In a model with one or more latent variables,
+#'  each latent variable can have just three indicators if each indicator loads
+#'  on exactly one variable and none of the errors of the indicators are
+#'  correlated. Sufficient but not necessary, unless higher-order factors are
+#'  present in which case sufficiency cannot be established.}
 #' }
-#' 
+#'
 #' @name cfa_rules
 #' @param partable A \code{lavaan} parameter table
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @references Kenny, D. A. (1979). Correlation and causality.
-#' 
+#'
 #' @keywords internal
 NULL
 
@@ -114,13 +114,12 @@ rule_cfa_three_indicator <- function(partable) {
       levels = "2"
     )
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }
 
 
@@ -166,7 +165,7 @@ rule_cfa_two_indicator <- function(partable) {
     return(length(out))
   }, simplify = TRUE)
   # build output
-  if(any(nov.ind[nlv.ind == 0] < 2)) {
+  if (any(nov.ind[nlv.ind == 0] < 2)) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
@@ -232,11 +231,10 @@ rule_cfa_two_indicator <- function(partable) {
       levels = "2"
     )
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }

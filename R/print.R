@@ -2,53 +2,53 @@
 #'
 #' @param x A \code{semid} object
 #' @param names Character vector. The names of the columns of the main table
-#' @param include.msgs Logical. If \code{TRUE} messages are printed
-#' @param msgs.name Character. The name of the messages index column
-#' @param msgs.sec Character. The name of the messages section
-#' @param msgs.levels Named character vector. The names of the message levels,
+#' @param print_msgs Logical. If \code{TRUE} messages are printed
+#' @param msgs_name Character. The name of the messages index column
+#' @param msgs_sec Character. The name of the messages section
+#' @param msgs_levels Named character vector. The names of the message levels,
 #'        e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".
 #' @param window Integer. The width of the output window
-#' @param pos.lab Character. The label for positive cells, e.g., "Yes".
-#' @param neg.lab Character. The label for negative cells, e.g., "No".
-#' @param na.lab Character. The label for NA/blank cells.
-#' @param print.version Logical. If \code{TRUE}, the version of the package is
+#' @param pos_lab Character. The label for positive cells, e.g., "Yes".
+#' @param neg_lab Character. The label for negative cells, e.g., "No".
+#' @param na_lab Character. The label for NA/blank cells.
+#' @param print_version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
-#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
+#' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @param ... Not currently used.
 #'
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
-                        include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
-                        msgs.levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
-                        window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-",
-                        print.version = TRUE, print.lav_fun = TRUE) {
-  if (!is.null(x$print.options$include.msgs)) {
-    if (x$print.options$include.msgs != include.msgs) {
-      warning("The `include.msgs` argument in the print method is overriding the `include.msgs` argument in the semid object.")
+                        print_msgs = TRUE, msgs_name = "Message", msgs_sec = "Messages",
+                        msgs_levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
+                        window = 56L, pos_lab = "Yes", neg_lab = "No", na_lab = "-",
+                        print_version = TRUE, print_lav_fun = TRUE) {
+  if (!is.null(x$print_options$print_msgs)) {
+    if (x$print_options$print_msgs != print_msgs) {
+      warning("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
     } else {
-      include.msgs <- x$print.options$include.msgs
+      print_msgs <- x$print_options$print_msgs
     }
   }
-  if (include.msgs) {
-    names[5] <- msgs.name
+  if (print_msgs) {
+    names[5] <- msgs_name
     msgs <- character(0) # global message vector
   }
   cols_width <- sum(nchar(names[-1])) + length(names[-1])
   names[1] <- format(names[1], width = window - cols_width)
   midx <- 0L # global message index
 
-  if (print.version) {
+  if (print_version) {
     version <- utils::packageVersion("semidentify")
     cat(sprintf("semidentify %s Rule Check\n", version))
   }
 
-  if (print.lav_fun) {
+  if (print_lav_fun) {
     lav_fun <- x$lav_fun
     cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
 
-  if (print.version || print.lav_fun) {
+  if (print_version || print_lav_fun) {
     cat("\n")
   }
 
@@ -66,25 +66,25 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
       format(
         switch(
           as.character(this_rule$pass),
-          "NA" = na.lab,
-          "TRUE" = pos.lab,
-          "FALSE" = neg.lab),
+          "NA" = na_lab,
+          "TRUE" = pos_lab,
+          "FALSE" = neg_lab),
         width = nchar(names[2]), justify = "right"
       ),
       # necessary and/or sufficient?
       switch(
         as.character(this_rule$cond),
-        "N" = c(pos.lab, neg.lab),
-        "S" = c(neg.lab, pos.lab),
-        "NS" = c(pos.lab, pos.lab),
-        "NA" = rep(na.lab, 2)
+        "N" = c(pos_lab, neg_lab),
+        "S" = c(neg_lab, pos_lab),
+        "NS" = c(pos_lab, pos_lab),
+        "NA" = rep(na_lab, 2)
       )
     )
     row[3:4] <- c(
       format(row[3], width = nchar(names[3]), justify = "right"),
       format(row[4], width = nchar(names[4]), justify = "right")
     )
-    if (include.msgs && all(!is.na(this_rule$msgs))) {
+    if (print_msgs && all(!is.na(this_rule$msgs))) {
       idx.m0 <- c()
       for (msg in this_rule$msgs) {
         if (msg %in% msgs) {
@@ -107,8 +107,8 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
     }
   }
 
-  if (include.msgs && midx > 0) {
-    cat("---", msgs.sec, sep = "\n")
+  if (print_msgs && midx > 0) {
+    cat("---", msgs_sec, sep = "\n")
     for (i in 1:midx) {
       # make space for index, e.g., "1 - ", "2 - ", etc.
       m0 <- strwrap(msgs[i], width = window, initial = sprintf("%s - ", i),
@@ -128,34 +128,34 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 #' 
 #' @param x A \code{semid2} object
 #' @param ... Arguments to be passed to print.semid.
-#' @param step.titles Character. The labels to be given to each step.
-#' @param step.names Character. The names of each step/block.
-#' @param print.version Logical. If \code{TRUE}, the version of the package is
+#' @param step_titles Character. The labels to be given to each step.
+#' @param step_names Character. The names of each step/block.
+#' @param print_version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
-#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
+#' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @export
-print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-                         step.titles = c("Step 1", "Step 2"), print.version = TRUE, print.lav_fun = TRUE) {
+print.semid2 <- function(x, ..., step_names = c("Measurement Model", "Latent Variable/Structural Model"),
+                         step_titles = c("Step 1", "Step 2"), print_version = TRUE, print_lav_fun = TRUE) {
 
   # preliminary printing
-  if (print.version) {
+  if (print_version) {
     version <- utils::packageVersion("semidentify")
   cat(sprintf("semidentify %s Two-Step Rule Check\n", version))
   }
-  if (print.lav_fun) {
+  if (print_lav_fun) {
     lav_fun <- x$lav_fun
     cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
-  if (print.version || print.lav_fun) {
+  if (print_version || print_lav_fun) {
     cat("\n")
   }
   
-  cat(paste0(step.titles[1], ": ", step.names[1], "\n\n"))
-  print(x$id.cfa, print.version = FALSE, ..., print.lav_fun = FALSE)
+  cat(paste0(step_titles[1], ": ", step_names[1], "\n\n"))
+  print(x$id_cfa, print_version = FALSE, ..., print_lav_fun = FALSE)
 
-  cat(paste0(step.titles[2], ": ", step.names[2], "\n\n"))
-  print(x$id.reg, print.version = FALSE, ..., print.lav_fun = FALSE)
+  cat(paste0(step_titles[2], ": ", step_names[2], "\n\n"))
+  print(x$id_reg, print_version = FALSE, ..., print_lav_fun = FALSE)
 
   return(invisible(x))
 
@@ -166,57 +166,57 @@ print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Var
 #' 
 #' @param x A \code{semscale} object, i.e., a list of scaling information
 #'        for each latent variable in the model.
-#' @param include.msgs Logical. If \code{TRUE} messages are printed.
+#' @param print_msgs Logical. If \code{TRUE} messages are printed.
 #' @param window Integer. The width of the output window.
-#' @param sep.spaces Integer. The number of spaces to separate the row names from the row values.
-#' @param indent.lens Integer vector of length 3. The number of spaces to indent
+#' @param sep_spaces Integer. The number of spaces to separate the row names from the row values.
+#' @param ind_lens Integer vector of length 3. The number of spaces to indent
 #'        for each level of information (currently there are three supported).
-#' @param na.lab Character. The label for NA/blank cells.
-#' @param pos.lab Character. The label for positive cells, e.g., "Yes".
-#' @param neg.lab Character. The label for negative cells, e.g., "No".
-#' @param empty.lab Character. The label for empty cells, e.g., "None".
+#' @param na_lab Character. The label for NA/blank cells.
+#' @param pos_lab Character. The label for positive cells, e.g., "Yes".
+#' @param neg_lab Character. The label for negative cells, e.g., "No".
+#' @param empty_lab Character. The label for empty cells, e.g., "None".
 #' @param bullet Character. The bullet symbol for messages, e.g., "-".
-#' @param print.version Logical. If \code{TRUE}, the version of the package is printed in a
+#' @param print_version Logical. If \code{TRUE}, the version of the package is printed in a
 #'        header before the rules output.
-#' @param print.lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
+#' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
 #'        header before the rules output.
 #' @param ... Not currently used.
 #'
 #' @export
-print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces = 3L,
-                           indent.lens = c(0L, 2L, 2L), na.lab = "na",
-                           pos.lab = "Yes", neg.lab = "No", empty.lab = "None",
-                           bullet = "-", print.version = TRUE, print.lav_fun = TRUE) {
+print.semscale <- function(x, ..., print_msgs = TRUE, window = 56L, sep_spaces = 3L,
+                           ind_lens = c(0L, 2L, 2L), na_lab = "na",
+                           pos_lab = "Yes", neg_lab = "No", empty_lab = "None",
+                           bullet = "-", print_version = TRUE, print_lav_fun = TRUE) {
                             
-  stopifnot("`indent.lens` must be three equal or ascending integers" =
-    length(indent.lens) == 3 && indent.lens[2] >= indent.lens[1] && indent.lens[3] >= indent.lens[2])
+  stopifnot("`ind_lens` must be three equal or ascending integers" =
+    length(ind_lens) == 3 && ind_lens[2] >= ind_lens[1] && ind_lens[3] >= ind_lens[2])
 
   if (length(x) ==1 && is.na(x)) {
     cat("No latent variables in the model\n")
     return(invisible(x))
   }
-  if (!is.null(x$print.options$include.msgs)) {
-    if (x$print.options$include.msgs != include.msgs) {
-      warning("The `include.msgs` argument in the print method is overriding the `include.msgs` argument in the semid object.")
+  if (!is.null(x$print_options$print_msgs)) {
+    if (x$print_options$print_msgs != print_msgs) {
+      warning("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
     } else {
-      include.msgs <- x$print.options$include.msgs
+      print_msgs <- x$print_options$print_msgs
     }
   }
 
   scaling <- x$Scaling
-  indents <- strrep(" ", indent.lens)
+  indents <- strrep(" ", ind_lens)
 
-  if (print.version) {
+  if (print_version) {
     version <- utils::packageVersion("semidentify")
     cat(sprintf("semidentify %s Latent Variable Scaling\n", version))
   }
 
-  if (print.lav_fun) {
+  if (print_lav_fun) {
     lav_fun <- x$lav_fun
     cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
   }
 
-  if (print.version || print.lav_fun) {
+  if (print_version || print_lav_fun) {
     cat("\n")
   }
 
@@ -226,24 +226,24 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces
 
     is.scaled <- switch(
       as.character(scaling[[i]]$scaled),
-      "NA" = na.lab,
-      "TRUE" = pos.lab,
-      "FALSE" = neg.lab
+      "NA" = na_lab,
+      "TRUE" = pos_lab,
+      "FALSE" = neg_lab
     )
     
-    n.ind <- as.integer(scaling[[i]]$n.indicators)
-    scale.ind <- scaling[[i]]$scaling.indicator
+    n.ind <- as.integer(scaling[[i]]$n_indicators)
+    scale.ind <- scaling[[i]]$scaling_indicator
     # in case of multiple scaling indicators
     scale.ind <- if (all(is.na(scale.ind))) {
-      empty.lab
+      empty_lab
     } else {
       paste(scale.ind, collapse = ", ")
     }
-    mean.structure <- switch(
-      as.character(scaling[[i]]$mean.structure),
-      "NA" = na.lab,
-      "TRUE" = pos.lab,
-      "FALSE" = neg.lab
+    mean_structure <- switch(
+      as.character(scaling[[i]]$mean_structure),
+      "NA" = na_lab,
+      "TRUE" = pos_lab,
+      "FALSE" = neg_lab
     )
 
     row.names <- c(
@@ -253,9 +253,9 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces
       "Mean structure?"
     )
     row.names.nchar <- nchar(row.names)
-    row.values.nspaces <- max(row.names.nchar) - row.names.nchar + sep.spaces
+    row.values.nspaces <- max(row.names.nchar) - row.names.nchar + sep_spaces
     row.values.spaces <- strrep(" ", row.values.nspaces)
-    row.values <- c(is.scaled, n.ind, scale.ind, mean.structure)
+    row.values <- c(is.scaled, n.ind, scale.ind, mean_structure)
     row.values <- paste0(row.values.spaces, row.values)
 
     cat(sprintf("%s%s %s\n", indents[2], row.names[1], row.values[1]))
@@ -263,18 +263,18 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L, sep.spaces
     cat(sprintf("%s%s %s\n", indents[2], row.names[3], row.values[3]))
     cat(sprintf("%s%s %s\n\n", indents[2], row.names[4], row.values[4]))
 
-    if (include.msgs) {
+    if (print_msgs) {
       prefix <- paste0(bullet, " ")
       if (isTRUE(scaling[[i]]$scaled)) {
         # make space for index, e.g., "1 - ", "2 - ", etc.
         cat(sprintf("%sScaling method(s):\n", indents[2]))
-        msgs <- strwrap(scaling[[i]]$scaling.method, width = window,
+        msgs <- strwrap(scaling[[i]]$scaling_method, width = window,
                         initial = paste0(indents[3], prefix),
                         prefix = indents[3], exdent = nchar(prefix))
         cat(msgs, sep = "\n")
       } else {
         cat(sprintf("%sScaling error:\n", indents[2]))
-        cat(paste0(indents[3], prefix, scaling[[i]]$fail.reason))
+        cat(paste0(indents[3], prefix, scaling[[i]]$fail_reason))
       }
       cat("\n\n")
     }

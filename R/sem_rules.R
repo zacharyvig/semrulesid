@@ -1,22 +1,26 @@
 #' Rules for all structural equation models
-#' 
-#' Structural Equation Modles (SEM) refer to the general class of models consisting
-#' of structural/directional relations, latent variables, or both.
-#' 
+#'
+#' Structural Equation Modles (SEM) refer to the general class of models
+#' consisting of structural/directional relations, latent variables, or both.
+#'
 #' \describe{
-#'  \item{N_theta Rule}{The number of free parameters must be less than or equal to
-#'  the number of sample means, variances, and covariances. Necessary but not sufficient}
-#'  \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
-#'  must be correctly scaled (see \link[semidentify]{scaling}). Necessary but not sufficient.}
-#'  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent variables
-#'  must emit two paths, either to other latent variables or to observed variables. This
-#'  rule only applies to latent variables that have free variances and whose downstream
-#'  variables have free error/disturbance variance. Necessary but not sufficient.}
-#'  \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one or more
-#'  latent variables have a causal indicator, in addition to effect indicators. In such
-#'  a model with a single latent variable, there only need to be one (or more) causal
-#'  indicators as long as there are at least two effect indicators. In a model with multiple
-#'  latent variables, ...}
+#'  \item{N_theta Rule}{The number of free parameters must be less than or equal
+#'  to the number of sample means, variances, and covariances. Necessary but not
+#'  sufficient}
+#'  \item{Latent Scaling Rule}{In a model with latent variables, all latent
+#'  variables must be correctly scaled (see \link[semidentify]{scaling}).
+#'  Necessary but not sufficient.}
+#'  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent
+#'  variables must emit two paths, either to other latent variables or to
+#'  observed variables. This rule only applies to latent variables that have
+#'  free variances and whose downstream variables have free error/disturbance
+#'  variance. Necessary but not sufficient.}
+#'  \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one
+#'  or more latent variables have a causal indicator, in addition to effect
+#'  indicators. In such a model with a single latent variable, there only need
+#'  to be one (or more) causal indicators as long as there are at least two
+#'  effect indicators. This rule is not currently implemented for models with
+#'  multiple latent variables. Sufficient but not necessary.}
 #' }
 #' 
 #' @name sem_rules
@@ -25,7 +29,8 @@
 #' @references Bollen, K. A., Lilly, A. G., & Luo, L. (2024). Selecting scaling
 #' indicators in structural equation models (SEMs).
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#' @references Bollen & Davis (2009). Two Rules of Identification for Structural Equation Models.
+#' @references Bollen & Davis (2009). Two Rules of Identification for Structural
+#' Equation Models.
 #' @keywords internal
 NULL
 
@@ -49,13 +54,12 @@ rule_sem_ntheta <- function(partable) {
       levels = "3"
     )
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = "N"
   )
-  return(out)
 }
 
 # Latent Scaling rule
@@ -78,7 +82,7 @@ rule_sem_latent_scaling <- function(partable) {
     return(out)
   }
   # build output
-  scaled <- scaling(partable, lv = vars$lv, return.type = "logical", lav_fun = NA)
+  scaled <- scaling(partable, lv = vars$lv, return_type = "logical", lav_fun = NA)
   pass <- isTRUE(all(scaled))
   cond <- "N"
   if (!pass) {
@@ -90,13 +94,12 @@ rule_sem_latent_scaling <- function(partable) {
   } else {
     msgs <- NA_character_
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }
 
 # 2+ Emitted Paths rule
@@ -198,13 +201,12 @@ rule_sem_two_emitted_paths <- function(partable) {
     )
   }
   if (length(msgs) == 0) msgs <- NA_character_
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }
 
 # Exogenous X rule/MIMIC rules
@@ -270,11 +272,10 @@ rule_sem_exogenous_x <- function(partable) {
       levels = "1"
     )
   }
-  out <- build_rule_out(
+  build_rule_out(
     rule = rule,
     pass = pass,
     msgs = msgs,
     cond = cond
   )
-  return(out)
 }

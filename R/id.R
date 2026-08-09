@@ -1,58 +1,64 @@
 #' Evaluate common Structural Equation Model (SEM) identification rules
 #'
-#' This is the "workhorse" function of the \code{semidentify} package. The user supplies
-#' a model string in \code{lavaan} syntax (see \link[lavaan]{model.syntax} for more
-#' details) and the function prints an informative table to the console about the
-#' status of the model on a variety of common identification rules.
+#' This is the "workhorse" function of the \code{semidentify} package. The user
+#' supplies a model string in \code{lavaan} syntax (see
+#' \link[lavaan]{model.syntax} for more details) and the function prints an
+#' informative table to the console about the status of the model on a variety
+#' of common identification rules.
 #'
-#' The primary output of \code{id()} is a table printed to the console, where rows
-#' correspond to rules, and columns include "Pass" (did the rule pass?), "Necessary"
-#' (is the rule necessary for identification?), and "Sufficient" (is the rule
-#' sufficient for identification?). These columns can take values "Yes", "No",
-#' or be left blank in the case of NA values.
+#' The primary output of \code{id()} is a table printed to the console, where
+#' rows correspond to rules, and columns include "Pass" (did the rule pass?),
+#' "Necessary" (is the rule necessary for identification?), and "Sufficient" (is
+#' the rule sufficient for identification?). These columns can take values
+#' "Yes", "No", or be left blank in the case of NA values.
 #'
-#' If the user set the \code{include.msgs} argument to "TRUE" (which is the default),
-#' a column labeled "Messages" is appended to the table, and an output section called
-#' "Messages" is printed below the table. Messages include why a rule failed, why
-#' a rule is not applicable to the current model, or why the necessary/sufficient
-#' conditions may not apply as usual.
+#' If the user set the \code{print_msgs} argument to "TRUE" (which is the
+#' default), a column labeled "Messages" is appended to the table, and an output
+#' section called "Messages" is printed below the table. Messages include why a
+#' rule failed, why a rule is not applicable to the current model, or why the
+#' necessary/sufficient conditions may not apply as usual.
 #'
-#' Messages are identified by a number, and corresponding message numbers are listed
-#' in the "Messages" column of the table.
+#' Messages are identified by a number, and corresponding message numbers are
+#' listed in the "Messages" column of the table.
 #'
-#' \code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying which
-#' \code{lavaan} function the user intends to call (and thus which defaults should)
-#' be used) when fitting the model in the case a model string is supplied. Supplying
-#' a parameter table or fitted model object ignores the \code{lav_fun} argument since
-#' defaults will have already been implemented. In these cases, you can set
-#' \code{lav_fun = NA} to avoid warnings about the argument being ignored. For
-#' \code{id_mplus()}, \code{lav_fun} is only needed if the user supplies an Mplus model
-#' string due to how \code{lavaan::lav_mplus_syntax_model()} works. If an Mplus input
-#' file is supplied, \code{lav_fun} is ignored since \code{lavaan::lav_mplus_lavaan()}
+#' \code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying
+#' which \code{lavaan} function the user intends to call (and thus which
+#' defaults should) be used) when fitting the model in the case a model string
+#' is supplied. Supplying a parameter table or fitted model object ignores the
+#' \code{lav_fun} argument since defaults will have already been implemented. In
+#' these cases, you can set \code{lav_fun = NA} to avoid warnings about the
+#' argument being ignored. For \code{id_mplus()}, \code{lav_fun} is only needed
+#' if the user supplies an Mplus model string due to how
+#' \code{lavaan::lav_mplus_syntax_model()} works. If an Mplus input file is
+#' supplied, \code{lav_fun} is ignored since \code{lavaan::lav_mplus_lavaan()}
 #' always uses \code{sem()} defaults.
-#' 
-#' \code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
-#' set to \code{TRUE}. The two-step method parses an SEM into a CFA model and a latent
-#' variable/structural model, and evaluates the identification rules on each. If both
-#' parts are identified, the whole model is identified.
 #'
-#' @param x A character string model in \code{lavaan} syntax, a
-#'        \code{lavaan} parameter table, or a fitted \code{lavaan} object.
-#' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
-#'        does not pass or is not applicable, along with any other helpful information.
-#'        Default: \code{TRUE}.
-#' @param lav_fun A character string specifying the lavaan function you intend to use to fit
-#'        the model. This will ensure the correct model defaults are specified. Options
-#'        currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-#'        object are supplied, this argument is ignored. Default: "sem".
-#' @param twostep A logical indicating whether to use the two-step identification rule
-#'        instead of the usual one-step. See details. Default: \code{FALSE}.
+#' \code{id2} is a wrapper function for calling \code{id} with argument
+#' \code{twostep} set to \code{TRUE}. The two-step method parses an SEM into a
+#' CFA model and a latent variable/structural model, and evaluates the
+#' identification rules on each. If both parts are identified, the whole model
+#' is identified.
+#'
+#' @param x A character string model in \code{lavaan} syntax, a \code{lavaan}
+#'        parameter table, or a fitted \code{lavaan} object.
+#' @param print_msgs Logical. If \code{TRUE}, the output will include why a rule
+#'        does not pass or is not applicable, along with any other helpful
+#'        information. Default: \code{TRUE}.
+#' @param lav_fun A character string specifying the lavaan function you intend
+#'        to use to fit the model. This will ensure the correct model defaults
+#'        are specified. Options currently include "lavaan", "sem", or "cfa". If
+#'        a parameter table for fit object are supplied, this argument is
+#'        ignored. Default: "sem".
+#' @param twostep A logical indicating whether to use the two-step
+#'        identification rule instead of the usual one-step. See details.
+#'        Default: \code{FALSE}.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
-#'        \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
-#'        tables or fitted model objects are supplied, these arguments are ignored.
+#'        \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If
+#'        parameter tables or fitted model objects are supplied, these arguments
+#'        are ignored.
 #'
-#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
-#'         or \code{id2} is called. See details.)
+#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep =
+#'         TRUE} or \code{id2} is called. See details.)
 #'
 #' @examples
 #' my_model <- ' L1 =~ x1 + x2 + x3
@@ -60,139 +66,113 @@
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
  #'              L3 ~ L2 '
-#' id(my_model, include.msgs = TRUE, lav_fun = "sem", 
+#' id(my_model, print_msgs = TRUE, lav_fun = "sem",
 #'    meanstructure = FALSE)
-#' id2(my_model, include.msgs = TRUE, lav_fun = "sem",
+#' id2(my_model, print_msgs = TRUE, lav_fun = "sem",
 #'    meanstructure = FALSE)
 #' @name id
 #' @export
-id <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
-  stopifnot(
-    "Argument `include.msgs` must be a logical" =
-      length(include.msgs) == 1 && is.logical(include.msgs)
-  )
-  stopifnot(
-    "Argument `lav_fun` must be a character string" =
-      length(lav_fun) == 1 && (is.character(lav_fun) || is.na(lav_fun))
-  )
-  stopifnot(
-    "Unknown `lav_fun` or `lav_fun` currently not supported" =
-      is.na(lav_fun) || lav_fun %in% c("lavaan", "sem", "cfa")
-  )
-  stopifnot(
-    "Argument `twostep` must be a logical" =
-      length(twostep) == 1 && is.logical(twostep)
-  )
-  if (!is.na(lav_fun) && is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
-    warning("`lav_fun` is ignored when a parameter table is supplied")
+id <- function(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
+  lav_fun <- validate_lav_fun(lav_fun)
+  if (!is.logical(print_msgs) || length(print_msgs) != 1) {
+    stop(gettext("print_msgs= must be a logical"))
+  }
+  if (!is.logical(twostep) || length(twostep) != 1) {
+    stop(gettext("twostep= must be a logical"))
+  }
+  if (!is.na(lav_fun) && is_lavaan_partable(x)) {
+    warning(
+      gettext("lav_fun= is ignored when a parameter table is supplied.")
+    )
   }
   UseMethod("id")
 }
 
 #' @export
-id.semscale <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
+id.semscale <- function(x, print_msgs = TRUE, lav_fun = "sem",
+                        twostep = FALSE, ...) {
   print(x)
-  return(id.data.frame(x$partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...))
-}
-
-#' @export
-id.lavaan <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
-  dotdotdot <- list(...)
-  if (length(dotdotdot) > 0) {
-    warning("Additional arguments are ignored when a fitted lavaan object is supplied")
-  }
-  lav_fun.orig <- get_lavaan_cmd(x)
-  if (!is.na(lav_fun) && lav_fun.orig != lav_fun) {
-    warning(
-      paste0("The fitted lavaan object was created with ", format_lavaan_fun(lav_fun.orig),
-             ", but you specified `lav_fun = '", lav_fun,
-             "'`. This may lead to unexpected results.")
-    )
-  }
-  partable <- as.data.frame(
-    x@ParTable,
-    stringsAsFactors = FALSE
+  id.data.frame(
+    x = x$partable,
+    print_msgs = print_msgs,
+    lav_fun = lav_fun,
+    twostep = twostep,
+    ...
   )
-  return(id.data.frame(partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, id.model.type = NA, ...))
 }
 
 #' @export
-id.character <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
-  dotdotdot <- list(...)
-  if (grepl("\\.inp$", x, ignore.case = TRUE)) {
-    stop("This looks like an Mplus input file. Did you mean to use `id_mplus()` instead?")
-  }
-  if (isTRUE(dotdotdot$model_type == "efa")) {
-    dotdotdot[["model_type"]] <- NULL
-    warning("Only `model_type = 'sem'` is currently supported")
-  }
-  if (isTRUE(dotdotdot$debug)) {
-    dotdotdot[["debug"]] <- NULL
-    warning("Ignoring `debug`")
-  }
-  if (is.na(lav_fun)) {
-    warning("`lav_fun` is NA. Defaulting to `lav_fun = 'sem'`")
-    lav_fun <- "sem"
-  }
-  if (is.null(dotdotdot$auto)) {
-    dotdotdot$auto <- (lav_fun != "lavaan")
-  }
-  args <- c(
-    list(
-      model = x,
-      warn = TRUE,
-      debug = FALSE,
-      model_type = "sem"
-    ),
-    dotdotdot
+id.lavaan <- function(x, print_msgs = TRUE, lav_fun = "sem",
+                      twostep = FALSE, ...) {
+  out <- lavaan_obj_to_partable(x, lav_fun = lav_fun, ...)
+  id.data.frame(
+    x = out$partable,
+    print_msgs = print_msgs,
+    lav_fun = out$lav_fun,
+    twostep = twostep,
+    id_model_type = NA,
+    ...
   )
-  partable <- do.call(lavaan::lavaanify, args)
-  id.model.type <- classify_model(partable) # errors are handled in this function
-  if (lav_fun == "cfa" && id.model.type != "cfa") {
-    warning("`sem()` or `lavaan()` may be more appropriate functions for this type of model")
-  }
-  return(id.data.frame(partable, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, id.model.type = id.model.type, ...))
 }
 
 #' @export
-id.data.frame <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
+id.character <- function(x, print_msgs = TRUE, lav_fun = "sem",
+                         twostep = FALSE, ...) {
+  out <- lavaan_syntax_to_partable(x, lav_fun = lav_fun, ...)
+  id.data.frame(
+    x = out$partable,
+    print_msgs = print_msgs,
+    lav_fun = out$lav_fun,
+    twostep = twostep,
+    id_model_type = out$id_model_type,
+    ...
+  )
+}
+
+#' @export
+id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
+                          twostep = FALSE, ...) {
   dotdotdot <- list(...)
-  if (is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
+  if (is_lavaan_partable(x)) {
     partable <- x
   } else {
-    stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
+    stop(gettext("Unknown input type."))
   }
 
   # classify model
-  if (!is.null(dotdotdot$id.model.type)) {
-    id.model.type <- dotdotdot$id.model.type
-    dotdotdot$id.model.type <- NULL
+  if (!is.null(dotdotdot$id_model_type)) {
+    id_model_type <- dotdotdot$id_model_type
+    dotdotdot$id_model_type <- NULL
   } else {
-    id.model.type <- classify_model(partable) # errors are handled in this function
+    id_model_type <- classify_model(partable)
   }
 
   if (twostep) {
 
-    if (id.model.type != "sem") {
-      stop("The two-step identification rule is only applicable to full SEMs.")
+    if (id_model_type != "sem") {
+      stop(
+        gettext("The two-step identification rule is only applicable to full SEMs.")
+      )
     }
 
     vars <- get_partable_vars(partable, c("ov.cind"))
     if (length(vars$ov.cind) > 0) {
-      stop("The two-step identification rule is currently not supported for models with causal indicators.")
+      stop(
+        gettext("The two-step identification rule is currently not supported for models with causal indicators.")
+      )
     }
 
-    partable.cfa <- sem_to_cfa(partable)
-    partable.reg <- sem_to_reg(partable)
+    partable_cfa <- sem_to_cfa(partable)
+    partable_reg <- sem_to_reg(partable)
 
     out <- list(
-      id.model.type = id.model.type,
-      id.cfa = id(partable.cfa, include.msgs = include.msgs, lav_fun = lav_fun),
-      id.reg = id(partable.reg, include.msgs = include.msgs, lav_fun = lav_fun),
+      id_model_type = id_model_type,
+      id_cfa = id(partable_cfa, print_msgs = print_msgs, lav_fun = lav_fun),
+      id_reg = id(partable_reg, print_msgs = print_msgs, lav_fun = lav_fun),
       partable = partable,
       lav_fun = lav_fun,
-      print.options = list(
-        include.msgs = include.msgs
+      print_options = list(
+        print_msgs = print_msgs
       )
     )
 
@@ -215,30 +195,29 @@ id.data.frame <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FAL
   )
 
   out <- list( 
-    id.model.type = id.model.type,
+    id_model_type = id_model_type,
     Rules = rules,
     partable = partable,
     lav_fun = lav_fun,
-    print.options = list(
-      include.msgs = include.msgs
+    print_options = list(
+      print_msgs = print_msgs
     )
   )
 
   class(out) <- "semid"
-
-  return(out)
+  out
 
 }
 
 #' @export
-id.default <- function(x, include.msgs = TRUE, lav_fun = "sem", ...) {
-  stop("Unknown model format. Please supply a model string, lavaan parameter table, or fitted model object.")
+id.default <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
+  stop(gettext("Unknown input type."))
 }
 
 #' @rdname id
 #' @export
-id2 <- function(x, include.msgs = TRUE, lav_fun = "sem", ...) {
-  id(x, include.msgs = include.msgs, lav_fun = lav_fun, twostep = TRUE, ...)
+id2 <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
+  id(x, print_msgs = print_msgs, lav_fun = lav_fun, twostep = TRUE, ...)
 }
 
 #' Evaluate identification rules for an Mplus model
@@ -260,18 +239,21 @@ id2 <- function(x, include.msgs = TRUE, lav_fun = "sem", ...) {
 #'               L2 ON L1;
 #'               L3 ON L2; '
 #' @examples
-#' id_mplus(my_model, include.msgs = TRUE, lav_fun = "sem", 
+#' id_mplus(my_model, print_msgs = TRUE, lav_fun = "sem",
 #'    meanstructure = FALSE)
-#' 
+#'
 #' @export
-id_mplus <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
+id_mplus <- function(x, print_msgs = TRUE, lav_fun = "sem",
+                     twostep = FALSE, ...) {
   if (grepl("\\.inp$", x, ignore.case = TRUE)) {
     if (isFALSE(lav_fun == "sem")) {
-      warning("Ignoring `lav_fun`; `lavaan::lav_mplus_lavaan()` always uses `sem()` defaults.")
+      warning(gettextf(c("Ignoring lav_fun='%s'\n",
+        "lavaan::lav_mplus_lavaan() always uses sem() defaults."), lav_fun)
+      )
     }
     lav <- lavaan::lav_mplus_lavaan(x)
   } else {
     lav <- lavaan::lav_mplus_syntax_model(x)
   }
-  id(lav, include.msgs = include.msgs, lav_fun = lav_fun, twostep = twostep, ...)
+  id(lav, print_msgs = print_msgs, lav_fun = lav_fun, twostep = twostep, ...)
 }

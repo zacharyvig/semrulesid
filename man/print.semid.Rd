@@ -8,16 +8,16 @@
   x,
   ...,
   names = c("", "Pass", "Necessary", "Sufficient"),
-  include.msgs = TRUE,
-  msgs.name = "Message",
-  msgs.sec = "Messages",
-  msgs.levels = c(`1` = "Info", `2` = "Reason", `3` = "WARNING"),
+  print_msgs = TRUE,
+  msgs_name = "Message",
+  msgs_sec = "Messages",
+  msgs_levels = c(`1` = "Info", `2` = "Reason", `3` = "WARNING"),
   window = 56L,
-  pos.lab = "Yes",
-  neg.lab = "No",
-  na.lab = "-",
-  print.version = TRUE,
-  print.lav_fun = TRUE
+  pos_lab = "Yes",
+  neg_lab = "No",
+  na_lab = "-",
+  print_version = TRUE,
+  print_lav_fun = TRUE
 )
 }
 \arguments{
@@ -27,27 +27,27 @@
 
 \item{names}{Character vector. The names of the columns of the main table}
 
-\item{include.msgs}{Logical. If \code{TRUE} messages are printed}
+\item{print_msgs}{Logical. If \code{TRUE} messages are printed}
 
-\item{msgs.name}{Character. The name of the messages index column}
+\item{msgs_name}{Character. The name of the messages index column}
 
-\item{msgs.sec}{Character. The name of the messages section}
+\item{msgs_sec}{Character. The name of the messages section}
 
-\item{msgs.levels}{Named character vector. The names of the message levels,
+\item{msgs_levels}{Named character vector. The names of the message levels,
 e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 
 \item{window}{Integer. The width of the output window}
 
-\item{pos.lab}{Character. The label for positive cells, e.g., "Yes".}
+\item{pos_lab}{Character. The label for positive cells, e.g., "Yes".}
 
-\item{neg.lab}{Character. The label for negative cells, e.g., "No".}
+\item{neg_lab}{Character. The label for negative cells, e.g., "No".}
 
-\item{na.lab}{Character. The label for NA/blank cells.}
+\item{na_lab}{Character. The label for NA/blank cells.}
 
-\item{print.version}{Logical. If \code{TRUE}, the version of the package is
+\item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{

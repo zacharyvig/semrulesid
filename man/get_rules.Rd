@@ -12,17 +12,17 @@ in the package. Use "*" to get all rules (or all rules of the defined
 model type). Partial matches are acceptable.}
 
 \item{model_type}{A string specifying the model sub-type from which to get
-rules. Sub-types include "reg" (simultaneous equations models/regression
-models) and "cfa" (confirmatory factor analysis models). Use "sem" to get
-rules that apply to all structural equation models. Use "*" to get all rules
-in the package.}
+rules. Sub-types include "reg" (simultaneous equations
+models/regression models) and "cfa" (confirmatory factor analysis
+models). Use "sem" to get rules that apply to all structural equation
+models. Use "*" to get all rules in the package.}
 }
 \value{
 A list object with the rule function(s) specified by the user.
 }
 \description{
-The `semidentify` package stores identification rule functions internally. This
-function makes them available to the user as a list.
+The `semidentify` package stores identification rule functions internally.
+This function makes them available to the user as a list.
 }
 \examples{
 # Get all rules for a CFA model

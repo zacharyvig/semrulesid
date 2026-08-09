@@ -7,17 +7,17 @@
 \method{print}{semscale}(
   x,
   ...,
-  include.msgs = TRUE,
+  print_msgs = TRUE,
   window = 56L,
-  sep.spaces = 3L,
-  indent.lens = c(0L, 2L, 2L),
-  na.lab = "na",
-  pos.lab = "Yes",
-  neg.lab = "No",
-  empty.lab = "None",
+  sep_spaces = 3L,
+  ind_lens = c(0L, 2L, 2L),
+  na_lab = "na",
+  pos_lab = "Yes",
+  neg_lab = "No",
+  empty_lab = "None",
   bullet = "-",
-  print.version = TRUE,
-  print.lav_fun = TRUE
+  print_version = TRUE,
+  print_lav_fun = TRUE
 )
 }
 \arguments{
@@ -26,29 +26,29 @@ for each latent variable in the model.}
 
 \item{...}{Not currently used.}
 
-\item{include.msgs}{Logical. If \code{TRUE} messages are printed.}
+\item{print_msgs}{Logical. If \code{TRUE} messages are printed.}
 
 \item{window}{Integer. The width of the output window.}
 
-\item{sep.spaces}{Integer. The number of spaces to separate the row names from the row values.}
+\item{sep_spaces}{Integer. The number of spaces to separate the row names from the row values.}
 
-\item{indent.lens}{Integer vector of length 3. The number of spaces to indent
+\item{ind_lens}{Integer vector of length 3. The number of spaces to indent
 for each level of information (currently there are three supported).}
 
-\item{na.lab}{Character. The label for NA/blank cells.}
+\item{na_lab}{Character. The label for NA/blank cells.}
 
-\item{pos.lab}{Character. The label for positive cells, e.g., "Yes".}
+\item{pos_lab}{Character. The label for positive cells, e.g., "Yes".}
 
-\item{neg.lab}{Character. The label for negative cells, e.g., "No".}
+\item{neg_lab}{Character. The label for negative cells, e.g., "No".}
 
-\item{empty.lab}{Character. The label for empty cells, e.g., "None".}
+\item{empty_lab}{Character. The label for empty cells, e.g., "None".}
 
 \item{bullet}{Character. The bullet symbol for messages, e.g., "-".}
 
-\item{print.version}{Logical. If \code{TRUE}, the version of the package is printed in a
+\item{print_version}{Logical. If \code{TRUE}, the version of the package is printed in a
 header before the rules output.}
 
-\item{print.lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
 header before the rules output.}
 }
 \description{

@@ -2,34 +2,45 @@
 #'
 #' @keywords internal
 #'
-#' @section Purpose:
-#' `semidentify` allows the user to input a Structural Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/)
-#' (Rosseel, 2012) syntax and check it against a number of identification rules from the literature. Rules
-#' are specified as being necessary and/or sufficient and specific reasons are given when a rule is broken.
-#' Caution is given to the user in using the output of the package as the sole determinant of model identification
-#' -- instead, it should be used as a "quick check" for any outstanding issues with the model.
+#' @section Purpose: `semidentify` allows the user to input a Structural
+#' Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012)
+#' syntax and check it against a number of identification rules from the
+#' literature. Rules are specified as being necessary and/or sufficient and
+#' specific reasons are given when a rule is broken. Caution is given to the
+#' user in using the output of the package as the sole determinant of model
+#' identification -- instead, it should be used as a "quick check" for any
+#' outstanding issues with the model.
 #'
-#' @section Main functions:
-#' The `id()` function is the workhorse function of the package which evaluates a user-supplied model against
-#' a number of identification rules. Calling the function in-line on a model string will print a table to the console
-#' with the results of the rule checks. Assigning the output of `id()` to an object will save the results and can be
-#' printed later.
-#' 
-#' The `scaling()` function lets the user verify if each latent variable is scaled in a model with latent variables.
-#' The output includes whether the variable is scaled, the scaling indicator (if applicable), the method used to scale
-#' it (if applicable), whether the model has a mean structure, and the reason why it is not scaled (if applicable).
-#' 
-#' The `id2()` function uses the two-step rule for SEM identification in which (a) all structural paths are converted to
-#' covariances, making the model a confirmatory factor analysis (CFA) model, (b) the CFA model is checked for identification,
-#' (c) if the CFA is identified, the original SEM is converted into a simultaneous equations model (SEM) where all latent
-#' variables are treated as observed, and (d) the resulting model is checked for identification. If both the CFA and SEM are
-#' identified, the original SEM is identified. The `id2()` function prints the results of both steps to the console.
+#' @section Main functions: The `id()` function is the workhorse function of the
+#' package which evaluates a user-supplied model against a number of
+#' identification rules. Calling the function in-line on a model string will
+#' print a table to the console with the results of the rule checks. Assigning
+#' the output of `id()` to an object will save the results and can be printed
+#' later.
 #'
-#' @section Development notes:
-#' The core of the package was developed by Zach Vig, based on Ken Bollen's 'Elements of Structural Equation Models (SEMs)' (2026),
-#' with style inspiration from the `lavaan` package. Additionally, OpenAI large-language models (\url{https://openai.com}) were
-#' used to (a) edit functions and documentation for clarity, (b) implement the Depth-First Search algorithm for checking recursion,
-#' (c) help fix bugs, and (d) help write the test suite. 
+#' The `scaling()` function lets the user verify if each latent variable is
+#' scaled in a model with latent variables. The output includes whether the
+#' variable is scaled, the scaling indicator (if applicable), the method used to
+#' scale it (if applicable), whether the model has a mean structure, and the
+#' reason why it is not scaled (if applicable).
+#'
+#' The `id2()` function uses the two-step rule for SEM identification in which
+#' (a) all structural paths are converted to covariances, making the model a
+#' confirmatory factor analysis (CFA) model, (b) the CFA model is checked for
+#' identification, (c) if the CFA is identified, the original SEM is converted
+#' into a simultaneous equations model (SEM) where all latent variables are
+#' treated as observed, and (d) the resulting model is checked for
+#' identification. If both the CFA and SEM are identified, the original SEM is
+#' identified. The `id2()` function prints the results of both steps to the
+#' console.
+#'
+#' @section Development notes: The core of the package was developed by Zach
+#' Vig, based on Ken Bollen's 'Elements of Structural Equation Models (SEMs)'
+#' (2026), with style inspiration from the `lavaan` package. Additionally,
+#' OpenAI large-language models (\url{https://openai.com}) were used to (a) edit
+#' functions and documentation for clarity, (b) implement the Depth-First Search
+#' algorithm for checking recursion, (c) help fix bugs, and (d) help write the
+#' test suite.
 
 "_PACKAGE"
 

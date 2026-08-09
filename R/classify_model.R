@@ -1,13 +1,12 @@
 #' Classify a model using the parameter table for internal use
 #' @keywords internal
 classify_model <- function(partable = NULL) {
-  model_type <- NA
   # retrieve attributes and variable names
   lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # check for MLM
-  if (lavpta$nblocks > 1 | "~*~" %in% partable$op | "|" %in% partable$op) {
-    stop("This model type is not currently supported.")
+  if (lavpta$nblocks > 1 || "~*~" %in% partable$op || "|" %in% partable$op) {
+    stop(gettext("This model type is not currently supported."))
   }
   # tally variables
   nlv <- lapply(vnames$lv, length) # latent vars
@@ -16,7 +15,7 @@ classify_model <- function(partable = NULL) {
   nov.cind <- lapply(vnames$ov.cind, length) # causal indicators
   # check a list for counts greater than zero
   nonzero <- function(x) {
-    return(isTRUE(x > 0))
+    isTRUE(x > 0)
   }
   # classify model
   if (any(sapply(nlv, nonzero))) {
@@ -31,7 +30,7 @@ classify_model <- function(partable = NULL) {
     # no lvs but regressions present
     return("reg")
   } else {
-    stop("Cannot classify model. This is an internal error. Please report this issue to the package maintainer.")
+    stop(gettext("Cannot classify model. This is an internal error. Please report this issue to the package maintainer."))
   }
 }
 
@@ -41,13 +40,13 @@ classify_model <- function(partable = NULL) {
 #' @return The function/command used to fit the model
 get_lavaan_cmd <- function(obj) {
   if (!inherits(obj, "lavaan")) {
-    stop("`obj` must be a fitted lavaan object")
+    stop(gettextf("'%s' must be a fitted lavaan object", "obj"))
   }
   cmd <- obj@call$cmd
   if (is.null(cmd)) {
     cmd <- "lavaan"
   }
-  return(cmd)
+  cmd
 }
 
 #' Format a function call for printing for internal use
@@ -59,5 +58,5 @@ format_lavaan_fun <- function(fun) {
     return(NULL)
   }
   fun <- paste0("`lavaan::", fun, "()`")
-  return(fun)
+  fun
 }

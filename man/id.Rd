@@ -5,71 +5,77 @@
 \alias{id2}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(x, include.msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
+id(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...)
 
-id2(x, include.msgs = TRUE, lav_fun = "sem", ...)
+id2(x, print_msgs = TRUE, lav_fun = "sem", ...)
 }
 \arguments{
-\item{x}{A character string model in \code{lavaan} syntax, a
-\code{lavaan} parameter table, or a fitted \code{lavaan} object.}
+\item{x}{A character string model in \code{lavaan} syntax, a \code{lavaan}
+parameter table, or a fitted \code{lavaan} object.}
 
-\item{include.msgs}{Logical. If \code{TRUE}, the output will include why a rule 
-does not pass or is not applicable, along with any other helpful information.
-Default: \code{TRUE}.}
+\item{print_msgs}{Logical. If \code{TRUE}, the output will include why a rule
+does not pass or is not applicable, along with any other helpful
+information. Default: \code{TRUE}.}
 
-\item{lav_fun}{A character string specifying the lavaan function you intend to use to fit
-the model. This will ensure the correct model defaults are specified. Options
-currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-object are supplied, this argument is ignored. Default: "sem".}
+\item{lav_fun}{A character string specifying the lavaan function you intend
+to use to fit the model. This will ensure the correct model defaults
+are specified. Options currently include "lavaan", "sem", or "cfa". If
+a parameter table for fit object are supplied, this argument is
+ignored. Default: "sem".}
 
-\item{twostep}{A logical indicating whether to use the two-step identification rule
-instead of the usual one-step. See details. Default: \code{FALSE}.}
+\item{twostep}{A logical indicating whether to use the two-step
+identification rule instead of the usual one-step. See details.
+Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
-\code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
-tables or fitted model objects are supplied, these arguments are ignored.}
+\code{lavaan}. See \link[lavaan]{lavaanify} for more information. If
+parameter tables or fitted model objects are supplied, these arguments
+are ignored.}
 }
 \value{
-An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
-        or \code{id2} is called. See details.)
+An object of class \code{semid} or \code{semid2} (if \code{twostep =
+        TRUE} or \code{id2} is called. See details.)
 }
 \description{
-This is the "workhorse" function of the \code{semidentify} package. The user supplies
-a model string in \code{lavaan} syntax (see \link[lavaan]{model.syntax} for more
-details) and the function prints an informative table to the console about the
-status of the model on a variety of common identification rules.
+This is the "workhorse" function of the \code{semidentify} package. The user
+supplies a model string in \code{lavaan} syntax (see
+\link[lavaan]{model.syntax} for more details) and the function prints an
+informative table to the console about the status of the model on a variety
+of common identification rules.
 }
 \details{
-The primary output of \code{id()} is a table printed to the console, where rows
-correspond to rules, and columns include "Pass" (did the rule pass?), "Necessary"
-(is the rule necessary for identification?), and "Sufficient" (is the rule
-sufficient for identification?). These columns can take values "Yes", "No",
-or be left blank in the case of NA values.
+The primary output of \code{id()} is a table printed to the console, where
+rows correspond to rules, and columns include "Pass" (did the rule pass?),
+"Necessary" (is the rule necessary for identification?), and "Sufficient" (is
+the rule sufficient for identification?). These columns can take values
+"Yes", "No", or be left blank in the case of NA values.
 
-If the user set the \code{include.msgs} argument to "TRUE" (which is the default),
-a column labeled "Messages" is appended to the table, and an output section called
-"Messages" is printed below the table. Messages include why a rule failed, why
-a rule is not applicable to the current model, or why the necessary/sufficient
-conditions may not apply as usual.
+If the user set the \code{print_msgs} argument to "TRUE" (which is the
+default), a column labeled "Messages" is appended to the table, and an output
+section called "Messages" is printed below the table. Messages include why a
+rule failed, why a rule is not applicable to the current model, or why the
+necessary/sufficient conditions may not apply as usual.
 
-Messages are identified by a number, and corresponding message numbers are listed
-in the "Messages" column of the table.
+Messages are identified by a number, and corresponding message numbers are
+listed in the "Messages" column of the table.
 
-\code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying which
-\code{lavaan} function the user intends to call (and thus which defaults should)
-be used) when fitting the model in the case a model string is supplied. Supplying
-a parameter table or fitted model object ignores the \code{lav_fun} argument since
-defaults will have already been implemented. In these cases, you can set
-\code{lav_fun = NA} to avoid warnings about the argument being ignored. For
-\code{id_mplus()}, \code{lav_fun} is only needed if the user supplies an Mplus model
-string due to how \code{lavaan::lav_mplus_syntax_model()} works. If an Mplus input
-file is supplied, \code{lav_fun} is ignored since \code{lavaan::lav_mplus_lavaan()}
+\code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying
+which \code{lavaan} function the user intends to call (and thus which
+defaults should) be used) when fitting the model in the case a model string
+is supplied. Supplying a parameter table or fitted model object ignores the
+\code{lav_fun} argument since defaults will have already been implemented. In
+these cases, you can set \code{lav_fun = NA} to avoid warnings about the
+argument being ignored. For \code{id_mplus()}, \code{lav_fun} is only needed
+if the user supplies an Mplus model string due to how
+\code{lavaan::lav_mplus_syntax_model()} works. If an Mplus input file is
+supplied, \code{lav_fun} is ignored since \code{lavaan::lav_mplus_lavaan()}
 always uses \code{sem()} defaults.
 
-\code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
-set to \code{TRUE}. The two-step method parses an SEM into a CFA model and a latent
-variable/structural model, and evaluates the identification rules on each. If both
-parts are identified, the whole model is identified.
+\code{id2} is a wrapper function for calling \code{id} with argument
+\code{twostep} set to \code{TRUE}. The two-step method parses an SEM into a
+CFA model and a latent variable/structural model, and evaluates the
+identification rules on each. If both parts are identified, the whole model
+is identified.
 }
 \examples{
 my_model <- ' L1 =~ x1 + x2 + x3
@@ -77,8 +83,8 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
              L3 ~ L2 '
-id(my_model, include.msgs = TRUE, lav_fun = "sem", 
+id(my_model, print_msgs = TRUE, lav_fun = "sem",
    meanstructure = FALSE)
-id2(my_model, include.msgs = TRUE, lav_fun = "sem",
+id2(my_model, print_msgs = TRUE, lav_fun = "sem",
    meanstructure = FALSE)
 }

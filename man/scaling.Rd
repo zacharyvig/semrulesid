@@ -8,18 +8,18 @@
 scaling(
   x,
   lav_fun = "sem",
-  include.msgs = TRUE,
+  print_msgs = TRUE,
   lv = NULL,
-  return.type = c("object", "logical"),
+  return_type = c("object", "logical"),
   ...
 )
 
 \method{scaling}{lavaan}(
   x,
   lav_fun = "sem",
-  include.msgs = TRUE,
+  print_msgs = TRUE,
   lv = NULL,
-  return.type = c("object", "logical"),
+  return_type = c("object", "logical"),
   ...
 )
 }
@@ -27,43 +27,47 @@ scaling(
 \item{x}{\code{lavaan} model syntax, a \code{lavaan} parameter table or a
 \code{semidentify} ID object.}
 
-\item{lav_fun}{A character string specifying the function you intend to use to fit
-the model. This will ensure the correct model defaults are specified. Options
-currently include "lavaan", "sem", or "cfa". If a parameter table or fitted model
-object are supplied, this argument is ignored.}
+\item{lav_fun}{A character string specifying the function you intend to use
+to fit the model. This will ensure the correct model defaults are
+specified. Options currently include "lavaan", "sem", or "cfa". If a
+parameter table or fitted model object are supplied, this argument is
+ignored.}
 
-\item{include.msgs}{Logical. If \code{TRUE} the output will print why a 
-latent variable is not scaled when applicable and the method or methods
-by which it is scaled when it is scaled. If \code{FALSE}, the output will
-only print whether the latent variable is scaled or not and a few other
-descriptives.}
+\item{print_msgs}{Logical. If \code{TRUE} the output will print why a latent
+variable is not scaled when applicable and the method or methods by
+which it is scaled when it is scaled. If \code{FALSE}, the output will
+only print whether the latent variable is scaled or not and a few
+other descriptives.}
 
 \item{lv}{An optional character vector of the specific latent variables you
-would like to check. Otherwise, all latent variables are extracted from the
-parameter table}
+would like to check. Otherwise, all latent variables are extracted
+from the parameter table}
 
-\item{return.type}{A character string specifying the type of output. Options
-include "logical" (a logical vector specifying whether each latent variable is
-correctly scaled) or "object" (an object with additional information about the
-scaling of each latent variable). The latter is of type \code{semscale} and
-has a custom print method for additional diagnosis of identification issues.}
+\item{return_type}{A character string specifying the type of output. Options
+include "logical" (a logical vector specifying whether each latent
+variable is correctly scaled) or "object" (an object with additional
+information about the scaling of each latent variable). The latter is
+of type \code{semscale} and has a custom print method for additional
+diagnosis of identification issues.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
-\code{lavaan}. See \link[lavaan]{lavaanify} for more information. These are
-only used when a model string is supplied. Otherwise, they are ignored.}
+\code{lavaan}. See \link[lavaan]{lavaanify} for more information.
+These are only used when a model string is supplied. Otherwise, they
+are ignored.}
 }
 \value{
-An object of class \code{semscale} with all scaling information
-(if \code{return.type = "object"}), or a logical vector (if \code{return.type = "logical"})
-indicating whether each latent variable is correctly scaled.
+An object of class \code{semscale} with all scaling information (if
+\code{return_type = "object"}), or a logical vector (if \code{return_type =
+"logical"}) indicating whether each latent variable is correctly scaled.
 }
 \description{
-This function checks whether latent variables in the model are scaled,
-which is a necessary condition for model identification. A latent variable is
-scaled if it has a fixed loading on a scaling indicator or the latent variable
-has a fixed variance. When mean structure is present, the scaling indicator must
-also have a fixed intercept or the latent variable must also have a fixed mean.
-If any latent variable is not scaled, the model is not identified.
+This function checks whether latent variables in the model are scaled, which
+is a necessary condition for model identification. A latent variable is
+scaled if it has a fixed loading on a scaling indicator or the latent
+variable has a fixed variance. When mean structure is present, the scaling
+indicator must also have a fixed intercept or the latent variable must also
+have a fixed mean. If any latent variable is not scaled, the model is not
+identified.
 }
 \examples{
 my_model <- ' L1 =~ x1 + x2 + x3
@@ -71,7 +75,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L3 =~ x7 + x8 + x9
               L2 ~ L1
               L3 ~ L2 '
-scaling(my_model, include.msgs = TRUE, lav_fun = "sem",
+scaling(my_model, print_msgs = TRUE, lav_fun = "sem",
         meanstructure = FALSE)
 
 }
