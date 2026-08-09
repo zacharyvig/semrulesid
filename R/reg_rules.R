@@ -91,7 +91,7 @@ rule_reg_fully_recursive <- function(partable) {
     return(out)
   }
   # check recursion
-  recursive <- check_recursion(partable, x = vars$eqs.x)
+  recursive <- check_recursion(partable, start = vars$eqs.x)
   # check uncorrelated errors of endogenous variables
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ov.nox <- with(covs, lhs %in% vars$ov.nox & rhs %in% vars$ov.nox)
@@ -143,7 +143,7 @@ rule_reg_recursive_corr_err <- function(partable) {
     return(out)
   }
   # check recursion
-  recursive <- check_recursion(partable, x = vars$eqs.x)
+  recursive <- check_recursion(partable, start = vars$eqs.x)
   # check uncorrelated errors of regression variables
   regs <- subset(partable, op == "~" & free > 0)
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)

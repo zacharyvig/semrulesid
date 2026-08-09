@@ -1,15 +1,16 @@
 #' Check recursion using Depth-First Search algorithm
 #' @param partable A lavaan parameter table
-#' @param x A character vector of variable names from which to start the algorithm.
+#' @param start A character vector of variable names from which to start the algorithm.
+#' @return A logical value indicating whether the model is recursive (TRUE) or not (FALSE).
 #' @keywords internal
-check_recursion <- function(partable, x) {
+check_recursion <- function(partable, start) {
   # regressions
   regs <- subset(partable, op == "~" & free > 0)
   ds_full <- split(regs$lhs, regs$rhs)
 
-  loop <- function(x, tally) {
-    tally <- c(tally, x)
-    ds <- ds_full[[x]]
+  loop <- function(start, tally) {
+    tally <- c(tally, start)
+    ds <- ds_full[[start]]
     if (length(ds)) {
       for (var in ds) {
         if (var %in% tally) {
@@ -25,7 +26,7 @@ check_recursion <- function(partable, x) {
     return(TRUE)
   }
 
-  for (var in x) {
+  for (var in start) {
     out <- loop(var, tally = c())
     if (isFALSE(out)) {
       return(FALSE)
@@ -38,6 +39,7 @@ check_recursion <- function(partable, x) {
 
 #' Convert a SEM into a Confirmatory Factor Analysis for the two-step rule
 #' @param partable A lavaan parameter table
+#' @return A lavaan parameter table that has been converted to a CFA model.
 #' @noRd
 sem_to_cfa <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
@@ -53,6 +55,7 @@ sem_to_cfa <- function(partable) {
 
 #' Convert a SEM into a Simultaneous Equations Model for the two-step rule
 #' @param partable A lavaan parameter table
+#' @return A lavaan parameter table that has been converted to a simultaneous equations model.
 #' @noRd
 sem_to_reg <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
@@ -98,16 +101,21 @@ sem_to_reg <- function(partable) {
 #' # Get all rules for a CFA model
 #' rules <- get_rules(rule = "*", model_type = "cfa")
 #' # Get a specific rule for a SEM model
-#' latent_scaling_rule <- get_rules(rule = "rule_sem_latent_scaling", model_type = "sem")
+#' rules <- get_rules(rule = "latent_scaling", model_type = "sem")
+#' latent_scaling_rule <- rules[[1]]
 #'
 get_rules <- function(rule = "*", model_type = "*") {
   stopifnot(
-    "Unknown `model_type`" = model_type %in% c("*", "reg", "cfa", "sem")
+    "`rule` must be a character string" = is.character(rule),
+    "`model_type` must be a character string" = is.character(model_type)
+  )
+  if (model_type == "*") model_type <- "all"
+  stopifnot(
+    "Unknown `model_type`" = model_type %in% c("all", "reg", "cfa", "sem")
   )
   pull_fns <- function(fns) {
     mget(fns, envir = asNamespace("semidentify"), mode = "function")
   }
-  if (model_type == "*") model_type <- "all"
   rules <- get_rule_names(model_type)
   if (rule %in% c("*", "all")) {
     return(pull_fns(rules))
@@ -189,7 +197,7 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
 
 #' More advanced version of lavaan::lav_partable_npar() that accounts for equality constraints
 #' @noRd
-ntheta <- function(partable) {
+get_ntheta <- function(partable) {
   free_rows <- partable$free > 0
   keys <- partable$label[free_rows]
   keys[is.na(keys) | keys == ""] <- partable$plabel[free_rows][is.na(keys) | keys == ""]
@@ -198,7 +206,7 @@ ntheta <- function(partable) {
 
 #' Wrapper for lavaan::lav_partable_ndat() in case it ever needs to be modified
 #' @noRd
-ndata <- function(partable) {
+get_ndata <- function(partable) {
   lavaan::lav_partable_ndat(partable)
 }
 

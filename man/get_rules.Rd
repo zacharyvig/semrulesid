@@ -28,6 +28,7 @@ function makes them available to the user as a list.
 # Get all rules for a CFA model
 rules <- get_rules(rule = "*", model_type = "cfa")
 # Get a specific rule for a SEM model
-latent_scaling_rule <- get_rules(rule = "rule_sem_latent_scaling", model_type = "sem")
+rules <- get_rules(rule = "latent_scaling", model_type = "sem")
+latent_scaling_rule <- rules[[1]]
 
 }

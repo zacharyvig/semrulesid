@@ -35,9 +35,9 @@ NULL
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
   # number of parameters (internal function)
-  ntheta <- ntheta(partable)
+  ntheta <- get_ntheta(partable)
   # number of means, variances, and covariances
-  ndat <- ndata(partable)
+  ndat <- get_ndata(partable)
   # build output
   rule <- "N_theta Rule"
   pass <- isTRUE(ntheta <= ndat)

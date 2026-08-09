@@ -7,7 +7,7 @@ classify_model <- function(partable = NULL) {
   vnames <- lavpta$vnames
   # check for MLM
   if (lavpta$nblocks > 1 | "~*~" %in% partable$op | "|" %in% partable$op) {
-    stop("This model type is not currently supported")
+    stop("This model type is not currently supported.")
   }
   # tally variables
   nlv <- lapply(vnames$lv, length) # latent vars
@@ -31,7 +31,7 @@ classify_model <- function(partable = NULL) {
     # no lvs but regressions present
     return("reg")
   } else {
-    stop("Cannot classify model!")
+    stop("Cannot classify model. This is an internal error. Please report this issue to the package maintainer.")
   }
 }
 

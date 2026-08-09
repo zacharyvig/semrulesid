@@ -23,3 +23,14 @@ test_that("printed rule titles should be correct length", {
     expect_lt(nchar(!!title), nchar(blank))
   }
 })
+
+test_that("get_rules() returns the correct rule functions", {
+  rules <- get_rules(rule = "*", model_type = "all")
+  expect_true(all(sapply(rules, is.function)))
+  expect_true(all(names(rules) %in% get_rule_names(model_type = "all")))
+  # test partial matching of rule names
+  rules <- get_rules(rule = "latent_scaling", model_type = "sem")
+  expect_length(rules, 1)
+  expect_true(is.function(rules[[1]]))
+  expect_equal(names(rules), "rule_sem_latent_scaling")
+})
