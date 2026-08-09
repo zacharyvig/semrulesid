@@ -5,7 +5,7 @@ make_partable <- function(model) {
     model$model,
     warn = FALSE,
     auto = TRUE,
-    model.type = model$type
+    model_type = model$type
   )
 }
 

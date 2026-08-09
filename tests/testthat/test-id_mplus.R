@@ -11,7 +11,7 @@ test_that("id_mplus converts Mplus syntax strings", {
   expected <- id(lavaan::lav_mplus_syntax_model(model))
 
   expect_s3_class(out, "semid")
-  expect_identical(out$model.type, expected$model.type)
+  expect_identical(out$model_type, expected$model_type)
   expect_identical(out$partable, expected$partable)
 })
 
@@ -64,7 +64,7 @@ test_that("id_mplus reads Mplus input files", {
   expected <- id_mplus(model)
 
   expect_s3_class(out, "semid")
-  expect_identical(out$model.type, expected$model.type)
+  expect_identical(out$model_type, expected$model_type)
   expect_true(nrow(out$partable) > nrow(expected$partable))
   expect_true(any(out$partable$lhs == "f1" & out$partable$op == "=~"))
 })

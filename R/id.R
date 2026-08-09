@@ -167,8 +167,16 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
 
     out <- list(
       id_model_type = id_model_type,
-      id_cfa = id(partable_cfa, print_msgs = print_msgs, lav_fun = lav_fun),
-      id_reg = id(partable_reg, print_msgs = print_msgs, lav_fun = lav_fun),
+      id_cfa = id.data.frame(
+        x = partable_cfa,
+        print_msgs = print_msgs,
+        lav_fun = lav_fun
+      ),
+      id_reg = id.data.frame(
+        x = partable_reg,
+        print_msgs = print_msgs,
+        lav_fun = lav_fun
+      ),
       partable = partable,
       lav_fun = lav_fun,
       print_options = list(

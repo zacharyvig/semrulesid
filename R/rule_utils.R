@@ -180,14 +180,18 @@ get_partable_vars <- function(partable, vars, var_names = NA) {
 # internal function for adding messages to rule output
 #' @noRd
 add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
-  if (is.na(msgs)) msgs <- c()
+  if (length(msgs) == 1L && is.na(msgs)) {
+    msgs <- character(0)
+  }
+  if (is.null(levels)) {
+    levels <- rep(NA_character_, length(new_msgs))
+  }
   stopifnot(length(new_msgs) == length(levels))
   level_labels <- c(
     "1" = "Info",
     "2" = "Reason",
     "3" = "WARNING"
   )
-  if (is.null(levels)) levels <- rep(NA, length(new_msgs))
   new_msgs <- ifelse(
     is.na(levels),
     new_msgs,

@@ -34,3 +34,33 @@ test_that("get_rules() returns the correct rule functions", {
   expect_true(is.function(rules[[1]]))
   expect_equal(names(rules), "rule_sem_latent_scaling")
 })
+
+test_that("add_rule_msgs() adds messages correctly", {
+  expect_identical(
+    add_rule_msgs(msgs = NA_character_, new_msgs = "One"),
+    "One"
+  )
+
+  expect_identical(
+    add_rule_msgs(msgs = c("One", "Two"), new_msgs = "Three"),
+    c("One", "Two", "Three")
+  )
+
+  expect_identical(
+    add_rule_msgs(
+      msgs = c("One", "Two"),
+      new_msgs = c("Three", "Four"),
+      levels = c("1", "2")
+    ),
+    c("One", "Two", "[Info] Three", "[Reason] Four")
+  )
+
+  expect_identical(
+    add_rule_msgs(
+      msgs = c("One", "Two"),
+      new_msgs = c("Three", "Four"),
+      levels = c(NA, NA)
+    ),
+    c("One", "Two", "Three", "Four")
+  )
+})
