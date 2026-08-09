@@ -82,7 +82,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
               L3 =~ x7 + x8 + x9
               L2 ~ L1
-             L3 ~ L2 '
+              L3 ~ L2 '
 id(my_model, print_msgs = TRUE, lav_fun = "sem",
    meanstructure = FALSE)
 id2(my_model, print_msgs = TRUE, lav_fun = "sem",

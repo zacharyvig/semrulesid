@@ -176,7 +176,7 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     scale_ind_intercept_fixed <- if (has_scale_ind && mean_structure) {
       any(with(partable, lhs %in% scale.ind & op == "~1" & free == 0))
     } else {
-      TRUE
+      NA
     }
     latent_variance_fixed <- any(
       with(

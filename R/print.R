@@ -197,7 +197,7 @@ print.semscale <- function(x, ..., print_msgs = TRUE, window = 56L, sep_spaces =
   }
   if (!is.null(x$print_options$print_msgs)) {
     if (x$print_options$print_msgs != print_msgs) {
-      id_warn("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
+      id_warn("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semscale object.")
     } else {
       print_msgs <- x$print_options$print_msgs
     }
@@ -213,7 +213,9 @@ print.semscale <- function(x, ..., print_msgs = TRUE, window = 56L, sep_spaces =
 
   if (print_lav_fun) {
     lav_fun <- x$lav_fun
-    cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
+    if (!is.na(lav_fun)) {
+      cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
+    }
   }
 
   if (print_version || print_lav_fun) {

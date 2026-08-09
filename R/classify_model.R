@@ -33,30 +33,3 @@ classify_model <- function(partable = NULL) {
     id_stop(gettext("Cannot classify model. This is an internal error. Please report this issue to the package maintainer."))
   }
 }
-
-#' Extracts the cmd object from a lavaan fitted object for internal use
-#' @keywords internal
-#' @param obj A fitted lavaan object
-#' @return The function/command used to fit the model
-get_lavaan_cmd <- function(obj) {
-  if (!inherits(obj, "lavaan")) {
-    id_stop(gettext("obj= must be a fitted lavaan object"))
-  }
-  cmd <- obj@call$cmd
-  if (is.null(cmd)) {
-    cmd <- "lavaan"
-  }
-  cmd
-}
-
-#' Format a function call for printing for internal use
-#' @keywords internal
-#' @param fun A character string of the function call
-#' @return A formatted character string of the function call
-format_lavaan_fun <- function(fun) {
-  if (is.null(fun) || !is.character(fun)) {
-    return(NULL)
-  }
-  fun <- paste0("lavaan::", fun, "()")
-  fun
-}

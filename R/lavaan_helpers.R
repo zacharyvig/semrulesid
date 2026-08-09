@@ -74,3 +74,33 @@ validate_lav_fun_arg <- function(lav_fun, options = c("lavaan", "sem", "cfa")) {
   lav_fun <- ifelse(is.na(lav_fun), NA_character_, lav_fun)
   lav_fun
 }
+
+#' Format a function call for printing for internal use
+#' @keywords internal
+#' @param fun A character string of the function call
+#' @return A formatted character string of the function call
+format_lavaan_fun <- function(fun) {
+  if (length(fun) != 1) {
+    id_stop(gettext("fun= must be a character string. This is an internal error. Please report this issue to the package maintainer."))
+  }
+  if (is.null(fun) || !is.character(fun) || is.na(fun)) {
+    return(NULL)
+  }
+  fun <- paste0("lavaan::", fun, "()")
+  fun
+}
+
+#' Extracts the cmd object from a lavaan fitted object for internal use
+#' @keywords internal
+#' @param obj A fitted lavaan object
+#' @return The function/command used to fit the model
+get_lavaan_cmd <- function(obj) {
+  if (!inherits(obj, "lavaan")) {
+    id_stop(gettext("obj= must be a fitted lavaan object. This is an internal error. Please report this issue to the package maintainer."))
+  }
+  cmd <- obj@call$cmd
+  if (is.null(cmd)) {
+    cmd <- "lavaan"
+  }
+  cmd
+}

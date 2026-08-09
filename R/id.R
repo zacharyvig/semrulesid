@@ -65,7 +65,7 @@
 #'               L2 =~ x4 + x5 + x6
 #'               L3 =~ x7 + x8 + x9
 #'               L2 ~ L1
- #'              L3 ~ L2 '
+#'               L3 ~ L2 '
 #' id(my_model, print_msgs = TRUE, lav_fun = "sem",
 #'    meanstructure = FALSE)
 #' id2(my_model, print_msgs = TRUE, lav_fun = "sem",
@@ -234,7 +234,7 @@ id2 <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
 #' \code{\link{id}} using the specified arguments.
 #'
 #' @param x A character string model in Mplus syntax, or a path to an Mplus
-#' input file. 
+#' input file.
 #' @inheritParams id
 #'
 #' @return An object of class \code{semid} or \code{semid2} (if \code{twostep =
@@ -255,14 +255,12 @@ id_mplus <- function(x, print_msgs = TRUE, lav_fun = "sem",
                      twostep = FALSE, ...) {
   if (length(x) == 1 && is.character(x) && grepl("\\.inp$", x, ignore.case = TRUE)) {
     if (length(lav_fun) == 1 && (is.na(lav_fun) || lav_fun != "sem")) {
-      id_warn(gettextf(paste("Ignoring lav_fun='%s';",
-        "lavaan::lav_mplus_lavaan() always uses sem() defaults."), lav_fun)
-      )
-      lav_fun <- "sem"
+      id_warn(gettextf("Ignoring lav_fun='%s';lavaan::lav_mplus_lavaan() always uses sem() defaults.", lav_fun))
     }
     lav <- lavaan::lav_mplus_lavaan(x)
+    id.lavaan(lav, print_msgs = print_msgs, lav_fun = "sem", twostep = twostep, ...)
   } else {
     lav <- lavaan::lav_mplus_syntax_model(x)
+    id.character(lav, print_msgs = print_msgs, lav_fun = lav_fun, twostep = twostep, ...)
   }
-  id(lav, print_msgs = print_msgs, lav_fun = lav_fun, twostep = twostep, ...)
 }
