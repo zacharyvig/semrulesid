@@ -42,7 +42,7 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 
 \item{neg_lab}{Character. The label for negative cells, e.g., "No".}
 
-\item{na_lab}{Character. The label for NA/blank cells.}
+\item{na_lab}{Character. The label for \code{NA}/blank cells.}
 
 \item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}

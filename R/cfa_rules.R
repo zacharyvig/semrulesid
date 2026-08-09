@@ -63,7 +63,7 @@ rule_cfa_three_indicator <- function(partable) {
       rule = rule,
       pass = NA,
       msgs = add_rule_msgs(
-        new_msgs = paste("This rule only applies when all latent variables have three or more indicators:",
+        new_msgs = paste("This rule only applies when all first-order latent variables have three or more indicators:",
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
@@ -83,7 +83,7 @@ rule_cfa_three_indicator <- function(partable) {
   # uncorrelated errors
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ind <- sapply(ind.fof, function(ind) {
-    with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
+    with(covs, any((lhs == ind & rhs %in% ind.fof) | (rhs == ind & lhs %in% ind.fof)))
   }, simplify = TRUE)
   # messages
   msgs <- NA_character_
@@ -170,7 +170,7 @@ rule_cfa_two_indicator <- function(partable) {
       rule = rule,
       pass = NA,
       msgs = add_rule_msgs(
-        new_msgs = paste("This rule only applies when all latent variables have two or more indicators:",
+        new_msgs = paste("This rule only applies when all first-order latent variables have two or more indicators:",
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
@@ -188,11 +188,11 @@ rule_cfa_two_indicator <- function(partable) {
   # uncorrelated errors
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ind <- sapply(ind.fof, function(ind) {
-    with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
+    with(covs, any((lhs == ind & rhs %in% ind.fof) | (rhs == ind & lhs %in% ind.fof)))
   }, simplify = TRUE)
   # lv variances/correlations -- each lv is correlated with at least one other lv
   cor.lv <- sapply(vars$lv[idx.fof], function(var) {
-    with(covs, any(lhs == var & rhs %in% vars$lv | rhs == var & lhs %in% vars$lv))
+    with(covs, any((lhs == var & rhs %in% vars$lv) | (rhs == var & lhs %in% vars$lv)))
   }, simplify = TRUE)
   # messages
   msgs <- NA_character_

@@ -1,8 +1,10 @@
 lavaan_syntax_to_partable <- function(x, lav_fun, ...) {
   dotdotdot <- list(...)
   if (grepl("\\.inp$", x, ignore.case = TRUE)) {
-    stop(gettext("This looks like an Mplus input file.\n",
-    "Did you mean to use id_mplus() instead?"))
+    stop(gettext(
+      paste("This looks like an Mplus input file.\n",
+            "Did you mean to use id_mplus() instead?")
+    ))
   }
   if (isTRUE(dotdotdot$model_type == "efa")) {
     dotdotdot[["model_type"]] <- NULL

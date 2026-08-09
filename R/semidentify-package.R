@@ -35,7 +35,7 @@
 #' console.
 #'
 #' @section Development notes: The core of the package was developed by Zach
-#' Vig, based on Ken Bollen's 'Elements of Structural Equation Models (SEMs)'
+#' Vig, informed by Ken Bollen's 'Elements of Structural Equation Models (SEMs)'
 #' (2026), with style inspiration from the `lavaan` package. Additionally,
 #' OpenAI large-language models (\url{https://openai.com}) were used to (a) edit
 #' functions and documentation for clarity, (b) implement the Depth-First Search

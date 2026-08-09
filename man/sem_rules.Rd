@@ -20,7 +20,7 @@ rule_sem_exogenous_x(partable)
 \item{partable}{A \code{lavaan} parameter table}
 }
 \description{
-Structural Equation Modles (SEM) refer to the general class of models
+Structural Equation Models (SEM) refer to the general class of models
 consisting of structural/directional relations, latent variables, or both.
 }
 \details{

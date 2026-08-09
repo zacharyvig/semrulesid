@@ -10,7 +10,7 @@
 #' @param window Integer. The width of the output window
 #' @param pos_lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg_lab Character. The label for negative cells, e.g., "No".
-#' @param na_lab Character. The label for NA/blank cells.
+#' @param na_lab Character. The label for \code{NA}/blank cells.
 #' @param print_version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
 #' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
@@ -24,7 +24,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
                         window = 56L, pos_lab = "Yes", neg_lab = "No", na_lab = "-",
                         print_version = TRUE, print_lav_fun = TRUE) {
   if (!is.null(x$print_options$print_msgs)) {
-    if (x$print_options$print_msgs != print_msgs) {
+    if (!identical(x$print_options$print_msgs, print_msgs)) {
       warning("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
     } else {
       print_msgs <- x$print_options$print_msgs

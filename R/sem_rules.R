@@ -1,6 +1,6 @@
 #' Rules for all structural equation models
 #'
-#' Structural Equation Modles (SEM) refer to the general class of models
+#' Structural Equation Models (SEM) refer to the general class of models
 #' consisting of structural/directional relations, latent variables, or both.
 #'
 #' \describe{
@@ -122,31 +122,30 @@ rule_sem_two_emitted_paths <- function(partable) {
     return(out)
   }
   # build output
-  free_var <- sapply(vars$lv, function(var) {
-    c1 <- isTRUE(
+  free_var <- vapply(vars$lv, function(var) {
+    any(
       with(partable, free[lhs == var & rhs == var & op == "~~"]) > 0
     )
-    return(c1)
-  })
+  }, FUN.VALUE = logical(1))
   free_var.nox <- sapply(vars$lv, function(var) {
     nox <- c(
       with(partable, rhs[lhs == var & op == "=~"]),
       with(partable, lhs[rhs == var & op == "~"])
     )
-    c2 <- sapply(nox, function(var.nox) {
-      isTRUE(
+    c2 <- vapply(nox, function(var.nox) {
+      any(
         with(
           partable,
           free[lhs == var.nox & rhs == var.nox & op == "~~"]) > 0
       )
-    }, simplify = TRUE)
+    }, FUN.VALUE = logical(1))
     return(all(c2))
   })
   two_path.lv <- sapply(vars$lv, function(var) {
     c3 <- sum(
       with(
         partable,
-        lhs == var & op == "=~" & rhs != var | rhs == var & op == "~"
+        (lhs == var & op == "=~" & rhs != var) | (rhs == var & op == "~")
       )
     )
     return(c3 >= 2)

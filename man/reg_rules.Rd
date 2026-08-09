@@ -19,8 +19,8 @@ rule_reg_recursive_corr_err(partable)
 \description{
 Simultaneous equations models are structural models without any latent
 variables. Regression models are a subset of these models with a single
-outcome, while the general simultaneous equations model can accomodate
-multiple outcomes
+outcome, while the general simultaneous equations model can handle multiple
+outcomes
 }
 \details{
 \describe{

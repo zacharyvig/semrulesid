@@ -7,12 +7,12 @@
 get_rules(rule = "*", model_type = "*")
 }
 \arguments{
-\item{rule}{A string specifying the name of the rule as it's defined
-in the package. Use "*" to get all rules (or all rules of the defined
-model type). Partial matches are acceptable.}
+\item{rule}{A character vector specifying the name of the rule as it's
+defined in the package. Use "*" to get all rules (or all rules of the
+defined model type). Partial matches are acceptable.}
 
-\item{model_type}{A string specifying the model sub-type from which to get
-rules. Sub-types include "reg" (simultaneous equations
+\item{model_type}{A character vector specifying the model sub-type from which
+to get rules. Sub-types include "reg" (simultaneous equations
 models/regression models) and "cfa" (confirmatory factor analysis
 models). Use "sem" to get rules that apply to all structural equation
 models. Use "*" to get all rules in the package.}

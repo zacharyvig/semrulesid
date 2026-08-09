@@ -10,7 +10,7 @@
 #' rows correspond to rules, and columns include "Pass" (did the rule pass?),
 #' "Necessary" (is the rule necessary for identification?), and "Sufficient" (is
 #' the rule sufficient for identification?). These columns can take values
-#' "Yes", "No", or be left blank in the case of NA values.
+#' "Yes", "No", or be left blank in the case of \code{NA} values.
 #'
 #' If the user set the \code{print_msgs} argument to "TRUE" (which is the
 #' default), a column labeled "Messages" is appended to the table, and an output
@@ -23,7 +23,7 @@
 #'
 #' \code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying
 #' which \code{lavaan} function the user intends to call (and thus which
-#' defaults should) be used) when fitting the model in the case a model string
+#' defaults should be used) when fitting the model in the case a model string
 #' is supplied. Supplying a parameter table or fitted model object ignores the
 #' \code{lav_fun} argument since defaults will have already been implemented. In
 #' these cases, you can set \code{lav_fun = NA} to avoid warnings about the
@@ -47,7 +47,7 @@
 #' @param lav_fun A character string specifying the lavaan function you intend
 #'        to use to fit the model. This will ensure the correct model defaults
 #'        are specified. Options currently include "lavaan", "sem", or "cfa". If
-#'        a parameter table for fit object are supplied, this argument is
+#'        a parameter table or fit object are supplied, this argument is
 #'        ignored. Default: "sem".
 #' @param twostep A logical indicating whether to use the two-step
 #'        identification rule instead of the usual one-step. See details.
@@ -73,7 +73,7 @@
 #' @name id
 #' @export
 id <- function(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
-  lav_fun <- validate_lav_fun(lav_fun)
+  lav_fun <- validate_lav_fun_arg(lav_fun)
   if (!is.logical(print_msgs) || length(print_msgs) != 1) {
     stop(gettext("print_msgs= must be a logical"))
   }
@@ -110,8 +110,7 @@ id.lavaan <- function(x, print_msgs = TRUE, lav_fun = "sem",
     print_msgs = print_msgs,
     lav_fun = out$lav_fun,
     twostep = twostep,
-    id_model_type = NA,
-    ...
+    id_model_type = NA
   )
 }
 
@@ -124,15 +123,13 @@ id.character <- function(x, print_msgs = TRUE, lav_fun = "sem",
     print_msgs = print_msgs,
     lav_fun = out$lav_fun,
     twostep = twostep,
-    id_model_type = out$id_model_type,
-    ...
+    id_model_type = out$id_model_type
   )
 }
 
 #' @export
 id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
-                          twostep = FALSE, ...) {
-  dotdotdot <- list(...)
+                          twostep = FALSE, id_model_type = NULL, ...) {
   if (is_lavaan_partable(x)) {
     partable <- x
   } else {
@@ -140,10 +137,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
   }
 
   # classify model
-  if (!is.null(dotdotdot$id_model_type)) {
-    id_model_type <- dotdotdot$id_model_type
-    dotdotdot$id_model_type <- NULL
-  } else {
+  if (is.null(id_model_type)) {
     id_model_type <- classify_model(partable)
   }
 
@@ -170,12 +164,16 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
       id_cfa = id.data.frame(
         x = partable_cfa,
         print_msgs = print_msgs,
-        lav_fun = lav_fun
+        lav_fun = lav_fun,
+        twostep = FALSE,
+        id_model_type = "cfa"
       ),
       id_reg = id.data.frame(
         x = partable_reg,
         print_msgs = print_msgs,
-        lav_fun = lav_fun
+        lav_fun = lav_fun,
+        twostep = FALSE,
+        id_model_type = "reg"
       ),
       partable = partable,
       lav_fun = lav_fun,
@@ -230,16 +228,18 @@ id2 <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
 
 #' Evaluate identification rules for an Mplus model
 #'
-#' This is a wrapper function for \code{\link{id}} that accomodates Mplus model syntax
-#' (as a string) or Mplus input files (with extension ".inp"). It internally converts
-#' the Mplus model to a lavaan model, then calls \code{\link{id}} using the specified
-#' arguments.
-#' 
-#' @param x A character string model in Mplus syntax, or a path to an Mplus input file.
+#' This is a wrapper function for \code{\link{id}} that handles Mplus model
+#' syntax (as a string) or Mplus input files (with extension ".inp"). It
+#' internally converts the Mplus model to a lavaan model, then calls
+#' \code{\link{id}} using the specified arguments.
+#'
+#' @param x A character string model in Mplus syntax, or a path to an Mplus
+#' input file. 
 #' @inheritParams id
-#' 
-#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}).
-#' 
+#'
+#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep =
+#' TRUE}).
+#'
 #' @examples
 #' my_model <- ' L1 BY x1 x2 x3;
 #'               L2 BY x4 x5 x6;
@@ -253,11 +253,12 @@ id2 <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
 #' @export
 id_mplus <- function(x, print_msgs = TRUE, lav_fun = "sem",
                      twostep = FALSE, ...) {
-  if (grepl("\\.inp$", x, ignore.case = TRUE)) {
-    if (isFALSE(lav_fun == "sem")) {
-      warning(gettextf(c("Ignoring lav_fun='%s'\n",
+  if (length(x) == 1 && is.character(x) && grepl("\\.inp$", x, ignore.case = TRUE)) {
+    if (length(lav_fun) == 1 && (is.na(lav_fun) || lav_fun != "sem")) {
+      warning(gettextf(paste("Ignoring lav_fun='%s';",
         "lavaan::lav_mplus_lavaan() always uses sem() defaults."), lav_fun)
       )
+      lav_fun <- "sem"
     }
     lav <- lavaan::lav_mplus_lavaan(x)
   } else {

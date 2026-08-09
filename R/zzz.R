@@ -1,15 +1,10 @@
 .onAttach <- function(libname, pkgname) {
-  version <- read.dcf(
-    file = system.file("DESCRIPTION", package = pkgname),
-    fields = "Version"
-  )[1]
-  bugreport <- read.dcf(
-    file = system.file("DESCRIPTION", package = pkgname),
-    fields = "BugReports"
-  )[1]
+  desc <- utils::packageDescription(pkgname)
+
   packageStartupMessage(
-    pkgname, " ", version, "\nPlease report any bugs or edge cases at:\n",
-    bugreport
+    desc$Package, " ", desc$Version,
+    "\nPlease report bugs, unexpected results, or edge cases at:\n",
+    desc$BugReports
   )
 }
 

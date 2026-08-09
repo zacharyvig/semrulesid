@@ -6,6 +6,10 @@
 #' not (FALSE).
 #' @keywords internal
 check_recursion <- function(partable, start) {
+  if (!is.character(start)) {
+    stop(gettext("start= must be a character vector. This is an internal error. Please report this issue to the package maintainer."))
+  }
+
   # regressions
   regs <- subset(partable, op == "~" & free > 0)
   ds_full <- split(regs$lhs, regs$rhs)
@@ -63,7 +67,7 @@ sem_to_cfa <- function(partable) {
 sem_to_reg <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
   lv.paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
-  partable <- partable[lv.paths, ]
+  partable <- partable[lv.paths, , drop = FALSE]
   # handle higher order factors
   hof <- which(partable$op == "=~")
   # switch lhs and rhs
@@ -73,8 +77,8 @@ sem_to_reg <- function(partable) {
   partable$rhs[hof] <- rhs
   # then change the operator to "~"
   partable$op[hof] <- "~"
-  # handle causal indicators
-  partable$op[partable$op == "<~"] <- "~"
+  # handle causal indicators (for future use)
+  # partable$op[partable$op == "<~"] <- "~"
   type <- classify_model(partable)
   if (type != "reg") {
     stop(gettext("sem_to_reg() failed. This is an internal error. Please report this issue to the package maintainer."))
@@ -87,11 +91,11 @@ sem_to_reg <- function(partable) {
 #' The `semidentify` package stores identification rule functions internally.
 #' This function makes them available to the user as a list.
 #'
-#' @param rule A string specifying the name of the rule as it's defined
-#'        in the package. Use "*" to get all rules (or all rules of the defined
-#'        model type). Partial matches are acceptable.
-#' @param model_type A string specifying the model sub-type from which to get
-#'        rules. Sub-types include "reg" (simultaneous equations
+#' @param rule A character vector specifying the name of the rule as it's
+#'        defined in the package. Use "*" to get all rules (or all rules of the
+#'        defined model type). Partial matches are acceptable.
+#' @param model_type A character vector specifying the model sub-type from which
+#'        to get rules. Sub-types include "reg" (simultaneous equations
 #'        models/regression models) and "cfa" (confirmatory factor analysis
 #'        models). Use "sem" to get rules that apply to all structural equation
 #'        models. Use "*" to get all rules in the package.
@@ -108,26 +112,31 @@ sem_to_reg <- function(partable) {
 #' latent_scaling_rule <- rules[[1]]
 #'
 get_rules <- function(rule = "*", model_type = "*") {
-  stopifnot(
-    "`rule` must be a character string" = is.character(rule),
-    "`model_type` must be a character string" = is.character(model_type)
-  )
-  if (model_type == "*") model_type <- "all"
-  stopifnot(
-    "Unknown `model_type`" = model_type %in% c("all", "reg", "cfa", "sem")
-  )
+  if (!all(is.character(rule))) {
+    stop(gettext("rule= must be a character vector"))
+  }
+  if (!all(is.character(model_type))) {
+    stop(gettext("model_type= must be a character vector"))
+  }
+  if ("*" %in% model_type) model_type <- "all"
+  model_type <- unique(model_type)
+  if (!all(model_type %in% c("all", "reg", "cfa", "sem"))) {
+    stop(gettext("model_type= must be one of 'all', 'reg', 'cfa', or 'sem'"))
+  }
   pull_fns <- function(fns) {
     mget(fns, envir = asNamespace("semidentify"), mode = "function")
   }
   rules <- get_rule_names(model_type)
-  if (rule %in% c("*", "all")) {
+  if (any(rule %in% c("*", "all"))) {
     return(pull_fns(rules))
   } else {
     rule <- grep(rule, rules, value = TRUE)
-    stopifnot(
-      "Specified rule does not exist" =
-        isTRUE(rule %in% rules)
-    )
+    if (length(rule) == 0) {
+      stop(gettext("Specified rule does not exist"))
+    }
+    if (length(rule) > 1) {
+      warning(gettext("Multiple rules matched the specified rule. Returning all matches."))
+    }
     return(pull_fns(rule))
   }
 }
@@ -135,15 +144,18 @@ get_rules <- function(rule = "*", model_type = "*") {
 # internal function for extracting rule function names
 #' @noRd
 get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
-  model_type <- match.arg(model_type)
-  prefix <- if (model_type == "all") {
+  model_type <- match.arg(model_type, several.ok = TRUE)
+  prefix <- if ("all" %in% model_type) {
     "^rule_"
   } else {
     sprintf("^rule_%s", model_type)
   }
   ns <- asNamespace("semidentify")
   objs <- ls(envir = ns, all.names = TRUE)
-  grep(prefix, objs, value = TRUE)
+  out <- sapply(prefix, function(p) {
+    grep(p, objs, value = TRUE)
+  })
+  unname(c(out, recursive = TRUE))
 }
 
 # internal function for building rule output lists
@@ -165,6 +177,9 @@ build_rule_out <- function(rule, pass, msgs = NA_character_,
 get_partable_vars <- function(partable, vars, var_names = NA) {
   lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
+  if (lavpta$nblocks > 1) {
+    stop(gettext("This function currently only supports single-block models."))
+  }
   # tally variables assuming one block
   out <- lapply(vars, function(var) {
     vnames[[var]][[1]]

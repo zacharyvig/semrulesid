@@ -20,7 +20,7 @@ information. Default: \code{TRUE}.}
 \item{lav_fun}{A character string specifying the lavaan function you intend
 to use to fit the model. This will ensure the correct model defaults
 are specified. Options currently include "lavaan", "sem", or "cfa". If
-a parameter table for fit object are supplied, this argument is
+a parameter table or fit object are supplied, this argument is
 ignored. Default: "sem".}
 
 \item{twostep}{A logical indicating whether to use the two-step
@@ -48,7 +48,7 @@ The primary output of \code{id()} is a table printed to the console, where
 rows correspond to rules, and columns include "Pass" (did the rule pass?),
 "Necessary" (is the rule necessary for identification?), and "Sufficient" (is
 the rule sufficient for identification?). These columns can take values
-"Yes", "No", or be left blank in the case of NA values.
+"Yes", "No", or be left blank in the case of \code{NA} values.
 
 If the user set the \code{print_msgs} argument to "TRUE" (which is the
 default), a column labeled "Messages" is appended to the table, and an output
@@ -61,7 +61,7 @@ listed in the "Messages" column of the table.
 
 \code{lav_fun} takes character values "lavaan", "sem", or "cfa", specifying
 which \code{lavaan} function the user intends to call (and thus which
-defaults should) be used) when fitting the model in the case a model string
+defaults should be used) when fitting the model in the case a model string
 is supplied. Supplying a parameter table or fitted model object ignores the
 \code{lav_fun} argument since defaults will have already been implemented. In
 these cases, you can set \code{lav_fun = NA} to avoid warnings about the

@@ -52,6 +52,7 @@
 scaling <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
                     return_type = c("object", "logical"), ...) {
   return_type <- match.arg(return_type)
+  lav_fun <- validate_lav_fun_arg(lav_fun)
   if (!is.character(lv) && !is.null(lv)) {
     stop(gettext("lv= must be a character vector or NULL"))
   }
@@ -59,13 +60,16 @@ scaling <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     stop(gettext("print_msgs= must be a logical"))
   }
   if (!is.character(return_type) || length(return_type) != 1 ||
-  !(return_type %in% c("object", "logical"))) {
+        !(return_type %in% c("object", "logical"))) {
     stop(
       gettext("return_type= must be a character string and one of 'object' or 'logical'")
     )
   }
-  lav_fun <- validate_lav_fun(lav_fun)
-  lav_fun <- validate_lav_fun(lav_fun)
+  if (!is.na(lav_fun) && is_lavaan_partable(x)) {
+    warning(
+      gettext("lav_fun= is ignored when a parameter table is supplied.")
+    )
+  }
   UseMethod("scaling")
 }
 
@@ -93,8 +97,7 @@ scaling.lavaan <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     lav_fun = out$lav_fun,
     print_msgs = print_msgs,
     lv = lv,
-    return_type = return_type,
-    ...
+    return_type = return_type
   )
 }
 
@@ -107,8 +110,7 @@ scaling.character <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     lav_fun = out$lav_fun,
     print_msgs = print_msgs,
     lv = lv,
-    return_type = return_type,
-    ...
+    return_type = return_type
   )
 }
 
@@ -190,12 +192,12 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     latent_mean_fixed <- if (mean_structure) {
       any(with(partable, lhs == var & op == "~1" & free == 0))
     } else {
-      TRUE
+      NA
     }
 
     units_assigned <- has_scale_ind || latent_variance_fixed
     origin_assigned <- if (mean_structure) {
-      latent_mean_fixed || (has_scale_ind && scale_ind_intercept_fixed)
+      latent_mean_fixed || (has_scale_ind && isTRUE(scale_ind_intercept_fixed))
       } else {
         TRUE
       }
@@ -271,7 +273,7 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
 
 #' @export
 scaling.default <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
-                            return_type = c("table", "logical"), ...) {
+                            return_type = c("object", "logical"), ...) {
   stop(gettext("Unknown input type."))
 }
 

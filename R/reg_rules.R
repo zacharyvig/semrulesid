@@ -2,8 +2,8 @@
 #'
 #' Simultaneous equations models are structural models without any latent
 #' variables. Regression models are a subset of these models with a single
-#' outcome, while the general simultaneous equations model can accomodate
-#' multiple outcomes
+#' outcome, while the general simultaneous equations model can handle multiple
+#' outcomes
 #'
 #' \describe{
 #'  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
@@ -147,8 +147,8 @@ rule_reg_recursive_corr_err <- function(partable) {
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.eqs <- unname(
     apply(covs, 1, function(row) {
-      any(with(regs, lhs %in% row["lhs"] & rhs %in% row["rhs"] |
-                 lhs %in% row["rhs"] & rhs %in% row["lhs"]))
+      any(with(regs, (lhs %in% row["lhs"] & rhs %in% row["rhs"]) |
+                 (lhs %in% row["rhs"] & rhs %in% row["lhs"])))
     }, simplify = TRUE)
   )
   # build output
