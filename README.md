@@ -37,14 +37,14 @@ pak::pak("zacharyvig/semidentify")
     which you intend to fit a model (e.g., “sem”).
   - Output includes whether the rule passed, whether the rule is
     necessary and/or sufficient for identification, and, if
-    `include.msgs = TRUE`, information about why a rule did or did not
+    `print_msgs = TRUE`, information about why a rule did or did not
     pass or if a rule is relevant for the particular type of model.
   - Messages are classified as “Info” (information about, e.g., why a
     rule is not relevant), “Reason” (explanation of why a rule did not
     pass, but the rule was not necessary for identification), or
     “WARNING” (explanation of why a necessary rule failed).
 
-> Example: `id(my_model, include.msgs = TRUE, lav_fun = "sem")`
+> Example: `id(my_model, print_msgs = TRUE, lav_fun = "sem")`
 
 - `scaling()` prints output about how, and if so why, latent variables
   in the model are scaled.
@@ -53,7 +53,7 @@ pak::pak("zacharyvig/semidentify")
     whether the model has a mean structure, and reasons why the latent
     variable is or is not scaled.
 
-> Example: `scaling(my_model, include.msgs = TRUE, lav_fun = "cfa")`
+> Example: `scaling(my_model, print_msgs = TRUE, lav_fun = "cfa")`
 
 - `id2()` evaluates the two-step rule of identification for full SEMs
   only.
@@ -66,7 +66,7 @@ pak::pak("zacharyvig/semidentify")
     that the original model is identified. See Bollen’s *Elements of
     Structural Equation Models* (2026) for details.
 
-> Example: `id2(my_model, include.msgs = TRUE, lav_fun = "sem")`
+> Example: `id2(my_model, print_msgs = TRUE, lav_fun = "sem")`
 
 - The package supports piping for comprehensive printing,
 
@@ -85,7 +85,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
               L2 ~ L1
               L3 ~ L2 '
 
-id(my_model, include.msgs = TRUE, lav_fun = "sem", 
+id(my_model, print_msgs = TRUE, lav_fun = "sem", 
    meanstructure = FALSE) # check identification rules
 #> semidentify 0.4.0 Rule Check
 #> lavaan function: `lavaan::sem()`
@@ -109,7 +109,7 @@ id(my_model, include.msgs = TRUE, lav_fun = "sem",
 #> 3 - [Info] This rule only applies when there are no
 #>     latent variables in the model
 
-scaling(my_model, include.msgs = TRUE, lav_fun = "sem", 
+scaling(my_model, print_msgs = TRUE, lav_fun = "sem", 
         meanstructure = FALSE) # check latent variable scaling
 #> semidentify 0.4.0 Latent Variable Scaling
 #> lavaan function: `lavaan::sem()`
