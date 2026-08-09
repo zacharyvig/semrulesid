@@ -3,7 +3,7 @@
 
   packageStartupMessage(
     desc$Package, " ", desc$Version,
-    "\nPlease report bugs, unexpected results, or edge cases at:\n",
+    "\nPlease report bugs or edge cases at:\n",
     desc$BugReports
   )
 }

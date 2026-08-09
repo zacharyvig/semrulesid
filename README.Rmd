@@ -44,7 +44,7 @@ pak::pak("zacharyvig/semidentify")
   * The `lav_fun` argument is used to specify the `lavaan` function with which you intend to fit a model (e.g., “sem”).
   * Output includes whether the rule passed, whether the rule is necessary and/or sufficient for identification, and, if `print_msgs = TRUE`, information about why a rule did or did not pass or if a rule is relevant for the particular type of model.
   * Messages are classified as “Info” (information about, e.g., why a rule is not relevant), “Reason” (explanation of why a rule did not pass, but the rule was not necessary for identification), or “WARNING” (explanation of why a necessary rule failed).
-
+  * Users can include additional arguments to the function that are passed to `lavaan`'s `lavaanify` function (e.g., `meanstructure`).
 
 > Example: `id(my_model, print_msgs = TRUE, lav_fun = "sem")`
 
@@ -56,6 +56,7 @@ pak::pak("zacharyvig/semidentify")
 
 * `id2()` evaluates the two-step rule of identification for full SEMs
   only.
+  
   * This rule first converts the model into a confirmatory factor analysis model by changing structural relationships to covariances; evaluates the identification of the CFA; then, if identified, convertsthe original model into a simultaneous equations model (treating latent variables as observed); evaluates the identification of the SimEM; and  finally, if identified, confirms that the original model is identified. See Bollen’s *Elements of Structural Equation Models* (2026) for details.
 
 > Example: `id2(my_model, print_msgs = TRUE, lav_fun = "sem")`

@@ -6,8 +6,8 @@
 #' Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012)
 #' syntax and check it against a number of identification rules from the
 #' literature. Rules are specified as being necessary and/or sufficient and
-#' specific reasons are given when a rule is broken. Caution is given to the
-#' user in using the output of the package as the sole determinant of model
+#' specific reasons are given when a rule is broken. Users should not rely
+#' solely on the output of the package as the sole determinant of model
 #' identification -- instead, it should be used as a "quick check" for any
 #' outstanding issues with the model.
 #'

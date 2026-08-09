@@ -43,6 +43,8 @@ pak::pak("zacharyvig/semidentify")
     rule is not relevant), “Reason” (explanation of why a rule did not
     pass, but the rule was not necessary for identification), or
     “WARNING” (explanation of why a necessary rule failed).
+  - Users can include additional arguments to the function that are
+    passed to `lavaan`’s `lavaanify` function (e.g., `meanstructure`).
 
 > Example: `id(my_model, print_msgs = TRUE, lav_fun = "sem")`
 
@@ -57,6 +59,7 @@ pak::pak("zacharyvig/semidentify")
 
 - `id2()` evaluates the two-step rule of identification for full SEMs
   only.
+
   - This rule first converts the model into a confirmatory factor
     analysis model by changing structural relationships to covariances;
     evaluates the identification of the CFA; then, if identified,
@@ -77,7 +80,7 @@ pak::pak("zacharyvig/semidentify")
 ``` r
 library(semidentify)
 #> semidentify 0.4.0
-#> Please report any bugs or edge cases at:
+#> Please report bugs or edge cases at:
 #> https://github.com/zacharyvig/semidentify/issues
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
@@ -88,7 +91,7 @@ my_model <- ' L1 =~ x1 + x2 + x3
 id(my_model, print_msgs = TRUE, lav_fun = "sem", 
    meanstructure = FALSE) # check identification rules
 #> semidentify 0.4.0 Rule Check
-#> lavaan function: `lavaan::sem()`
+#> lavaan function: lavaan::sem()
 #> 
 #>                        Pass Necessary Sufficient Message 
 #> N_theta Rule            Yes       Yes         No 
@@ -112,7 +115,7 @@ id(my_model, print_msgs = TRUE, lav_fun = "sem",
 scaling(my_model, print_msgs = TRUE, lav_fun = "sem", 
         meanstructure = FALSE) # check latent variable scaling
 #> semidentify 0.4.0 Latent Variable Scaling
-#> lavaan function: `lavaan::sem()`
+#> lavaan function: lavaan::sem()
 #> 
 #> L1
 #>   LV is scaled?            Yes
