@@ -1,3 +1,6 @@
+# use lavaanify() to convert lavaan syntax to a parameter table, and classify
+# the model type
+#' @noRd
 lavaan_syntax_to_partable <- function(x, lav_fun, ...) {
   dotdotdot <- list(...)
   if (grepl("\\.inp$", x, ignore.case = TRUE)) {
@@ -38,6 +41,9 @@ lavaan_syntax_to_partable <- function(x, lav_fun, ...) {
   list(partable = partable, lav_fun = lav_fun, id_model_type = id_model_type)
 }
 
+# convert a fitted lavaan object to a parameter table and extract the function
+# used to fit the model
+#' @noRd
 lavaan_obj_to_partable <- function(x, lav_fun, ...) {
   dotdotdot <- list(...)
   if (length(dotdotdot) > 0) {
@@ -55,4 +61,16 @@ lavaan_obj_to_partable <- function(x, lav_fun, ...) {
     stringsAsFactors = FALSE
   )
   return(list(partable = partable, lav_fun = lav_fun))
+}
+
+# internal validation function for lav_fun argument
+#' @noRd
+validate_lav_fun_arg <- function(lav_fun, options = c("lavaan", "sem", "cfa")) {
+  valid <- (length(lav_fun) == 1 && (is.character(lav_fun) && lav_fun %in% options)) || is.na(lav_fun)
+  if (!valid) {
+    stop(gettextf("lav_fun= must be one of %s or NA",
+      paste0("'", options, "'", collapse = ", ")))
+  }
+  lav_fun <- ifelse(is.na(lav_fun), NA_character_, lav_fun)
+  lav_fun
 }
