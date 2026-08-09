@@ -9,9 +9,9 @@ lavaan_syntax_to_partable <- function(x, lav_fun, ...) {
             "Did you mean to use id_mplus() instead?")
     ))
   }
-  if (isTRUE(dotdotdot$model_type == "efa")) {
-    dotdotdot[["model_type"]] <- NULL
-    id_warn(gettext("Only model_type='sem' is currently supported"))
+  if (isTRUE(dotdotdot$model.type == "efa")) {
+    dotdotdot[["model.type"]] <- NULL
+    id_warn(gettext("Only model.type='sem' is currently supported"))
   }
   if (isTRUE(dotdotdot$debug)) {
     dotdotdot[["debug"]] <- NULL
@@ -29,7 +29,7 @@ lavaan_syntax_to_partable <- function(x, lav_fun, ...) {
       model = x,
       warn = TRUE,
       debug = FALSE,
-      model_type = "sem"
+      model.type = "sem"
     ),
     dotdotdot
   )

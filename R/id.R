@@ -258,9 +258,21 @@ id_mplus <- function(x, print_msgs = TRUE, lav_fun = "sem",
       id_warn(gettextf("Ignoring lav_fun='%s';lavaan::lav_mplus_lavaan() always uses sem() defaults.", lav_fun))
     }
     lav <- lavaan::lav_mplus_lavaan(x)
-    id.lavaan(lav, print_msgs = print_msgs, lav_fun = "sem", twostep = twostep, ...)
+    id.lavaan(
+      x = lav,
+      print_msgs = print_msgs,
+      lav_fun = "sem",
+      twostep = twostep,
+      ...
+    )
   } else {
     lav <- lavaan::lav_mplus_syntax_model(x)
-    id.character(lav, print_msgs = print_msgs, lav_fun = lav_fun, twostep = twostep, ...)
+    id.character(
+      x = lav,
+      print_msgs = print_msgs,
+      lav_fun = lav_fun,
+      twostep = twostep,
+      ...
+    )
   }
 }
