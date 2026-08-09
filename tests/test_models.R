@@ -27,6 +27,10 @@ test_models <- list(
                 type = "cfa",
                 model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL1 ~~ L2\n Y1 ~~ Y4"
         ),
+        cfa_higher_order_pass = list(
+                type = "cfa",
+                model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL3 =~ L1 + L2"
+        ),
         sem_two_emitted_paths_fail = list(
                 type = "sem",
                 model = "L1 =~ NA*Y1\nL1 <~ X1\nL1 ~~ NA*L1\nY1 ~~ NA*Y1\nX1 ~~ NA*X1"
@@ -50,6 +54,18 @@ test_models <- list(
         sem_n_theta_fail = list(
                 type = "sem",
                 model = "L1 =~ NA*Y1 + NA*Y2\nL2 =~ NA*Y4 + NA*Y5\nL1 ~ L2\nL1 ~~ L1\nL2 ~~ L2"
+        ),
+        sem_two_scaling_ind = list(
+                type = "sem",
+                model = "L1 =~ 1*Y1 + 1*Y2 + Y3\nL1 <~ X1\nL1 ~~ L1"
+        ),
+        sem_zero_loading = list(
+                type = "sem",
+                model = "L1 =~ 0*Y1 + Y2 + Y3\nL1 <~ X1\nL1 ~~ L1"
+        ),
+        sem_negative_loading = list(
+                type = "sem",
+                model = "L1 =~ -1*Y1 + Y2 + Y3\nL1 <~ X1\nL1 ~~ L1"
         ),
         mlm = list(
                 type = "sem",

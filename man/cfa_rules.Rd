@@ -24,11 +24,13 @@ latent variable is correctly scaled (see \link[semidentify]{scaling}).
  latent variable can have just two indicators if each indicator loads on exactly
  one variable, none of the errors of the indicators are correlated, and each
  latent variable correlates with at least one other latent variable. Sufficient
- but not necessary.}
+ but not necessary, unless higher-order factors are present in which case
+ sufficiency cannot be established.}
  \item{Three Indicator Rule}{In a model with one or more latent variables, each
  latent variable can have just three indicators if each indicator loads on exactly
  one variable and none of the errors of the indicators are correlated. Sufficient
- but not necessary.}
+ but not necessary, unless higher-order factors are present in which case
+ sufficiency cannot be established.}
 }
 }
 \references{

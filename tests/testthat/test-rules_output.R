@@ -57,6 +57,10 @@ test_that("cfa rules distinguish two- and three-indicator models", {
     cfa_three_fail = list(
       rule_cfa_two_indicator = list(pass = FALSE, cond = "S"),
       rule_cfa_three_indicator = list(pass = FALSE, cond = "S")
+    ),
+    cfa_higher_order_pass = list(
+      rule_cfa_two_indicator = list(pass = FALSE, cond = NA_character_),
+      rule_cfa_three_indicator = list(pass = TRUE, cond = NA_character_)
     )
   )
   for (model_name in names(expectations)) {

@@ -66,3 +66,36 @@ test_that("scaling printing shows mean structure and the revised messages", {
   expect_true(any(grepl("Scaling error", fail_out)))
   expect_true(any(grepl("Neither scaling indicator nor fixed latent variance", fail_out, fixed = TRUE)))
 })
+
+test_that("scaling printing handles edge cases", {
+  two_scaling_out <- capture.output(
+    print(
+      scaling(make_partable(test_models$sem_two_scaling_ind), lv = "L1"),
+      include.msgs = TRUE,
+      window = 120
+    )
+  )
+  zero_loading_out <- capture.output(
+    print(
+      scaling(make_partable(test_models$sem_zero_loading), lv = "L1"),
+      include.msgs = TRUE,
+      window = 120
+    )
+  )
+  negative_loading_out <- capture.output(
+    print(
+      scaling(make_partable(test_models$sem_negative_loading), lv = "L1"),
+      include.msgs = TRUE,
+      window = 120
+    )
+  )
+
+  expect_true(any(grepl("Latent Variable Scaling", two_scaling_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*Y1, Y2", two_scaling_out)))
+
+  expect_true(any(grepl("Latent Variable Scaling", zero_loading_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*None", zero_loading_out)))
+
+  expect_true(any(grepl("Latent Variable Scaling", negative_loading_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*Y1", negative_loading_out)))
+})
