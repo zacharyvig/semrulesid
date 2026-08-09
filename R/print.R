@@ -19,16 +19,17 @@
 #'
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
-                        print_msgs = TRUE, msgs_name = "Message", msgs_sec = "Messages",
+                        print_msgs = NULL, msgs_name = "Message", msgs_sec = "Messages",
                         msgs_levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos_lab = "Yes", neg_lab = "No", na_lab = "-",
                         print_version = TRUE, print_lav_fun = TRUE) {
-  if (!is.null(x$print_options$print_msgs)) {
-    if (!identical(x$print_options$print_msgs, print_msgs)) {
-      id_warn("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
-    } else {
-      print_msgs <- x$print_options$print_msgs
-    }
+  if (is.null(print_msgs)) {
+    print_msgs <- x$print_options$print_msgs %||% TRUE
+  } else if (!is.null(x$print_options$print_msgs) &&
+             !identical(print_msgs, x$print_options$print_msgs)) {
+    id_warn(
+      "`print_msgs` supplied to print() overrides the value stored in the object."
+    )
   }
   if (print_msgs) {
     names[5] <- msgs_name

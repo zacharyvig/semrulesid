@@ -8,7 +8,7 @@
   x,
   ...,
   names = c("", "Pass", "Necessary", "Sufficient"),
-  print_msgs = TRUE,
+  print_msgs = NULL,
   msgs_name = "Message",
   msgs_sec = "Messages",
   msgs_levels = c(`1` = "Info", `2` = "Reason", `3` = "WARNING"),
