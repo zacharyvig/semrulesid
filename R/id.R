@@ -158,12 +158,17 @@ id.data.frame <- function(x, include.msgs = TRUE, lav_fun = "sem", twostep = FAL
       stop("The two-step identification rule is only applicable to full SEMs.")
     }
 
+    vars <- get_partable_vars(partable, c("ov.cind"))
+    if (length(vars$ov.cind) > 0) {
+      stop("The two-step identification rule is currently not supported for models with causal indicators.")
+    }
+
     partable.cfa <- sem_to_cfa(partable)
     partable.reg <- sem_to_reg(partable)
 
     out <- list(
-      id.cfa = id(partable.cfa),
-      id.reg = id(partable.reg),
+      id.cfa = id(partable.cfa, include.msgs = include.msgs, lav_fun = lav_fun),
+      id.reg = id(partable.reg, include.msgs = include.msgs, lav_fun = lav_fun),
       partable = partable,
       lav_fun = lav_fun,
       print.options = list(
