@@ -25,7 +25,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
                         print_version = TRUE, print_lav_fun = TRUE) {
   if (!is.null(x$print_options$print_msgs)) {
     if (!identical(x$print_options$print_msgs, print_msgs)) {
-      warning("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
+      id_warn("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
     } else {
       print_msgs <- x$print_options$print_msgs
     }
@@ -197,7 +197,7 @@ print.semscale <- function(x, ..., print_msgs = TRUE, window = 56L, sep_spaces =
   }
   if (!is.null(x$print_options$print_msgs)) {
     if (x$print_options$print_msgs != print_msgs) {
-      warning("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
+      id_warn("The `print_msgs` argument in the print method is overriding the `print_msgs` argument in the semid object.")
     } else {
       print_msgs <- x$print_options$print_msgs
     }

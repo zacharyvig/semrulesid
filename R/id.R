@@ -75,13 +75,13 @@
 id <- function(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
   lav_fun <- validate_lav_fun_arg(lav_fun)
   if (!is.logical(print_msgs) || length(print_msgs) != 1) {
-    stop(gettext("print_msgs= must be a logical"))
+    id_stop(gettext("print_msgs= must be a logical"))
   }
   if (!is.logical(twostep) || length(twostep) != 1) {
-    stop(gettext("twostep= must be a logical"))
+    id_stop(gettext("twostep= must be a logical"))
   }
   if (!is.na(lav_fun) && is_lavaan_partable(x)) {
-    warning(
+    id_warn(
       gettext("lav_fun= is ignored when a parameter table is supplied.")
     )
   }
@@ -133,7 +133,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
   if (is_lavaan_partable(x)) {
     partable <- x
   } else {
-    stop(gettext("Unknown input type."))
+    id_stop(gettext("Unknown input type."))
   }
 
   # classify model
@@ -144,14 +144,14 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
   if (twostep) {
 
     if (id_model_type != "sem") {
-      stop(
+      id_stop(
         gettext("The two-step identification rule is only applicable to full SEMs.")
       )
     }
 
     vars <- get_partable_vars(partable, c("ov.cind"))
     if (length(vars$ov.cind) > 0) {
-      stop(
+      id_stop(
         gettext("The two-step identification rule is currently not supported for models with causal indicators.")
       )
     }
@@ -217,7 +217,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
 
 #' @export
 id.default <- function(x, print_msgs = TRUE, lav_fun = "sem", ...) {
-  stop(gettext("Unknown input type."))
+  id_stop(gettext("Unknown input type."))
 }
 
 #' @rdname id
@@ -255,7 +255,7 @@ id_mplus <- function(x, print_msgs = TRUE, lav_fun = "sem",
                      twostep = FALSE, ...) {
   if (length(x) == 1 && is.character(x) && grepl("\\.inp$", x, ignore.case = TRUE)) {
     if (length(lav_fun) == 1 && (is.na(lav_fun) || lav_fun != "sem")) {
-      warning(gettextf(paste("Ignoring lav_fun='%s';",
+      id_warn(gettextf(paste("Ignoring lav_fun='%s';",
         "lavaan::lav_mplus_lavaan() always uses sem() defaults."), lav_fun)
       )
       lav_fun <- "sem"

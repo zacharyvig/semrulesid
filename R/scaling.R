@@ -54,19 +54,19 @@ scaling <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
   return_type <- match.arg(return_type)
   lav_fun <- validate_lav_fun_arg(lav_fun)
   if (!is.character(lv) && !is.null(lv)) {
-    stop(gettext("lv= must be a character vector or NULL"))
+    id_stop(gettext("lv= must be a character vector or NULL"))
   }
   if (!is.logical(print_msgs) || length(print_msgs) != 1) {
-    stop(gettext("print_msgs= must be a logical"))
+    id_stop(gettext("print_msgs= must be a logical"))
   }
   if (!is.character(return_type) || length(return_type) != 1 ||
         !(return_type %in% c("object", "logical"))) {
-    stop(
+    id_stop(
       gettext("return_type= must be a character string and one of 'object' or 'logical'")
     )
   }
   if (!is.na(lav_fun) && is_lavaan_partable(x)) {
-    warning(
+    id_warn(
       gettext("lav_fun= is ignored when a parameter table is supplied.")
     )
   }
@@ -121,7 +121,7 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
   if (is_lavaan_partable(x)) {
   partable <- x
   } else {
-    stop(gettext("Unknown input type."))
+    id_stop(gettext("Unknown input type."))
   }
 
   if (is.null(lv)) {
@@ -130,7 +130,7 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     lv <- vars$lv
   }
   if (length(lv) == 0) {
-    stop(gettext("Scaling only applies to models with latent variables."))
+    id_stop(gettext("Scaling only applies to models with latent variables."))
   }
 
   if (return_type == "object") {
@@ -274,7 +274,7 @@ scaling.data.frame <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
 #' @export
 scaling.default <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
                             return_type = c("object", "logical"), ...) {
-  stop(gettext("Unknown input type."))
+  id_stop(gettext("Unknown input type."))
 }
 
 

@@ -7,7 +7,7 @@
 #' @keywords internal
 check_recursion <- function(partable, start) {
   if (!is.character(start)) {
-    stop(gettext("start= must be a character vector. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("start= must be a character vector. This is an internal error. Please report this issue to the package maintainer."))
   }
 
   # regressions
@@ -54,7 +54,7 @@ sem_to_cfa <- function(partable) {
   partable$op[lv.regs] <- "~~"
   type <- classify_model(partable)
   if (type != "cfa") {
-    stop(gettext("sem_to_cfa() failed. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("sem_to_cfa() failed. This is an internal error. Please report this issue to the package maintainer."))
   }
   partable
 }
@@ -81,7 +81,7 @@ sem_to_reg <- function(partable) {
   # partable$op[partable$op == "<~"] <- "~"
   type <- classify_model(partable)
   if (type != "reg") {
-    stop(gettext("sem_to_reg() failed. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("sem_to_reg() failed. This is an internal error. Please report this issue to the package maintainer."))
   }
   partable
 }
@@ -113,15 +113,15 @@ sem_to_reg <- function(partable) {
 #'
 get_rules <- function(rule = "*", model_type = "*") {
   if (!all(is.character(rule))) {
-    stop(gettext("rule= must be a character vector"))
+    id_stop(gettext("rule= must be a character vector"))
   }
   if (!all(is.character(model_type))) {
-    stop(gettext("model_type= must be a character vector"))
+    id_stop(gettext("model_type= must be a character vector"))
   }
   if ("*" %in% model_type) model_type <- "all"
   model_type <- unique(model_type)
   if (!all(model_type %in% c("all", "reg", "cfa", "sem"))) {
-    stop(gettext("model_type= must be one of 'all', 'reg', 'cfa', or 'sem'"))
+    id_stop(gettext("model_type= must be one of 'all', 'reg', 'cfa', or 'sem'"))
   }
   pull_fns <- function(fns) {
     mget(fns, envir = asNamespace("semidentify"), mode = "function")
@@ -132,10 +132,10 @@ get_rules <- function(rule = "*", model_type = "*") {
   } else {
     rule <- grep(rule, rules, value = TRUE)
     if (length(rule) == 0) {
-      stop(gettext("Specified rule does not exist"))
+      id_stop(gettext("Specified rule does not exist"))
     }
     if (length(rule) > 1) {
-      warning(gettext("Multiple rules matched the specified rule. Returning all matches."))
+      id_warn(gettext("Multiple rules matched the specified rule. Returning all matches."))
     }
     return(pull_fns(rule))
   }
@@ -178,7 +178,7 @@ get_partable_vars <- function(partable, vars, var_names = NA) {
   lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   if (lavpta$nblocks > 1) {
-    stop(gettext("This function currently only supports single-block models."))
+    id_stop(gettext("This function currently only supports single-block models."))
   }
   # tally variables assuming one block
   out <- lapply(vars, function(var) {
