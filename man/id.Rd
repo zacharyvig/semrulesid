@@ -59,7 +59,12 @@ in the "Messages" column of the table.
 \code{lavaan} function the user intends to call (and thus which defaults should)
 be used) when fitting the model in the case a model string is supplied. Supplying
 a parameter table or fitted model object ignores the \code{lav_fun} argument since
-defaults will have already been implemented.
+defaults will have already been implemented. In these cases, you can set
+\code{lav_fun = NA} to avoid warnings about the argument being ignored. For
+\code{id_mplus()}, \code{lav_fun} is only needed if the user supplies an Mplus model
+string due to how \code{lavaan::lav_mplus_syntax_model()} works. If an Mplus input
+file is supplied, \code{lav_fun} is ignored since \code{lavaan::lav_mplus_lavaan()}
+always uses \code{sem()} defaults.
 
 \code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
 set to \code{TRUE}. The two-step method parses an SEM into a CFA model and a latent

@@ -15,7 +15,7 @@ test_that("rule functions produce the correct output", {
 test_that("printed rule titles should be correct length", {
   rules <- get_rule_names(model_type = "all")
   partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
-  test <- capture.output(id(partable))
+  test <- capture.output(id(partable, include.msgs = TRUE, lav_fun = NA))
   header <- grep("Pass", test)
   blank <- sub("^(\\s+)([A-Za-z\\s]+)$", "\\1", test[header], perl = TRUE)
   for (rule in rules) {

@@ -15,11 +15,12 @@ test_that("id2 returns the two-step object structure", {
       type = "sem",
       model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL2 ~ L1"
     )),
-    twostep = TRUE
+    twostep = TRUE,
+    lav_fun = NA
   )
 
   expect_s3_class(out, "semid2")
-  expect_named(out, c("id.cfa", "id.reg", "partable", "lav_fun", "print.options"))
+  expect_named(out, c("id.model.type", "id.cfa", "id.reg", "partable", "lav_fun", "print.options"))
   expect_s3_class(out$id.cfa, "semid")
   expect_s3_class(out$id.reg, "semid")
 })
@@ -31,7 +32,8 @@ test_that("id2 printing shows both steps", {
         make_partable(list(
           type = "sem",
           model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL2 ~ L1"
-        ))
+        )),
+        lav_fun = NA
       )
     )
   )

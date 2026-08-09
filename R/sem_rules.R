@@ -78,7 +78,7 @@ rule_sem_latent_scaling <- function(partable) {
     return(out)
   }
   # build output
-  scaled <- scaling(partable, lv = vars$lv, return.type = "logical")
+  scaled <- scaling(partable, lv = vars$lv, return.type = "logical", lav_fun = NA)
   pass <- isTRUE(all(scaled))
   cond <- "N"
   if (!pass) {

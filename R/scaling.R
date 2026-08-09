@@ -45,9 +45,9 @@
 #' scaling(my_model, include.msgs = TRUE, lav_fun = "sem",
 #'         meanstructure = FALSE)
 #'
-scaling <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL, 
-                    return.type = c("object", "logical"), ...) {       
-  match.arg(return.type)           
+scaling <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
+                    return.type = c("object", "logical"), ...) {
+  match.arg(return.type)
   stopifnot(
     "Argument `lv` must be a character vector or NULL" =
       is.character(lv) || is.null(lv)
@@ -58,12 +58,15 @@ scaling <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
   )
   stopifnot(
     "Argument `lav_fun` must be a character string" =
-      is.character(lav_fun)
+      is.character(lav_fun) || is.na(lav_fun)
   )
   stopifnot(
     "Unknown `lav_fun` or `lav_fun` currently not supported" =
-      lav_fun %in% c("lavaan", "sem", "cfa")
+      is.na(lav_fun) || lav_fun %in% c("lavaan", "sem", "cfa")
   )
+  if (!is.na(lav_fun) && is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
+    warning("`lav_fun` is ignored when a parameter table is supplied")
+  }
   UseMethod("scaling")
 }
 
@@ -83,7 +86,7 @@ scaling.lavaan <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
   }
   lav_fun.orig <- get_lavaan_cmd(x)
-  if (lav_fun.orig != lav_fun) {
+  if (!is.na(lav_fun) && lav_fun.orig != lav_fun) {
     warning(
       paste0("The fitted lavaan object was created with ", format_lavaan_fun(lav_fun.orig),
              ", but you specified `lav_fun = '", lav_fun,
@@ -101,13 +104,17 @@ scaling.lavaan <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
 scaling.character <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL,
                               return.type = c("object", "logical"), ...) {
   dotdotdot <- list(...)
-  if (isTRUE(dotdotdot$model.type == "efa")) {
-    dotdotdot[["model.type"]] <- NULL
-    warning("Only `model.type = 'sem'` is currently supported")
+  if (isTRUE(dotdotdot$model_type == "efa")) {
+    dotdotdot[["model_type"]] <- NULL
+    warning("Only `model_type = 'sem'` is currently supported")
   }
   if (isTRUE(dotdotdot$debug)) {
     dotdotdot[["debug"]] <- NULL
     warning("Ignoring `debug`")
+  }
+  if (is.na(lav_fun)) {
+    warning("`lav_fun` is NA. Defaulting to `lav_fun = 'sem'`")
+    lav_fun <- "sem"
   }
   if (is.null(dotdotdot$auto)) {
     dotdotdot$auto <- (lav_fun != "lavaan")
@@ -122,6 +129,10 @@ scaling.character <- function(x, lav_fun = "sem", include.msgs = TRUE, lv = NULL
     dotdotdot
   )
   partable <- do.call(lavaan::lavaanify, args)
+  id.model.type <- classify_model(partable) # errors are handled in this function
+  if (lav_fun == "cfa" && id.model.type != "cfa") {
+    warning("`sem()` or `lavaan()` may be more appropriate functions for this type of model")
+  }
   return(scaling.data.frame(partable, lav_fun = lav_fun, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
