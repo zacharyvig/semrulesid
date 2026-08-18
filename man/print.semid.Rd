@@ -17,7 +17,8 @@
   neg_lab = "No",
   na_lab = "-",
   print_version = TRUE,
-  print_lav_fun = TRUE
+  print_meta = TRUE,
+  meta_sep = ":"
 )
 }
 \arguments{
@@ -47,8 +48,10 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 \item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
-header before the rules output.}
+\item{print_meta}{Logical. If \code{TRUE}, the model type and lavaan function are printed in a
+table before the rules output.}
+
+\item{meta_sep}{Character. The separator between the meta labels and values.}
 }
 \description{
 Printing function for rules list

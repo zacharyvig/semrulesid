@@ -37,7 +37,8 @@ consisting of structural/directional relations, latent variables, or both.
  free variances and whose downstream variables have free error/disturbance
  variance. Necessary but not sufficient.}
  \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one
- or more latent variables have a causal indicator, in addition to effect
+ or more latent variables have a causal indicator (or generally, are
+ downstream of an observed variable), in addition to effect
  indicators. In such a model with a single latent variable, there only need
  to be one (or more) causal indicators as long as there are at least two
  effect indicators. This rule is not currently implemented for models with

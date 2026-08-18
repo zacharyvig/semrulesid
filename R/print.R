@@ -15,6 +15,8 @@
 #'        printed in a header before the rules output.
 #' @param print_meta Logical. If \code{TRUE}, the model type and lavaan function are printed in a
 #'        table before the rules output.
+#' @param meta_sep Character. The separator between the meta labels and values.
+#' @param ... Not currently used.
 #'
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
