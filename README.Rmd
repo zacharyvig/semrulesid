@@ -14,19 +14,19 @@ knitr::opts_chunk$set(
 ```
 
 
-# semidentify
+# semrulesid
 
-`semidentify` allows the user to input a Structural Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check it
+`semrulesid` allows the user to input a Structural Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check it
 against a number of identification rules from the literature. Rules are specified as being necessary and/or sufficient and specific reasons are
-given when a rule is broken. Users should not treat the package output as the sole determinant of model identification. Instead, `semidentify`
+given when a rule is broken. Users should not treat the package output as the sole determinant of model identification. Instead, `semrulesid`
 should be used as a quick check for potential identification issues and outstanding model-specification concerns.
 
 ## Installation
 
-You can install `semidentify` from CRAN:
+You can install `semrulesid` from CRAN:
 
 ```r
-install.packages("semidentify")
+install.packages("semrulesid")
 ```
 
 You can install the development version from
@@ -34,7 +34,7 @@ You can install the development version from
 
 ```r
 install.packages("pak")
-pak::pak("zacharyvig/semidentify")
+pak::pak("zacharyvig/semrulesid")
 ```
 
 ## Functions
@@ -68,7 +68,7 @@ pak::pak("zacharyvig/semidentify")
 ## Example
 
 ```{r}
-library(semidentify)
+library(semrulesid)
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
               L3 =~ x7 + x8 + x9

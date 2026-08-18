@@ -16,7 +16,7 @@ rule_cfa_two_indicator(partable)
 \description{
 Confirmatory Factor Analysis (CFA) models are models with latent variables
 but no structural paths between latent variables. CFA rules assume each 
-latent variable is correctly scaled (see \link[semidentify]{scaling}).
+latent variable is correctly scaled (see \link[semrulesid]{scaling}).
 }
 \details{
 \describe{

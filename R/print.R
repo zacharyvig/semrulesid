@@ -40,8 +40,8 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   midx <- 0L # global message index
 
   if (print_version) {
-    version <- utils::packageVersion("semidentify")
-    cat(sprintf("semidentify %s Rule Check\n", version))
+    version <- utils::packageVersion("semrulesid")
+    cat(sprintf("semrulesid %s Rule Check\n", version))
   }
 
   if (print_lav_fun) {
@@ -141,8 +141,8 @@ print.semid2 <- function(x, ..., step_names = c("Measurement Model", "Latent Var
 
   # preliminary printing
   if (print_version) {
-    version <- utils::packageVersion("semidentify")
-  cat(sprintf("semidentify %s Two-Step Rule Check\n", version))
+    version <- utils::packageVersion("semrulesid")
+  cat(sprintf("semrulesid %s Two-Step Rule Check\n", version))
   }
   if (print_lav_fun) {
     lav_fun <- x$lav_fun
@@ -208,8 +208,8 @@ print.semscale <- function(x, ..., print_msgs = TRUE, window = 56L, sep_spaces =
   indents <- strrep(" ", ind_lens)
 
   if (print_version) {
-    version <- utils::packageVersion("semidentify")
-    cat(sprintf("semidentify %s Latent Variable Scaling\n", version))
+    version <- utils::packageVersion("semrulesid")
+    cat(sprintf("semrulesid %s Latent Variable Scaling\n", version))
   }
 
   if (print_lav_fun) {

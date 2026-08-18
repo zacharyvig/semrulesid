@@ -25,7 +25,7 @@ scaling(
 }
 \arguments{
 \item{x}{\code{lavaan} model syntax, a \code{lavaan} parameter table or a
-\code{semidentify} ID object.}
+\code{semrulesid} ID object.}
 
 \item{lav_fun}{A character string specifying the function you intend to use
 to fit the model. This will ensure the correct model defaults are

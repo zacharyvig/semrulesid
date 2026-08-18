@@ -88,7 +88,7 @@ sem_to_reg <- function(partable) {
 
 #' Gather identification rules as a list
 #'
-#' The `semidentify` package stores identification rule functions internally.
+#' The `semrulesid` package stores identification rule functions internally.
 #' This function makes them available to the user as a list.
 #'
 #' @param rule A character vector specifying the name of the rule as it's
@@ -124,7 +124,7 @@ get_rules <- function(rule = "*", model_type = "*") {
     id_stop(gettext("model_type= must be one of 'all', 'reg', 'cfa', or 'sem'"))
   }
   pull_fns <- function(fns) {
-    mget(fns, envir = asNamespace("semidentify"), mode = "function")
+    mget(fns, envir = asNamespace("semrulesid"), mode = "function")
   }
   rules <- get_rule_names(model_type)
   if (any(rule %in% c("*", "all"))) {
@@ -150,7 +150,7 @@ get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
   } else {
     sprintf("^rule_%s", model_type)
   }
-  ns <- asNamespace("semidentify")
+  ns <- asNamespace("semrulesid")
   objs <- ls(envir = ns, all.names = TRUE)
   out <- sapply(prefix, function(p) {
     grep(p, objs, value = TRUE)

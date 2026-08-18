@@ -1,23 +1,23 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# semidentify
+# semrulesid
 
-`semidentify` allows the user to input a Structural Equation Model (SEM)
+`semrulesid` allows the user to input a Structural Equation Model (SEM)
 in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check
 it against a number of identification rules from the literature. Rules
 are specified as being necessary and/or sufficient and specific reasons
 are given when a rule is broken. Users should not treat the package
 output as the sole determinant of model identification. Instead,
-`semidentify` should be used as a quick check for potential
+`semrulesid` should be used as a quick check for potential
 identification issues and outstanding model-specification concerns.
 
 ## Installation
 
-You can install `semidentify` from CRAN:
+You can install `semrulesid` from CRAN:
 
 ``` r
-install.packages("semidentify")
+install.packages("semrulesid")
 ```
 
 You can install the development version from
@@ -25,7 +25,7 @@ You can install the development version from
 
 ``` r
 install.packages("pak")
-pak::pak("zacharyvig/semidentify")
+pak::pak("zacharyvig/semrulesid")
 ```
 
 ## Functions
@@ -78,10 +78,10 @@ pak::pak("zacharyvig/semidentify")
 ## Example
 
 ``` r
-library(semidentify)
-#> semidentify 0.4.0
+library(semrulesid)
+#> semrulesid 0.4.0
 #> Please report bugs or edge cases at:
-#> https://github.com/zacharyvig/semidentify/issues
+#> https://github.com/zacharyvig/semrulesid/issues
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
               L3 =~ x7 + x8 + x9
@@ -90,11 +90,11 @@ my_model <- ' L1 =~ x1 + x2 + x3
 
 id(my_model, print_msgs = TRUE, lav_fun = "sem", 
    meanstructure = FALSE) # check identification rules
-#> semidentify 0.4.0 Rule Check
+#> semrulesid 0.4.0 Rule Check
 #> lavaan function: lavaan::sem()
 #> 
 #>                        Pass Necessary Sufficient Message 
-#> N_theta Rule            Yes       Yes         No 
+#> N_theta Rule (t-Rule)   Yes       Yes         No 
 #> Latent Scaling Rule     Yes       Yes         No 
 #> Exogenous X Rule          -         -          -       1 
 #> 2+ Emitted Paths Rule   Yes       Yes         No 
@@ -114,7 +114,7 @@ id(my_model, print_msgs = TRUE, lav_fun = "sem",
 
 scaling(my_model, print_msgs = TRUE, lav_fun = "sem", 
         meanstructure = FALSE) # check latent variable scaling
-#> semidentify 0.4.0 Latent Variable Scaling
+#> semrulesid 0.4.0 Latent Variable Scaling
 #> lavaan function: lavaan::sem()
 #> 
 #> L1

@@ -9,7 +9,7 @@
 #' identified.
 #'
 #' @param x \code{lavaan} model syntax, a \code{lavaan} parameter table or a
-#'        \code{semidentify} ID object.
+#'        \code{semrulesid} ID object.
 #' @param lav_fun A character string specifying the function you intend to use
 #'        to fit the model. This will ensure the correct model defaults are
 #'        specified. Options currently include "lavaan", "sem", or "cfa". If a

@@ -4,11 +4,11 @@
 #' consisting of structural/directional relations, latent variables, or both.
 #'
 #' \describe{
-#'  \item{N_theta Rule}{The number of free parameters must be less than or equal
-#'  to the number of sample means, variances, and covariances. Necessary but not
-#'  sufficient}
+#'  \item{N_theta Rule (a.k.a. t-Rule)}{The number of free parameters must be
+#'  less than or equal to the number of sample means, variances, and
+#'  covariances. Necessary but not sufficient}
 #'  \item{Latent Scaling Rule}{In a model with latent variables, all latent
-#'  variables must be correctly scaled (see \link[semidentify]{scaling}).
+#'  variables must be correctly scaled (see \link[semrulesid]{scaling}).
 #'  Necessary but not sufficient.}
 #'  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent
 #'  variables must emit two paths, either to other latent variables or to
@@ -35,7 +35,7 @@
 NULL
 
 
-# N_theta rule (compares parameters to observed statistics)
+# N_theta rule (or t-Rule; compares parameters to observed statistics)
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
@@ -44,7 +44,7 @@ rule_sem_ntheta <- function(partable) {
   # number of means, variances, and covariances
   ndat <- get_ndata(partable)
   # build output
-  rule <- "N_theta Rule"
+  rule <- "N_theta Rule (t-Rule)"
   pass <- isTRUE(ntheta <= ndat)
   if (pass) {
     msgs <- NA

@@ -25,11 +25,11 @@ consisting of structural/directional relations, latent variables, or both.
 }
 \details{
 \describe{
- \item{N_theta Rule}{The number of free parameters must be less than or equal
- to the number of sample means, variances, and covariances. Necessary but not
- sufficient}
+ \item{N_theta Rule (a.k.a. t-Rule)}{The number of free parameters must be
+ less than or equal to the number of sample means, variances, and
+ covariances. Necessary but not sufficient}
  \item{Latent Scaling Rule}{In a model with latent variables, all latent
- variables must be correctly scaled (see \link[semidentify]{scaling}).
+ variables must be correctly scaled (see \link[semrulesid]{scaling}).
  Necessary but not sufficient.}
  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent
  variables must emit two paths, either to other latent variables or to

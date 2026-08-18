@@ -1,8 +1,8 @@
-#' semidentify package outline
+#' semrulesid package outline
 #'
 #' @keywords internal
 #'
-#' @section Purpose: `semidentify` allows the user to input a Structural
+#' @section Purpose: `semrulesid` allows the user to input a Structural
 #' Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012)
 #' syntax and check it against a number of identification rules from the
 #' literature. Rules are specified as being necessary and/or sufficient and

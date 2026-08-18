@@ -37,7 +37,7 @@ An object of class \code{semid} or \code{semid2} (if \code{twostep =
         TRUE} or \code{id2} is called. See details.)
 }
 \description{
-This is the "workhorse" function of the \code{semidentify} package. The user
+This is the "workhorse" function of the \code{semrulesid} package. The user
 supplies a model string in \code{lavaan} syntax (see
 \link[lavaan]{model.syntax} for more details) and the function prints an
 informative table to the console about the status of the model on a variety

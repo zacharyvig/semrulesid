@@ -1,4 +1,4 @@
-Package: semidentify
+Package: semrulesid
 Type: Package
 Title: Evaluate Structural Equation Model Identification Rules
 Version: 0.4.0
@@ -30,5 +30,5 @@ VignetteBuilder: knitr
 Language: en-US
 Config/roxygen2/version: 8.0.0
 RoxygenNote: 8.0.0
-URL: https://github.com/zacharyvig/semidentify
-BugReports: https://github.com/zacharyvig/semidentify/issues
+URL: https://github.com/zacharyvig/semrulesid
+BugReports: https://github.com/zacharyvig/semrulesid/issues

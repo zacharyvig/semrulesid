@@ -21,7 +21,7 @@ models. Use "*" to get all rules in the package.}
 A list object with the rule function(s) specified by the user.
 }
 \description{
-The `semidentify` package stores identification rule functions internally.
+The `semrulesid` package stores identification rule functions internally.
 This function makes them available to the user as a list.
 }
 \examples{
