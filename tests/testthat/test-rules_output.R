@@ -73,7 +73,7 @@ test_that("cfa rules distinguish two- and three-indicator models", {
   }
 })
 
-test_that("sem rules handle scaling, emitted paths, and causal indicators", {
+test_that("sem rules handle scaling, emitted paths, and causal indicators/exogenous variables", {
   rules <- get_rules(model_type = "sem")
   expectations <- list(
     sem_two_emitted_paths_fail = list(
@@ -99,6 +99,24 @@ test_that("sem rules handle scaling, emitted paths, and causal indicators", {
       rule_sem_latent_scaling = list(pass = FALSE, cond = "N"),
       rule_sem_two_emitted_paths = list(pass = TRUE, cond = "N"),
       rule_sem_exogenous_x = list(pass = NA, cond = NA_character_)
+    ),
+    sem_exogenous_x_pass1 = list(
+      rule_sem_ntheta = list(pass = TRUE, cond = "N"),
+      rule_sem_latent_scaling = list(pass = TRUE, cond = "N"),
+      rule_sem_two_emitted_paths = list(pass = TRUE, cond = "N"),
+      rule_sem_exogenous_x = list(pass = TRUE, cond = "S")
+    ),
+    sem_exogenous_x_pass2 = list(
+      rule_sem_ntheta = list(pass = TRUE, cond = "N"),
+      rule_sem_latent_scaling = list(pass = TRUE, cond = "N"),
+      rule_sem_two_emitted_paths = list(pass = TRUE, cond = "N"),
+      rule_sem_exogenous_x = list(pass = TRUE, cond = "S")
+    ),
+    sem_exogenous_x_fail = list(
+      rule_sem_ntheta = list(pass = TRUE, cond = "N"),
+      rule_sem_latent_scaling = list(pass = TRUE, cond = "N"),
+      rule_sem_two_emitted_paths = list(pass = FALSE, cond = "N"),
+      rule_sem_exogenous_x = list(pass = FALSE, cond = "S")
     )
   )
   for (model_name in names(expectations)) {

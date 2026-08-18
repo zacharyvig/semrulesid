@@ -16,13 +16,14 @@
 #'  free variances and whose downstream variables have free error/disturbance
 #'  variance. Necessary but not sufficient.}
 #'  \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one
-#'  or more latent variables have a causal indicator, in addition to effect
+#'  or more latent variables have a causal indicator (or generally, are
+#'  downstream of an observed variable), in addition to effect
 #'  indicators. In such a model with a single latent variable, there only need
 #'  to be one (or more) causal indicators as long as there are at least two
 #'  effect indicators. This rule is not currently implemented for models with
 #'  multiple latent variables. Sufficient but not necessary.}
 #' }
-#' 
+#'
 #' @name sem_rules
 #' @param partable A \code{lavaan} parameter table
 #'
@@ -214,7 +215,7 @@ rule_sem_two_emitted_paths <- function(partable) {
 rule_sem_exogenous_x <- function(partable) {
   rule <- "Exogenous X Rule"
   # retrieve attributes and variable names
-  vars <- get_partable_vars(partable, c("lv", "ov.cind", "ov.ind"))
+  vars <- get_partable_vars(partable, c("lv", "ov", "ov.ind"))
   if (length(vars$lv) == 0) {
     out <- build_rule_out(
       rule = rule,
@@ -233,17 +234,17 @@ rule_sem_exogenous_x <- function(partable) {
       with(partable, lhs == var & rhs %in% vars$ov.ind)
     )
   }, simplify = TRUE)
-  n.cind <- sapply(vars$lv, function(var) {
+  n.exogx <- sapply(vars$lv, function(var) {
     sum(
-      with(partable, lhs == var & rhs %in% vars$ov.cind)
+      with(partable, lhs == var & rhs %in% vars$ov & (op == "~" | op == "<~"))
     )
   }, simplify = TRUE)
-  if (all(n.cind == 0)) {
+  if (all(n.exogx == 0)) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
       msgs = add_rule_msgs(
-        new_msgs = "This rule only applies when causal indicators are in the model",
+        new_msgs = "This rule only applies when causal indicators or exogenous observed variables are in the model",
         levels = "1"
       ),
       cond = NA_character_

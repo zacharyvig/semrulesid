@@ -67,6 +67,18 @@ test_models <- list(
                 type = "sem",
                 model = "L1 =~ -1*Y1 + Y2 + Y3\nL1 <~ X1\nL1 ~~ L1"
         ),
+        sem_exogenous_x_pass1 = list(
+                type = "sem",
+                model = "L1 =~ Y1 + Y2 + Y3\nL1 <~ X1\nL1 ~~ NA*L1"
+        ),
+        sem_exogenous_x_pass2 = list(
+                type = "sem",
+                model = "L1 =~ Y1 + Y2 + Y3\nL1 ~ X1\nL1 ~~ L1"
+        ),
+        sem_exogenous_x_fail = list(
+                type = "sem",
+                model = "L1 =~ Y1\nL1 <~ X1\nL1 ~~ NA*L1\nY1~~NA*Y1"
+        ),
         mlm = list(
                 type = "sem",
                 model = "level: 1\nY1 ~ X1 + X2\nlevel: 2\nY2 ~ Y1 + X3"
