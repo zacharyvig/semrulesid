@@ -79,70 +79,14 @@ pak::pak("zacharyvig/semrulesid")
 
 ``` r
 library(semrulesid)
-#> semrulesid 0.4.0
-#> Please report bugs or edge cases at:
-#> https://github.com/zacharyvig/semrulesid/issues
+
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
               L3 =~ x7 + x8 + x9
               L2 ~ L1
               L3 ~ L2 '
 
-id(my_model, print_msgs = TRUE, lav_fun = "sem", 
-   meanstructure = FALSE) # check identification rules
-#> semrulesid 0.4.0 Rule Check
-#> lavaan function: lavaan::sem()
-#> 
-#>                        Pass Necessary Sufficient Message 
-#> N_theta Rule (t-Rule)   Yes       Yes         No 
-#> Latent Scaling Rule     Yes       Yes         No 
-#> Exogenous X Rule          -         -          -       1 
-#> 2+ Emitted Paths Rule   Yes       Yes         No 
-#> Three Indicator Rule      -         -          -       2 
-#> Two Indicator Rule        -         -          -       2 
-#> Fully Recursive Rule      -         -          -       3 
-#> Null B_YY Rule            -         -          -       3 
-#> Recur/Corr Err Rule       -         -          -       3 
-#> ---
-#> Messages
-#> 1 - [Info] This rule only applies when causal
-#>     indicators are in the model
-#> 2 - [Info] This rule only applies to confirmatory
-#>     factor analysis models
-#> 3 - [Info] This rule only applies when there are no
-#>     latent variables in the model
+id(my_model, meanstructure = FALSE) # check identification rules
 
-scaling(my_model, print_msgs = TRUE, lav_fun = "sem", 
-        meanstructure = FALSE) # check latent variable scaling
-#> semrulesid 0.4.0 Latent Variable Scaling
-#> lavaan function: lavaan::sem()
-#> 
-#> L1
-#>   LV is scaled?            Yes
-#>   No. of indicators:       3
-#>   Scaling indicator(s):    x1
-#>   Mean structure?          No
-#> 
-#>   Scaling method(s):
-#>   - Scaling indicator
-#> 
-#> 
-#> L2
-#>   LV is scaled?            Yes
-#>   No. of indicators:       3
-#>   Scaling indicator(s):    x4
-#>   Mean structure?          No
-#> 
-#>   Scaling method(s):
-#>   - Scaling indicator
-#> 
-#> 
-#> L3
-#>   LV is scaled?            Yes
-#>   No. of indicators:       3
-#>   Scaling indicator(s):    x7
-#>   Mean structure?          No
-#> 
-#>   Scaling method(s):
-#>   - Scaling indicator
+scaling(my_model, meanstructure = FALSE) # check latent variable scaling
 ```

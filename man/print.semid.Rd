@@ -6,7 +6,6 @@
 \usage{
 \method{print}{semid}(
   x,
-  ...,
   names = c("", "Pass", "Necessary", "Sufficient"),
   print_msgs = NULL,
   msgs_name = "Message",
@@ -18,13 +17,12 @@
   na_lab = "-",
   print_version = TRUE,
   print_meta = TRUE,
-  meta_sep = ":"
+  meta_sep = ":",
+  ...
 )
 }
 \arguments{
 \item{x}{A \code{semid} object}
-
-\item{...}{Not currently used.}
 
 \item{names}{Character vector. The names of the columns of the main table}
 
@@ -52,6 +50,8 @@ printed in a header before the rules output.}
 table before the rules output.}
 
 \item{meta_sep}{Character. The separator between the meta labels and values.}
+
+\item{...}{Arguments passed to print.semscale if applicable.}
 }
 \description{
 Printing function for rules list

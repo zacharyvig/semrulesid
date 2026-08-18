@@ -16,14 +16,14 @@
 #' @param print_meta Logical. If \code{TRUE}, the model type and lavaan function are printed in a
 #'        table before the rules output.
 #' @param meta_sep Character. The separator between the meta labels and values.
-#' @param ... Not currently used.
+#' @param ... Arguments passed to print.semscale if applicable.
 #'
 #' @export
-print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
+print.semid <- function(x, names = c("", "Pass", "Necessary", "Sufficient"),
                         print_msgs = NULL, msgs_name = "Message", msgs_sec = "Messages",
                         msgs_levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos_lab = "Yes", neg_lab = "No", na_lab = "-",
-                        print_version = TRUE, print_meta = TRUE, meta_sep = ":") {
+                        print_version = TRUE, print_meta = TRUE, meta_sep = ":", ...) {
   if (is.null(print_msgs)) {
     print_msgs <- x$print_options$print_msgs %||% TRUE
   } else if (!is.null(x$print_options$print_msgs) &&
@@ -130,6 +130,10 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   }
 
   cat("\n")
+
+  if (!is.null(x$scaling)) {
+    print(x$scaling, ...)
+  }
 
   return(invisible(x))
 

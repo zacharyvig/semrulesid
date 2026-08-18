@@ -91,14 +91,15 @@ id <- function(x, print_msgs = TRUE, lav_fun = "sem", twostep = FALSE, ...) {
 #' @export
 id.semscale <- function(x, print_msgs = TRUE, lav_fun = "sem",
                         twostep = FALSE, ...) {
-  print(x)
-  id.data.frame(
+  out <- id.data.frame(
     x = x$partable,
     print_msgs = print_msgs,
     lav_fun = lav_fun,
     twostep = twostep,
     ...
   )
+  out$scaling <- x
+  out
 }
 
 #' @export
@@ -205,6 +206,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
     Rules = rules,
     partable = partable,
     lav_fun = lav_fun,
+    scaling = NULL,
     print_options = list(
       print_msgs = print_msgs
     )

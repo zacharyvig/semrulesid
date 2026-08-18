@@ -76,8 +76,7 @@ scaling <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
 #' @export
 scaling.semid <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL, 
                           return_type = c("object", "logical"), ...) {
-  print.semid(x)
-  scaling.data.frame(
+  scaling_out <- scaling.data.frame(
     x = x$partable,
     lav_fun = lav_fun,
     print_msgs = print_msgs,
@@ -85,6 +84,12 @@ scaling.semid <- function(x, lav_fun = "sem", print_msgs = TRUE, lv = NULL,
     return_type = return_type,
     ...
   )
+  if (identical(return_type, "logical")) {
+    return(scaling_out)
+  } else {
+    x$scaling <- scaling_out
+    return(x)
+  }
 }
 
 #' @rdname scaling

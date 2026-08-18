@@ -67,17 +67,16 @@ pak::pak("zacharyvig/semrulesid")
 
 ## Example
 
-```{r}
+```r
 library(semrulesid)
+
 my_model <- ' L1 =~ x1 + x2 + x3
               L2 =~ x4 + x5 + x6
               L3 =~ x7 + x8 + x9
               L2 ~ L1
               L3 ~ L2 '
 
-id(my_model, print_msgs = TRUE, lav_fun = "sem", 
-   meanstructure = FALSE) # check identification rules
+id(my_model, meanstructure = FALSE) # check identification rules
 
-scaling(my_model, print_msgs = TRUE, lav_fun = "sem", 
-        meanstructure = FALSE) # check latent variable scaling
+scaling(my_model, meanstructure = FALSE) # check latent variable scaling
 ```
