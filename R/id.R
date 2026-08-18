@@ -110,7 +110,7 @@ id.lavaan <- function(x, print_msgs = TRUE, lav_fun = "sem",
     print_msgs = print_msgs,
     lav_fun = out$lav_fun,
     twostep = twostep,
-    id_model_type = NA
+    id_model_type = out$id_model_type
   )
 }
 

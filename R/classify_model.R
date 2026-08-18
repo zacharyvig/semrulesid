@@ -33,3 +33,14 @@ classify_model <- function(partable = NULL) {
     id_stop(gettext("Cannot classify model. This is an internal error. Please report this issue to the package maintainer."))
   }
 }
+
+# Get a human-readable label for the model type
+get_model_type_label <- function(model_type) {
+  switch(
+    model_type,
+    sem = "General SEM",
+    cfa = "CFA",
+    reg = "Simultaneous Equations",
+    NA_character_
+  )
+}
