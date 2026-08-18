@@ -1,0 +1,180 @@
+---
+title: "Getting Started with `semrulesid`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{semrulesid-quickstart}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(semrulesid)
+```
+
+## Introduction
+
+`semrulesid` allows the user to check a structural equation model (SEM) written
+in [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax against a number
+of identification rules from the literature. Rules are specified as being
+necessary and/or sufficient and specific reasons are given when a rule is broken
+or not applicable. Users should not treat the package output as the sole
+determinant of model identification. Instead, `semrulesid` should be used as a
+quick check for potential identification issues and outstanding
+model-specification concerns.
+
+
+## Basic workflow
+
+The primary function is `id()`. Supply a model in `lavaan` syntax and specify
+the `lavaan` function whose defaults you intend to use through `lav_fun`.
+
+```{r basic-id}
+model <- '
+  L1 =~ Y1 + Y2 + Y3
+  L2 =~ Y4 + Y5 + Y6
+  L2 ~ L1
+'
+
+id(model, lav_fun = "sem")
+```
+
+The output table reports whether each implemented rule passes and whether the
+rule is necessary, sufficient, or neither for the relevant model class, which is
+printed at the top of the output.
+
+### Interpreting messages
+
+The `id()` function prints explanatory messages below the rule-check table. The
+numbers in the table's `Message` column correspond to numbered messages in this
+section.
+
+Messages are assigned one of three levels:
+
+- **Info**: The rule is not applicable to the current model or model type, or
+  the package is providing contextual information about how the rule was
+  evaluated.
+- **Reason**: A condition of a *sufficient* rule was not met. This does not by
+  itself establish that the model is underidentified; it means that the rule
+  alone cannot establish identification for the model.
+- **WARNING**: A *necessary* condition was not met. Under the assumptions of the
+  relevant rule, this indicates that the model is *not* identified.
+
+A `Reason` message for a sufficient rule should be interpreted differently from
+a `WARNING` message for a necessary rule. A `Reason` means that the package
+*could not use that particular sufficient condition* to certify identification.
+A `WARNING` identifies a potential identification problem that *requires model
+respecification* or further investigation.
+
+## Choosing `lav_fun`
+
+When a model string is supplied, `lav_fun` determines which `lavaan` defaults
+are used when the model is converted to a parameter table. Current options are:
+
+- `"lavaan"`
+- `"sem"`
+- `"cfa"`
+
+For example, use `"cfa"` for a confirmatory factor analysis model:
+
+```{r cfa, eval=FALSE}
+cfa_model <- '
+  L1 =~ Y1 + Y2 + Y3
+  L2 =~ Y4 + Y5 + Y6
+  L1 ~~ L2
+'
+
+id(cfa_model, lav_fun = "cfa")
+```
+
+When a parameter table or fitted `lavaan` object is supplied, `lav_fun` is
+ignored since the model defaults have already been applied.
+
+## Checking latent-variable scaling
+
+Use `scaling()` to inspect whether each latent variable scaled via a method used
+in the literature.
+
+```{r scaling}
+scaling(model, lav_fun = "sem")
+```
+
+For models without a mean structure, the package checks whether each latent
+variable has assigned units through a fixed, nonzero loading (scaling indicator)
+or a fixed positive latent-variable variance.
+
+For models with a mean structure, the package also checks whether the latent
+variable has an assigned origin, such as through a fixed latent-variable mean or
+a fixed intercept for a scaling indicator.
+
+## Working with a fitted `lavaan` model
+
+If a model has already been fitted with `lavaan`, pass the fitted object
+directly to `id()` or `scaling()`. Set `lav_fun = NA` to avoid warnings when
+`lav_fun` does not match the call used to fit the model.
+
+```{r fitted-model, eval = FALSE}
+library(lavaan)
+
+fit <- sem(model, data = my_data)
+
+id(fit, lav_fun = NA)
+scaling(fit, lav_fun = NA)
+```
+
+## Piping identification and scaling checks
+
+`semrulesid` supports the use of a pipe operator to chain together
+identification and scaling checks, e.g., using the base R pipe `|>`:
+
+```{r piping, eval=FALSE}
+id(model, lav_fun = "sem") |> scaling()
+```
+
+The reverse order is also supported:
+
+```{r reverse-piping,eval=FALSE}
+scaling(model, lav_fun = "sem") |> id(print_msgs = FALSE)
+```
+
+## The two-step rule
+
+For supported full SEMs (latent variables plus structural paths), `id2()`
+applies the two-step rule of identification (Bollen, 2026). It first transforms
+the model into a confirmatory factor analysis (CFA) model and evaluates it for
+identification. It then transforms the model into a simultaneous equations
+model, and evaluates *it* for identification. If both steps are identified, the
+original model is identified. The outputs of both steps are printed via the
+`id2()` function.
+
+```{r two-step}
+id2(model, lav_fun = "sem")
+```
+
+The two-step rule is currently intended for supported single-level SEMs and is
+not applicable to every model type.
+
+## Next steps
+
+For details on individual rules, see:
+
+```{r help, eval = FALSE}
+?id
+?scaling
+?get_rules
+```
+
+You can retrieve implemented rule functions with `get_rules()`:
+
+```{r get-rules}
+cfa_rules <- get_rules(rule = "*", model_type = "cfa")
+```
+
+For further theoretical background, see Ken Bollen's book *Elements of
+Structural Equation Models* (2026).

@@ -42,3 +42,91 @@ test_that("id2 printing shows both steps", {
   expect_true(any(grepl("Step 1: Measurement Model", out)))
   expect_true(any(grepl("Step 2: Latent Variable/Structural Model", out)))
 })
+
+test_that("id2() creates the expected CFA and simultaneous-equations partables", {
+  model <- '
+    L1 =~ Y1 + Y2 + Y3
+    L2 =~ Y4 + Y5 + Y6
+
+    L2 ~ L1
+  '
+
+  expect_no_error(
+    out <- id2(model, lav_fun = "sem")
+  )
+
+  expect_s3_class(out, "semid2")
+  expect_s3_class(out$id_cfa, "semid")
+  expect_s3_class(out$id_reg, "semid")
+
+  cfa_pt <- out$id_cfa$partable
+  reg_pt <- out$id_reg$partable
+
+  # Step 1: measurement relations remain unchanged.
+  expect_true(any(
+    cfa_pt$lhs == "L1" &
+      cfa_pt$op == "=~" &
+      cfa_pt$rhs == "Y1"
+  ))
+
+  expect_true(any(
+    cfa_pt$lhs == "L2" &
+      cfa_pt$op == "=~" &
+      cfa_pt$rhs == "Y6"
+  ))
+
+  # Step 1: the latent structural path becomes a covariance.
+  expect_false(any(
+    cfa_pt$lhs == "L2" &
+      cfa_pt$op == "~" &
+      cfa_pt$rhs == "L1"
+  ))
+
+  expect_true(any(
+    cfa_pt$op == "~~" &
+      (
+        (cfa_pt$lhs == "L2" & cfa_pt$rhs == "L1") |
+          (cfa_pt$lhs == "L1" & cfa_pt$rhs == "L2")
+      )
+  ))
+
+  # Step 2: the latent structural path remains a regression.
+  expect_true(any(
+    reg_pt$lhs == "L2" &
+      reg_pt$op == "~" &
+      reg_pt$rhs == "L1"
+  ))
+
+  # Step 2: observed measurement-indicator loadings are removed.
+  expect_false(any(
+    reg_pt$op == "=~" &
+      reg_pt$rhs %in% c("Y1", "Y2", "Y3", "Y4", "Y5", "Y6")
+  ))
+
+  # Confirm the transformed components carry their intended classifications.
+  expect_identical(out$id_cfa$id_model_type, "cfa")
+  expect_identical(out$id_reg$id_model_type, "reg")
+})
+
+test_that("id2() rejects non-SEM models", {
+  cfa_model <- '
+    L1 =~ Y1 + Y2 + Y3
+    L2 =~ Y4 + Y5 + Y6
+    L1 ~~ L2
+  '
+
+  reg_model <- '
+    Y1 ~ X1 + X2
+    Y2 ~ Y1 + X3
+  '
+
+  expect_error(
+    id2(cfa_model, lav_fun = "cfa"),
+    "only applicable to full SEMs"
+  )
+
+  expect_error(
+    id2(reg_model, lav_fun = "sem"),
+    "only applicable to full SEMs"
+  )
+})
