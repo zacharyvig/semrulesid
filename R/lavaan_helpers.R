@@ -60,7 +60,8 @@ lavaan_obj_to_partable <- function(x, lav_fun, ...) {
     x@ParTable,
     stringsAsFactors = FALSE
   )
-  return(list(partable = partable, lav_fun = lav_fun))
+  id_model_type <- classify_model(partable)
+  return(list(partable = partable, lav_fun = lav_fun, id_model_type = id_model_type))
 }
 
 # internal validation function for lav_fun argument

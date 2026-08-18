@@ -13,16 +13,15 @@
 #' @param na_lab Character. The label for \code{NA}/blank cells.
 #' @param print_version Logical. If \code{TRUE}, the version of the package is
 #'        printed in a header before the rules output.
-#' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed in a
-#'        header before the rules output.
-#' @param ... Not currently used.
+#' @param print_meta Logical. If \code{TRUE}, the model type and lavaan function are printed in a
+#'        table before the rules output.
 #'
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
                         print_msgs = NULL, msgs_name = "Message", msgs_sec = "Messages",
                         msgs_levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos_lab = "Yes", neg_lab = "No", na_lab = "-",
-                        print_version = TRUE, print_lav_fun = TRUE) {
+                        print_version = TRUE, print_meta = TRUE, meta_sep = ":") {
   if (is.null(print_msgs)) {
     print_msgs <- x$print_options$print_msgs %||% TRUE
   } else if (!is.null(x$print_options$print_msgs) &&
@@ -31,6 +30,30 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
       "`print_msgs` supplied to print() overrides the value stored in the object."
     )
   }
+
+  if (print_version) {
+    version <- utils::packageVersion("semrulesid")
+    cat(sprintf("semrulesid %s Rule Check\n\n", version))
+  }
+
+  if (print_meta) {
+    meta_labels <- c("lavaan function", "Model type")
+    meta_labels <- format(
+      meta_labels,
+      width = max(nchar(meta_labels)),
+      justify = "left"
+    )
+    meta_rows <- c(
+      paste0(meta_labels[1], " ", meta_sep, " ", format_lavaan_fun(x$lav_fun)),
+      paste0(meta_labels[2], " ", meta_sep, " ", get_model_type_label(x$id_model_type))
+    )
+    cat(paste(meta_rows, collapse = "\n"), "\n")
+  }
+
+  if (print_version || print_meta) {
+    cat("\n")
+  }
+
   if (print_msgs) {
     names[5] <- msgs_name
     msgs <- character(0) # global message vector
@@ -38,20 +61,6 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   cols_width <- sum(nchar(names[-1])) + length(names[-1])
   names[1] <- format(names[1], width = window - cols_width)
   midx <- 0L # global message index
-
-  if (print_version) {
-    version <- utils::packageVersion("semrulesid")
-    cat(sprintf("semrulesid %s Rule Check\n", version))
-  }
-
-  if (print_lav_fun) {
-    lav_fun <- x$lav_fun
-    cat(sprintf("lavaan function: %s\n", format_lavaan_fun(lav_fun)))
-  }
-
-  if (print_version || print_lav_fun) {
-    cat("\n")
-  }
 
   cat(names, strrep("\n", 1L))
 
