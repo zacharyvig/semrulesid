@@ -34,13 +34,30 @@ classify_model <- function(partable = NULL) {
   }
 }
 
-# Get a human-readable label for the model type
-get_model_type_label <- function(model_type) {
-  switch(
-    model_type,
-    sem = "General SEM",
-    cfa = "CFA",
-    reg = "Simultaneous Equations",
-    NA_character_
-  )
+# internal function to convert model type abbrevation to full name
+#' @noRd
+get_model_type_name <- function(model_type, capitalize = TRUE, plural = FALSE, long = TRUE) {
+  model_type <- match.arg(model_type, c("reg", "cfa", "sem"))
+  if (long) {
+    title <- switch(
+      model_type,
+      reg = "simultaneous equations model",
+      cfa = "confirmatory factor analysis model",
+      sem = "general structural equation model"
+    )
+  } else {
+    title <- switch(
+      model_type,
+      sem = "general SEM",
+      cfa = "CFA model",
+      reg = "simultaneous equations model"
+    )
+  }
+  if (capitalize) {
+    title <- tools::toTitleCase(title)
+  }
+  if (plural) {
+    title <- paste0(title, "s")
+  }
+  title
 }

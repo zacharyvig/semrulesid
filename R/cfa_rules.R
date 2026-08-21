@@ -33,6 +33,7 @@ NULL
 #' @keywords internal
 rule_cfa_three_indicator <- function(partable) {
   rule <- "Three Indicator Rule"
+  applies_to <- "cfa"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
@@ -43,7 +44,8 @@ rule_cfa_three_indicator <- function(partable) {
         new_msgs = "This rule only applies to confirmatory factor analysis models",
         levels = "1"
       ),
-      cond = NA_character_
+      cond = NA_character_,
+      applies_to = applies_to
     )
     return(out)
   }
@@ -67,7 +69,8 @@ rule_cfa_three_indicator <- function(partable) {
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
-      cond = NA_character_
+      cond = NA_character_,
+      applies_to = applies_to
     )
     return(out)
   }
@@ -118,7 +121,8 @@ rule_cfa_three_indicator <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond
+    cond = cond,
+    applies_to = applies_to
   )
 }
 
@@ -128,6 +132,7 @@ rule_cfa_three_indicator <- function(partable) {
 #' @keywords internal
 rule_cfa_two_indicator <- function(partable) {
   rule <- "Two Indicator Rule"
+  applies_to <- "cfa"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
@@ -138,7 +143,8 @@ rule_cfa_two_indicator <- function(partable) {
         new_msgs = "This rule only applies to confirmatory factor analysis models",
         levels = "1"
       ),
-      cond = NA_character_
+      cond = NA_character_,
+      applies_to = applies_to
     )
     return(out)
   }
@@ -150,7 +156,8 @@ rule_cfa_two_indicator <- function(partable) {
         new_msgs = "This rule only applies when more than one latent variable is in the model",
         levels = "1"
       ),
-      cond = NA_character_
+      cond = NA_character_,
+      applies_to = applies_to
     )
     return(out)
   }
@@ -174,7 +181,8 @@ rule_cfa_two_indicator <- function(partable) {
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
         levels = "1"
       ),
-      cond = NA_character_
+      cond = NA_character_,
+      applies_to = applies_to
     )
     return(out)
   }
@@ -235,6 +243,7 @@ rule_cfa_two_indicator <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond
+    cond = cond,
+    applies_to = applies_to
   )
 }

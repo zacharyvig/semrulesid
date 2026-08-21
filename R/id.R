@@ -179,7 +179,8 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
       partable = partable,
       lav_fun = lav_fun,
       print_options = list(
-        print_msgs = print_msgs
+        print_msgs = print_msgs,
+        applicable_rules_policy = "hide"
       )
     )
 
@@ -208,7 +209,8 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
     lav_fun = lav_fun,
     scaling = NULL,
     print_options = list(
-      print_msgs = print_msgs
+      print_msgs = print_msgs,
+      applicable_rules_policy = "footnote"
     )
   )
 

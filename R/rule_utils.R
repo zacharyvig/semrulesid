@@ -49,9 +49,9 @@ check_recursion <- function(partable, start) {
 #' @noRd
 sem_to_cfa <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
-  lv.regs <- with(partable, op == "~" & lhs %in% vars$lv & rhs %in% vars$lv)
+  lv_regs <- with(partable, op == "~" & (lhs %in% vars$lv | rhs %in% vars$lv))
   # replace directional arrows with double-sided ones
-  partable$op[lv.regs] <- "~~"
+  partable$op[lv_regs] <- "~~"
   type <- classify_model(partable)
   if (type != "cfa") {
     id_stop(gettext("sem_to_cfa() failed. This is an internal error. Please report this issue to the package maintainer."))
@@ -66,8 +66,8 @@ sem_to_cfa <- function(partable) {
 #' @noRd
 sem_to_reg <- function(partable) {
   vars <- get_partable_vars(partable, c("lv"))
-  lv.paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
-  partable <- partable[lv.paths, , drop = FALSE]
+  lv_paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
+  partable <- partable[lv_paths, , drop = FALSE]
   # handle higher order factors
   hof <- which(partable$op == "=~")
   # switch lhs and rhs
@@ -161,14 +161,20 @@ get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
 # internal function for building rule output lists
 #' @noRd
 build_rule_out <- function(rule, pass, msgs = NA_character_,
-                           cond = c("N", "S", "NS", NA_character_)) {
+                           cond = c("N", "S", "NS", NA_character_),
+                           applies_to = c("reg", "cfa", "sem")) {
   cond <- match.arg(cond)
+  if (is.null(applies_to)) {
+    id_warn(gettext("applies_to= is NULL. This is an internal error. Please report this issue to the package maintainer."))
+  }
+  applies_to <- match.arg(applies_to, several.ok = TRUE)
   msgs <- if (isTRUE(pass) || any(!is.na(msgs))) msgs else NA_character_
   list(
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond
+    cond = cond,
+    applies_to = applies_to
   )
 }
 
@@ -203,9 +209,9 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
   }
   stopifnot(length(new_msgs) == length(levels))
   level_labels <- c(
-    "1" = "Info",
-    "2" = "Reason",
-    "3" = "WARNING"
+    "1" = "Not applicable",
+    "2" = "Rule not satisfied",
+    "3" = "Identification failure!"
   )
   new_msgs <- ifelse(
     is.na(levels),

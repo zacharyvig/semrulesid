@@ -6,8 +6,12 @@ test_that("rule functions produce the correct output", {
   for (fn in names(rules)) {
     expect_named(
       do.call(rules[[fn]], list(partable)),
-      c("rule", "pass", "msgs", "cond"),
+      c("rule", "pass", "msgs", "cond", "applies_to"),
       label = fn, ignore.order = FALSE
+    )
+    expect_in(
+      do.call(rules[[fn]], list(partable))$applies_to,
+      c("reg", "cfa", "sem")
     )
   }
 })
@@ -52,7 +56,7 @@ test_that("add_rule_msgs() adds messages correctly", {
       new_msgs = c("Three", "Four"),
       levels = c("1", "2")
     ),
-    c("One", "Two", "[Info] Three", "[Reason] Four")
+    c("One", "Two", "[Not applicable] Three", "[Rule not satisfied] Four")
   )
 
   expect_identical(
@@ -63,4 +67,32 @@ test_that("add_rule_msgs() adds messages correctly", {
     ),
     c("One", "Two", "Three", "Four")
   )
+})
+
+
+test_that("applicable_rules_policy works correctly", {
+  partables <- list(
+    "reg" = lavaan::lavaanify("y ~ x", warn = FALSE),
+    "cfa" = lavaan::lavaanify("f =~ y1 + y2 + y3", warn = FALSE),
+    "sem" = lavaan::lavaanify("f =~ y1 + y2 + y3; f ~ x", warn = FALSE)
+  )
+
+  example_na_rules <- c(
+    "reg" = "Latent(\\s+)Scaling(\\s+)Rule",
+    "cfa" = "Null(\\s+)B_YY(\\s+)Rule",
+    "sem" = "Null(\\s+)B_YY(\\s+)Rule"
+  )
+
+  for (model in c("reg", "cfa", "sem")) {
+    partable <- partables[[model]]
+    na_rule <- example_na_rules[model]
+    hide <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "hide"))
+    show <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "show"))
+    footnote <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "footnote"))
+
+    expect_true(any(grepl(na_rule, paste(show, collapse = ""))), label = paste("show policy for", model))
+    expect_false(any(grepl(na_rule, paste(hide, collapse = ""))), label = paste("hide policy for", model))
+    expect_true(any(grepl(na_rule, paste0(footnote, collapse = ""))), label = paste("footnote policy for", model))
+  }
+  
 })

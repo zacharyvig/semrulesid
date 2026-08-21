@@ -49,3 +49,13 @@ test_that("get_lavaan_cmd returns the correct cmd", {
   )
   expect_identical(get_lavaan_cmd(fit_cfa), "cfa")
 })
+
+test_that("get_model_type_name returns the correct model type name", {
+  expect_identical(get_model_type_name("reg"), "Simultaneous Equations Model")
+  expect_identical(get_model_type_name("cfa"), "Confirmatory Factor Analysis Model")
+  expect_identical(get_model_type_name("sem"), "General Structural Equation Model")
+  expect_identical(get_model_type_name("reg", long = FALSE, capitalize = FALSE), "simultaneous equations model")
+  expect_identical(get_model_type_name("cfa", long = FALSE), "CFA Model")
+  expect_identical(get_model_type_name("sem", long = FALSE, capitalize = FALSE), "general SEM")
+  expect_identical(get_model_type_name("reg", long = TRUE, plural = TRUE), "Simultaneous Equations Models")
+})
