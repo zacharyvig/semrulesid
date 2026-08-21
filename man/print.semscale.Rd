@@ -16,6 +16,7 @@
   neg_lab = "No",
   empty_lab = "None",
   bullet = "-",
+  name_value_sep = ":",
   print_version = TRUE,
   print_lav_fun = TRUE
 )
@@ -46,6 +47,9 @@ supported).}
 \item{empty_lab}{Character. The label for empty cells, e.g., "None".}
 
 \item{bullet}{Character. The bullet symbol for messages, e.g., "-".}
+
+\item{name_value_sep}{Character. The separator between the row names and row
+values.}
 
 \item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}

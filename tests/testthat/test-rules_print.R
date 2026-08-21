@@ -70,7 +70,7 @@ test_that("add_rule_msgs() adds messages correctly", {
 })
 
 
-test_that("applicable_rules_policy works correctly", {
+test_that("na_rule_policy works correctly", {
   partables <- list(
     "reg" = lavaan::lavaanify("y ~ x", warn = FALSE),
     "cfa" = lavaan::lavaanify("f =~ y1 + y2 + y3", warn = FALSE),
@@ -86,9 +86,9 @@ test_that("applicable_rules_policy works correctly", {
   for (model in c("reg", "cfa", "sem")) {
     partable <- partables[[model]]
     na_rule <- example_na_rules[model]
-    hide <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "hide"))
-    show <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "show"))
-    footnote <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), applicable_rules_policy = "footnote"))
+    hide <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), na_rule_policy = "hide"))
+    show <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), na_rule_policy = "show"))
+    footnote <- capture.output(print(id(partable, print_msgs = TRUE, lav_fun = NA), na_rule_policy = "footnote"))
 
     expect_true(any(grepl(na_rule, paste(show, collapse = ""))), label = paste("show policy for", model))
     expect_false(any(grepl(na_rule, paste(hide, collapse = ""))), label = paste("hide policy for", model))

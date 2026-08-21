@@ -13,7 +13,7 @@
   print_lav_fun = TRUE,
   print_model_type = TRUE,
   window = 56L,
-  meta_sep = ":"
+  name_value_sep = ":"
 )
 }
 \arguments{
@@ -36,7 +36,8 @@ in a header before the rules output.}
 
 \item{window}{Integer. The width of the output window.}
 
-\item{meta_sep}{Character. The separator between the meta labels and values.}
+\item{name_value_sep}{Character. The separator between the meta labels and
+values.}
 }
 \description{
 Printing function for two-step rules lists

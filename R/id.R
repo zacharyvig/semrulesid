@@ -180,7 +180,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
       lav_fun = lav_fun,
       print_options = list(
         print_msgs = print_msgs,
-        applicable_rules_policy = "hide"
+        na_rule_policy = "hide"
       )
     )
 
@@ -210,7 +210,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
     scaling = NULL,
     print_options = list(
       print_msgs = print_msgs,
-      applicable_rules_policy = "footnote"
+      na_rule_policy = "footnote"
     )
   )
 

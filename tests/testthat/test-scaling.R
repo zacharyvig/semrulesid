@@ -54,14 +54,13 @@ test_that("scaling printing shows mean structure and the revised messages", {
   )
 
   expect_true(any(grepl("Latent Variable Scaling", pass_out)))
-  expect_true(any(grepl("LV is scaled\\?\\s*Yes", pass_out)))
-  expect_true(any(grepl("Mean structure\\?\\s*No", pass_out)))
+  expect_true(any(grepl("LV is scaled\\s*:\\s*Yes", pass_out)))
+  expect_true(any(grepl("Mean structure\\s*:\\s*No", pass_out)))
   expect_true(any(grepl("Scaling method(s):", pass_out, fixed = TRUE)))
   expect_true(any(grepl("L1", pass_out)))
 
-
-  expect_true(any(grepl("LV is scaled\\?\\s*Yes", mean_out)))
-  expect_true(any(grepl("Mean structure\\?\\s*Yes", mean_out)))
+  expect_true(any(grepl("LV is scaled\\s*:\\s*Yes", mean_out)))
+  expect_true(any(grepl("Mean structure\\s*:\\s*Yes", mean_out)))
   expect_true(any(grepl("Scaling method(s):", mean_out, fixed = TRUE)))
 
   expect_true(any(grepl("Latent Variable Scaling", fail_out)))
@@ -93,11 +92,11 @@ test_that("scaling printing handles edge cases", {
   )
 
   expect_true(any(grepl("Latent Variable Scaling", two_scaling_out)))
-  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*Y1, Y2", two_scaling_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)[\\s\\S]*?Y1, Y2", two_scaling_out, perl = TRUE)))
 
   expect_true(any(grepl("Latent Variable Scaling", zero_loading_out)))
-  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*None", zero_loading_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)[\\s\\S]*?None", zero_loading_out, perl = TRUE)))
 
   expect_true(any(grepl("Latent Variable Scaling", negative_loading_out)))
-  expect_true(any(grepl("Scaling indicator\\(s\\)\\:\\s*Y1", negative_loading_out)))
+  expect_true(any(grepl("Scaling indicator\\(s\\)[\\s\\S]*?Y1", negative_loading_out, perl = TRUE)))
 })

@@ -6,7 +6,7 @@
 \usage{
 \method{print}{semid}(
   x,
-  names = c("", "Pass", "Necessary", "Sufficient"),
+  col_names = c("", "Pass", "Necessary", "Sufficient"),
   print_msgs = NULL,
   msgs_name = "Message",
   window = 56L,
@@ -16,15 +16,15 @@
   print_version = TRUE,
   print_lav_fun = TRUE,
   print_model_type = TRUE,
-  meta_sep = ":",
-  applicable_rules_policy = c("footnote", "hide", "show"),
+  name_value_sep = ":",
+  na_rule_policy = c("footnote", "hide", "show"),
   ...
 )
 }
 \arguments{
 \item{x}{A \code{semid} object}
 
-\item{names}{Character vector. The names of the columns of the main table}
+\item{col_names}{Character vector. The names of the columns of the main table}
 
 \item{print_msgs}{Logical. If \code{TRUE} messages are printed}
 
@@ -47,9 +47,9 @@ in a header before the rules output.}
 \item{print_model_type}{Logical. If \code{TRUE}, the model type is printed
 in a header before the rules output.}
 
-\item{meta_sep}{Character. The separator between the meta labels and values.}
+\item{name_value_sep}{Character. The separator between the meta labels and values.}
 
-\item{applicable_rules_policy}{Character. How to handle rules that are not
+\item{na_rule_policy}{Character. How to handle rules that are not
 applicable to the model. Options are "hide" (default), "footnote", or
 "show". Option "hide" does not print them at all; option "footnote",
 prints their names only in a footnote after the main table; option

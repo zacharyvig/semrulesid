@@ -1,7 +1,7 @@
 #' Printing function for rules list
 #'
 #' @param x A \code{semid} object
-#' @param names Character vector. The names of the columns of the main table
+#' @param col_names Character vector. The names of the columns of the main table
 #' @param print_msgs Logical. If \code{TRUE} messages are printed
 #' @param msgs_name Character. The name of the messages index column
 #' @param window Integer. The width of the output window
@@ -14,8 +14,8 @@
 #'        in a header before the rules output.
 #' @param print_model_type Logical. If \code{TRUE}, the model type is printed
 #'        in a header before the rules output.
-#' @param meta_sep Character. The separator between the meta labels and values.
-#' @param applicable_rules_policy Character. How to handle rules that are not
+#' @param name_value_sep Character. The separator between the meta labels and values.
+#' @param na_rule_policy Character. How to handle rules that are not
 #'        applicable to the model. Options are "hide" (default), "footnote", or
 #'        "show". Option "hide" does not print them at all; option "footnote",
 #'        prints their names only in a footnote after the main table; option
@@ -26,7 +26,7 @@
 #' @export
 print.semid <- function(
   x,
-  names = c("", "Pass", "Necessary", "Sufficient"),
+  col_names = c("", "Pass", "Necessary", "Sufficient"),
   print_msgs = NULL,
   msgs_name = "Message",
   window = 56L,
@@ -36,9 +36,11 @@ print.semid <- function(
   print_version = TRUE,
   print_lav_fun = TRUE,
   print_model_type = TRUE,
-  meta_sep = ":",
-  applicable_rules_policy = c("footnote", "hide", "show"), ...
+  name_value_sep = ":",
+  na_rule_policy = c("footnote", "hide", "show"), ...
 ) {
+
+  # check for conflicting print options
   if (is.null(print_msgs)) {
     print_msgs <- x$print_options$print_msgs %||% TRUE
   } else if (!is.null(x$print_options$print_msgs) &&
@@ -48,10 +50,12 @@ print.semid <- function(
     )
   }
 
-  applicable_rules_policy <- match.arg(applicable_rules_policy)
+  # info for checking for applicable rules
+  na_rule_policy <- match.arg(na_rule_policy)
   id_model_type <- x$id_model_type
   footnote_rules <- character(0) # global footnote vector
 
+  # semid object "meta" data printing
   print_model_meta(
     print_version = print_version,
     print_lav_fun = print_lav_fun,
@@ -60,26 +64,29 @@ print.semid <- function(
     lav_fun = x$lav_fun,
     id_model_type = x$id_model_type,
     window = window,
-    meta_sep = meta_sep
+    name_value_sep = name_value_sep
   )
 
+  # setup for printing messages (if requested)
   if (print_msgs) {
-    names[length(names) + 1] <- msgs_name
+    col_names[length(col_names) + 1] <- msgs_name
     msgs <- character(0) # global message vector
   }
-  cols_width <- sum(nchar(names[-1])) + length(names[-1])
-  names[1] <- format(names[1], width = window - cols_width)
-  midx <- 0L # global message index
+  cols_width <- sum(nchar(col_names[-1])) + length(col_names[-1])
+  col_names[1] <- format(col_names[1], width = window - cols_width)
+  global_msg_idx <- 0L # global message index
 
-  cat(names, strrep("\n", 1L))
+  cat(col_names, strrep("\n", 1L))
 
   for (i in seq_along(x$Rules)) {
     this_rule <- x$Rules[[i]]
     applicable <- id_model_type %in% this_rule$applies_to
-    if (applicable_rules_policy == "hide" && !applicable) {
+    # skip rules that are not applicable if na_rule_policy is "hide"
+    if (na_rule_policy == "hide" && !applicable) {
       next
     }
-    if (applicable_rules_policy == "footnote" && !applicable) {
+    # save rules that are not applicable for footnote printing if na_rule_policy is "footnote"
+    if (na_rule_policy == "footnote" && !applicable) {
       footnote_rules <- c(footnote_rules, this_rule$rule)
       next
     }
@@ -97,7 +104,7 @@ print.semid <- function(
           "TRUE" = pos_lab,
           "FALSE" = neg_lab
         ),
-        width = nchar(names[2]), justify = "right"
+        width = nchar(col_names[2]), justify = "right"
       ),
       # necessary and/or sufficient?
       "necessary" = switch(
@@ -116,34 +123,36 @@ print.semid <- function(
       )
     )
     row[c("necessary", "sufficient")] <- c(
-      format(row["necessary"], width = nchar(names[3]), justify = "right"),
-      format(row["sufficient"], width = nchar(names[4]), justify = "right")
+      format(row["necessary"], width = nchar(col_names[3]), justify = "right"),
+      format(row["sufficient"], width = nchar(col_names[4]), justify = "right")
     )
+    # if printing messages, add message index column
     if (print_msgs && all(!is.na(this_rule$msgs))) {
-      idx.m0 <- c()
-      for (msg_idx in seq_along(this_rule$msgs)) {
-        msg <- this_rule$msgs[[msg_idx]]
-        names(msg) <- names(this_rule$msgs)[msg_idx]
+      msg_nums <- c()
+      for (i in seq_along(this_rule$msgs)) {
+        msg <- this_rule$msgs[[i]]
+        names(msg) <- names(this_rule$msgs)[i]
         if (msg %in% msgs) {
           # prevent duplicate messages
-          idx.m0 <- c(idx.m0, which(msgs == msg))
+          msg_nums <- c(msg_nums, which(msgs == msg))
         } else {
-          midx <- midx + 1
-          idx.m0 <- c(idx.m0, midx)
+          global_msg_idx <- global_msg_idx + 1
+          msg_nums <- c(msg_nums, global_msg_idx)
           msgs <- c(msgs, msg)
         }
       }
       cat(
         c(row, format(
-          paste(idx.m0, collapse = ","),
-          width = nchar(names[5]), justify = "right")),
+          paste(msg_nums, collapse = ","),
+          width = nchar(col_names[5]), justify = "right")),
         "\n"
       )
     } else {
       cat(row, "\n")
     }
   }
-  if (length(footnote_rules) > 0) {
+  # print footnote if requested
+  if (identical(na_rule_policy, "footnote") && length(footnote_rules) > 0) {
     cat("\n")
     footnote_header <- paste0(
       "Rules not applicable to ",
@@ -158,7 +167,8 @@ print.semid <- function(
     cat(footnote_header, footnote_body, sep = "\n")
   }
 
-  if (print_msgs && midx > 0L) {
+  # print messages ordered by severity level if requested
+  if (print_msgs && global_msg_idx > 0L) {
     level_sections <- get_rule_level_labels(type = "labels")
     level_order <- get_rule_level_labels(type = "order")
     # sort messages by level of severity
@@ -169,6 +179,7 @@ print.semid <- function(
     present_levels <- present_levels[order(level_order[present_levels])]
 
     cat("\n---\n\n")
+
     for (level in present_levels) {
       msg_idx <- which(names(msgs) == level)
       cat(level_sections[[level]], ":\n\n", sep = "")
@@ -183,11 +194,14 @@ print.semid <- function(
         )
         cat(wrapped_msg, sep = "\n")
       }
+
       cat("\n")
+
     }
   }
 
   if (!is.null(x$scaling)) {
+    cat(strrep("-", window), "\n\n")
     print(x$scaling, ...)
   }
 
@@ -209,7 +223,8 @@ print.semid <- function(
 #' @param print_model_type Logical. If \code{TRUE}, the model type is printed
 #'        in a header before the rules output.
 #' @param window Integer. The width of the output window.
-#' @param meta_sep Character. The separator between the meta labels and values.
+#' @param name_value_sep Character. The separator between the meta labels and
+#'        values.
 #' @export
 print.semid2 <- function(
   x, ...,
@@ -219,12 +234,12 @@ print.semid2 <- function(
   print_lav_fun = TRUE,
   print_model_type = TRUE,
   window = 56L,
-  meta_sep = ":"
+  name_value_sep = ":"
 ) {
 
-  applicable_rules_policy <- x$print_options$applicable_rules_policy %||% "hide"
+  na_rule_policy <- x$print_options$na_rule_policy %||% "hide"
 
-  # preliminary printing
+  # print semid2 meta information
   meta_printed <- print_model_meta(
     print_version = print_version,
     print_lav_fun = print_lav_fun,
@@ -234,11 +249,11 @@ print.semid2 <- function(
     id_model_type = x$id_model_type,
     window = window
   )
-
   if (meta_printed) {
     cat(strrep("-", window), "\n\n")
   }
 
+  # print step 1 semid object
   cat(paste0(step_titles[1], ": ", step_names[1], "\n\n"))
   print(
     x$id_cfa,
@@ -246,12 +261,13 @@ print.semid2 <- function(
     ...,
     print_lav_fun = FALSE,
     print_model_type = FALSE,
-    applicable_rules_policy = applicable_rules_policy,
+    na_rule_policy = na_rule_policy,
     window = window
   )
 
   cat(strrep("-", window), "\n\n")
 
+  # print step 2 semid object
   cat(paste0(step_titles[2], ": ", step_names[2], "\n\n"))
   print(
     x$id_reg,
@@ -259,9 +275,11 @@ print.semid2 <- function(
     ...,
     print_lav_fun = FALSE,
     print_model_type = FALSE,
-    applicable_rules_policy = applicable_rules_policy,
+    na_rule_policy = na_rule_policy,
     window = window
   )
+
+  cat("\n")
 
   invisible(x)
 
@@ -275,10 +293,12 @@ print.semid2 <- function(
 #' @param print_msgs Logical. If \code{TRUE} messages are printed.
 #' @param window Integer. The width of the output window.
 #' @param sep_spaces Integer. The number of spaces to separate the row names
-#' from the row values.
+#'        from the row values.
 #' @param indent_lengths Integer vector of length 3. The number of spaces to
 #'        indent for each level of information (currently there are three
 #'        supported).
+#' @param name_value_sep Character. The separator between the row names and row
+#'        values.
 #' @param na_lab Character. The label for NA/blank cells.
 #' @param pos_lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg_lab Character. The label for negative cells, e.g., "No".
@@ -302,14 +322,16 @@ print.semscale <- function(
   neg_lab = "No",
   empty_lab = "None",
   bullet = "-",
+  name_value_sep = ":",
   print_version = TRUE,
   print_lav_fun = TRUE
 ) {
-                            
+
+  # check for conflicting print options                          
   stopifnot("`indent_lengths` must be three equal or ascending integers" =
     length(indent_lengths) == 3 && indent_lengths[2] >= indent_lengths[1] && indent_lengths[3] >= indent_lengths[2])
 
-  if (length(x) ==1 && is.na(x)) {
+  if (length(x) == 1 && is.na(x)) {
     cat("No latent variables in the model\n")
     return(invisible(x))
   }
@@ -324,6 +346,7 @@ print.semscale <- function(
   scaling <- x$Scaling
   indents <- strrep(" ", indent_lengths)
 
+  # print semscale meta information
   print_model_meta(
     print_version = print_version,
     print_lav_fun = print_lav_fun,
@@ -338,16 +361,16 @@ print.semscale <- function(
     var <- scaling[[i]]$lv
     cat(sprintf("%s%s\n", indents[1], var))
 
+    # gather info about the latent variable
     is_scaled <- switch(
       as.character(scaling[[i]]$scaled),
       "NA" = na_lab,
       "TRUE" = pos_lab,
       "FALSE" = neg_lab
     )
-
     n_indicators <- as.integer(scaling[[i]]$n_indicators)
     scaling_indicator <- scaling[[i]]$scaling_indicator
-    # in case of multiple scaling indicators
+    # in case of multiple scaling indicators:
     scaling_indicator <- if (all(is.na(scaling_indicator))) {
       empty_lab
     } else {
@@ -360,23 +383,27 @@ print.semscale <- function(
       "FALSE" = neg_lab
     )
 
+    # print scaling information like a table
     row_names <- c(
-      "LV is scaled?",
-      "No. of indicators:",
-      "Scaling indicator(s):",
-      "Mean structure?"
+      "LV is scaled",
+      "No. of indicators",
+      "Scaling indicator(s)",
+      "Mean structure"
     )
-    row_names_nchar <- nchar(row_names)
-    row_values_nspaces <- max(row_names_nchar) - row_names_nchar + sep_spaces
-    row_values_spaces <- strrep(" ", row_values_nspaces)
     row_values <- c(is_scaled, n_indicators, scaling_indicator, mean_structure)
-    row_values <- paste0(row_values_spaces, row_values)
+    col_width <- max(nchar(row_names)) + 1
+    cat(
+      paste0(
+        indents[2],
+        format(row_names, width = max(nchar(row_names)) + 1, justify = "left"),
+        ": ",
+        row_values,
+        collapse = "\n"
+      ),
+      "\n\n"
+    )
 
-    cat(sprintf("%s%s %s\n", indents[2], row_names[1], row_values[1]))
-    cat(sprintf("%s%s %s\n", indents[2], row_names[2], row_values[2]))
-    cat(sprintf("%s%s %s\n", indents[2], row_names[3], row_values[3]))
-    cat(sprintf("%s%s %s\n\n", indents[2], row_names[4], row_values[4]))
-
+    # print scaling method or scaling error messages if requested
     if (print_msgs) {
       prefix <- paste0(bullet, " ")
       if (isTRUE(scaling[[i]]$scaled)) {
@@ -399,6 +426,8 @@ print.semscale <- function(
 
 }
 
+# wrapper function to print semid, semscale, or semid2 meta information
+#' @noRd
 print_model_meta <- function(
   print_version = TRUE,
   print_lav_fun = TRUE,
@@ -407,7 +436,7 @@ print_model_meta <- function(
   lav_fun = NA,
   id_model_type = NA,
   window = 56L,
-  meta_sep = ":"
+  name_value_sep = ":"
 ) {
   obj_type <- match.arg(obj_type)
   if (print_version) {
@@ -430,7 +459,7 @@ print_model_meta <- function(
     )
     meta_lines <- paste0(
       format(meta_labels[to_keep], width = meta_width, justify = "left"),
-      meta_sep, " ", meta_values[to_keep]
+      name_value_sep, " ", meta_values[to_keep]
     )
     cat(paste0(meta_lines, collapse = "\n"), "\n\n")
   }
