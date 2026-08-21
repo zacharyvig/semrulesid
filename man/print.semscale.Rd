@@ -10,7 +10,7 @@
   print_msgs = TRUE,
   window = 56L,
   sep_spaces = 3L,
-  ind_lens = c(0L, 2L, 2L),
+  indent_lengths = c(0L, 2L, 2L),
   na_lab = "na",
   pos_lab = "Yes",
   neg_lab = "No",
@@ -30,10 +30,12 @@ for each latent variable in the model.}
 
 \item{window}{Integer. The width of the output window.}
 
-\item{sep_spaces}{Integer. The number of spaces to separate the row names from the row values.}
+\item{sep_spaces}{Integer. The number of spaces to separate the row names
+from the row values.}
 
-\item{ind_lens}{Integer vector of length 3. The number of spaces to indent
-for each level of information (currently there are three supported).}
+\item{indent_lengths}{Integer vector of length 3. The number of spaces to
+indent for each level of information (currently there are three
+supported).}
 
 \item{na_lab}{Character. The label for NA/blank cells.}
 
@@ -45,11 +47,11 @@ for each level of information (currently there are three supported).}
 
 \item{bullet}{Character. The bullet symbol for messages, e.g., "-".}
 
-\item{print_version}{Logical. If \code{TRUE}, the version of the package is printed in a
-header before the rules output.}
+\item{print_version}{Logical. If \code{TRUE}, the version of the package is
+printed in a header before the rules output.}
 
-\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
-header before the rules output.}
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed
+in a header before the rules output.}
 }
 \description{
 Printing function for scaling table

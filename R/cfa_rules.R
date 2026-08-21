@@ -42,7 +42,7 @@ rule_cfa_three_indicator <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies to confirmatory factor analysis models",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -67,7 +67,7 @@ rule_cfa_three_indicator <- function(partable) {
       msgs = add_rule_msgs(
         new_msgs = paste("This rule only applies when all first-order latent variables have three or more indicators:",
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -95,7 +95,7 @@ rule_cfa_three_indicator <- function(partable) {
     msgs <- add_rule_msgs(
       msgs = msgs,
       new_msgs = "Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only",
-      levels = "1"
+      levels = "not_applicable"
     )
   } else {
     cond <- "S"
@@ -106,7 +106,7 @@ rule_cfa_three_indicator <- function(partable) {
       msgs = msgs,
       new_msgs = paste("Some indicators have a factor complexity greater than one:",
                 paste(ind.fof[!fc1.fof], collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   }
   if (any(cor_err.ind)) {
@@ -114,7 +114,7 @@ rule_cfa_three_indicator <- function(partable) {
       msgs = msgs,
       new_msgs = paste("Some indicators have correlated errors:",
               paste(ind.fof[cor_err.ind], collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   }
   build_rule_out(
@@ -141,7 +141,7 @@ rule_cfa_two_indicator <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies to confirmatory factor analysis models",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -154,7 +154,7 @@ rule_cfa_two_indicator <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when more than one latent variable is in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -179,7 +179,7 @@ rule_cfa_two_indicator <- function(partable) {
       msgs = add_rule_msgs(
         new_msgs = paste("This rule only applies when all first-order latent variables have two or more indicators:",
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -209,7 +209,7 @@ rule_cfa_two_indicator <- function(partable) {
     msgs <- add_rule_msgs(
       msgs = msgs,
       new_msgs = "Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only",
-      levels = "1"
+      levels = "not_applicable"
     )
   } else {
     cond <- "S"
@@ -220,7 +220,7 @@ rule_cfa_two_indicator <- function(partable) {
       msgs = msgs,
       new_msgs = paste("Some indicators have a factor complexity greater than one:",
                           paste(ind.fof[!fc1.fof], collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   }
   if (any(cor_err.ind)) {
@@ -228,7 +228,7 @@ rule_cfa_two_indicator <- function(partable) {
       msgs = msgs,
       new_msgs = paste("Some indicators have correlated errors:",
                           paste(ind.fof[cor_err.ind], collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   }
   if (any(!cor.lv)) {
@@ -236,7 +236,7 @@ rule_cfa_two_indicator <- function(partable) {
       msgs = msgs,
       new_msgs = paste("Some latent variables are not correlated with another latent variable:",
               paste(vars$lv[idx.fof][!cor.lv] , collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   }
   build_rule_out(

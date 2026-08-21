@@ -44,7 +44,7 @@ rule_reg_null_byy <- function(partable) {
       cond = NA_character_,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       applies_to = applies_to
     )
@@ -58,7 +58,7 @@ rule_reg_null_byy <- function(partable) {
     msgs <- add_rule_msgs(
       new_msgs = paste("One or more endogenous variables appear as regression predictors:",
                        paste(ov.nox[nox_ox], collapse = ", ")),
-      levels = 2
+      levels = "suff_cond_not_satisfied"
     )
   } else {
     pass <- TRUE
@@ -88,7 +88,7 @@ rule_reg_fully_recursive <- function(partable) {
       cond = NA_character_,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       applies_to = applies_to
     )
@@ -104,7 +104,7 @@ rule_reg_fully_recursive <- function(partable) {
     pass <- FALSE
     msgs <- add_rule_msgs(
       new_msgs = "Feedback loops exist in the model, i.e., the model is non-recursive",
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   } else if (any(cor_err.ov.nox)) {
     pass <- FALSE
@@ -112,7 +112,7 @@ rule_reg_fully_recursive <- function(partable) {
     msgs <- add_rule_msgs(
       new_msgs = paste("The model is recursive but some endogenous variables have correlated errors:",
                    paste(viol, collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   } else {
     pass <- TRUE
@@ -142,7 +142,7 @@ rule_reg_recursive_corr_err <- function(partable) {
       cond = NA_character_,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       applies_to = applies_to
     )
@@ -164,7 +164,7 @@ rule_reg_recursive_corr_err <- function(partable) {
     pass <- FALSE
     msgs <- add_rule_msgs(
       new_msgs = "Feedback loops exist in the model, i.e., the model is non-recursive",
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   } else if (any(cor_err.eqs)) {
     pass <- FALSE
@@ -172,7 +172,7 @@ rule_reg_recursive_corr_err <- function(partable) {
     msgs <- add_rule_msgs(
       new_msgs = paste("The model is recursive but some directly related variables have correlated errors:",
                    paste(viol, collapse = ", ")),
-      levels = "2"
+      levels = "suff_cond_not_satisfied"
     )
   } else {
     pass <- TRUE

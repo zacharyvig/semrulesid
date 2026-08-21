@@ -52,7 +52,7 @@ rule_sem_ntheta <- function(partable) {
   } else {
     msgs <- add_rule_msgs(
       new_msgs = sprintf("The number of free parameters (=%s) exceeds the number of means/variances/covariances (=%s)", ntheta, ndat),
-      levels = "3"
+      levels = "identification_failure"
     )
   }
   build_rule_out(
@@ -78,7 +78,7 @@ rule_sem_latent_scaling <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -93,7 +93,7 @@ rule_sem_latent_scaling <- function(partable) {
     msgs <- add_rule_msgs(
       new_msgs = paste("Some latent variables are not scaled:",
                 paste(vars$lv[!scaled], collapse = ", ")),
-      levels = "3"
+      levels = "identification_failure"
     )
   } else {
     msgs <- NA_character_
@@ -121,7 +121,7 @@ rule_sem_two_emitted_paths <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -163,7 +163,7 @@ rule_sem_two_emitted_paths <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -182,7 +182,7 @@ rule_sem_two_emitted_paths <- function(partable) {
         "Some variables do not have two emitted paths:",
         paste(vars$lv[free_var & free_var.nox & !two_path.lv], collapse = ", ")
       ),
-      levels = "3"
+      levels = "identification_failure"
     )
   }
   if (any(!free_var)) {
@@ -192,7 +192,7 @@ rule_sem_two_emitted_paths <- function(partable) {
         "This rule ignores latent variables without free variance:",
         paste(vars$lv[!free_var], collapse = ", ")
       ),
-      levels = "1"
+      levels = "not_applicable"
     )
   }
   if (any(!free_var.nox)) {
@@ -203,7 +203,7 @@ rule_sem_two_emitted_paths <- function(partable) {
           "This rule ignores latent variables with downstream variables that do not have free disturbance variances:",
           paste(vars$lv[!free_var.nox], collapse = ", ")
         ),
-        levels = "1"
+        levels = "not_applicable"
       )
     )
   }
@@ -231,7 +231,7 @@ rule_sem_exogenous_x <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -255,7 +255,7 @@ rule_sem_exogenous_x <- function(partable) {
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when causal indicators or exogenous observed variables are in the model",
-        levels = "1"
+        levels = "not_applicable"
       ),
       cond = NA_character_,
       applies_to = applies_to
@@ -269,8 +269,8 @@ rule_sem_exogenous_x <- function(partable) {
       msgs <- NA_character_
     } else {
       msgs <- add_rule_msgs(
-        new_msgs = "The model must have at least two effect indicators",
-        levels = "2"
+        new_msgs = "The latent variable must have at least two effect indicators",
+        levels = "suff_cond_not_satisfied"
       )
     }
   } else {
@@ -280,7 +280,7 @@ rule_sem_exogenous_x <- function(partable) {
     cond <- NA_character_
     msgs <- add_rule_msgs(
       new_msgs = "This rule is currently not supported for multiple latent variables",
-      levels = "1"
+      levels = "not_applicable"
     )
   }
   build_rule_out(

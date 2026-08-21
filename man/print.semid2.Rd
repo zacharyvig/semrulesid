@@ -10,7 +10,10 @@
   step_names = c("Measurement Model", "Latent Variable/Structural Model"),
   step_titles = c("Step 1", "Step 2"),
   print_version = TRUE,
-  print_lav_fun = TRUE
+  print_lav_fun = TRUE,
+  print_model_type = TRUE,
+  window = 56L,
+  meta_sep = ":"
 )
 }
 \arguments{
@@ -25,8 +28,15 @@
 \item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed in a
-header before the rules output.}
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed
+in a header before the rules output.}
+
+\item{print_model_type}{Logical. If \code{TRUE}, the model type is printed
+in a header before the rules output.}
+
+\item{window}{Integer. The width of the output window.}
+
+\item{meta_sep}{Character. The separator between the meta labels and values.}
 }
 \description{
 Printing function for two-step rules lists

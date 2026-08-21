@@ -206,18 +206,23 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
   }
   if (is.null(levels)) {
     levels <- rep(NA_character_, length(new_msgs))
+  } else {
+    stopifnot(
+      all(levels %in% get_rule_level_labels(type = "codes") | is.na(levels))
+    )
   }
   stopifnot(length(new_msgs) == length(levels))
-  level_labels <- c(
-    "1" = "Not applicable",
-    "2" = "Rule not satisfied",
-    "3" = "Identification failure!"
-  )
-  new_msgs <- ifelse(
-    is.na(levels),
-    new_msgs,
-    sprintf("[%s] %s", level_labels[as.character(levels)], new_msgs)
-  )
+  # level_labels <- c(
+  #   "1" = "Not applicable",
+  #   "2" = "Rule not satisfied",
+  #   "3" = "Identification failure!"
+  # )
+  # new_msgs <- ifelse(
+  #   is.na(levels),
+  #   new_msgs,
+  #   sprintf("[%s] %s", level_labels[as.character(levels)], new_msgs)
+  # )
+  names(new_msgs) <- levels
   out <- c(msgs[!is.na(msgs)], new_msgs)
   out
 }
@@ -264,4 +269,34 @@ order_rules <- function(rule_names) {
 #' @noRd
 is_lavaan_partable <- function(x) {
    is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)
+}
+
+# internal function for getting rule level labels globally
+#' @noRd
+get_rule_level_labels <- function(type = c("codes", "labels", "order")) {
+  type <- match.arg(type)
+  codes <- c(
+    "not_applicable",
+    "suff_cond_not_satisfied",
+    "identification_failure"
+  )
+  if (type == "codes") {
+    return(codes)
+  } else if (type == "labels") {
+    labs <- c(
+      "Rule not applicable",
+      "Sufficient condition not satisfied",
+      "Identification failure"
+    )
+    names(labs) <- codes
+    return(labs)
+  } else if (type == "order") {
+    # order of severity for rule levels
+    ord <- c(
+      "identification_failure" = 1,
+      "suff_cond_not_satisfied" = 2,
+      "not_applicable" = 3
+    )
+    return(ord)
+  }
 }

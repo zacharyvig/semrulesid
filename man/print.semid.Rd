@@ -9,15 +9,15 @@
   names = c("", "Pass", "Necessary", "Sufficient"),
   print_msgs = NULL,
   msgs_name = "Message",
-  msgs_sec = "Messages",
-  msgs_levels = c(`1` = "Info", `2` = "Reason", `3` = "WARNING"),
   window = 56L,
   pos_lab = "Yes",
   neg_lab = "No",
   na_lab = "-",
   print_version = TRUE,
-  print_meta = TRUE,
+  print_lav_fun = TRUE,
+  print_model_type = TRUE,
   meta_sep = ":",
+  applicable_rules_policy = c("footnote", "hide", "show"),
   ...
 )
 }
@@ -30,11 +30,6 @@
 
 \item{msgs_name}{Character. The name of the messages index column}
 
-\item{msgs_sec}{Character. The name of the messages section}
-
-\item{msgs_levels}{Named character vector. The names of the message levels,
-e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
-
 \item{window}{Integer. The width of the output window}
 
 \item{pos_lab}{Character. The label for positive cells, e.g., "Yes".}
@@ -46,10 +41,20 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 \item{print_version}{Logical. If \code{TRUE}, the version of the package is
 printed in a header before the rules output.}
 
-\item{print_meta}{Logical. If \code{TRUE}, the model type and lavaan function are printed in a
-table before the rules output.}
+\item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed
+in a header before the rules output.}
+
+\item{print_model_type}{Logical. If \code{TRUE}, the model type is printed
+in a header before the rules output.}
 
 \item{meta_sep}{Character. The separator between the meta labels and values.}
+
+\item{applicable_rules_policy}{Character. How to handle rules that are not
+applicable to the model. Options are "hide" (default), "footnote", or
+"show". Option "hide" does not print them at all; option "footnote",
+prints their names only in a footnote after the main table; option
+"show" prints them in the main table with a message indicating they
+are not applicable.}
 
 \item{...}{Arguments passed to print.semscale if applicable.}
 }

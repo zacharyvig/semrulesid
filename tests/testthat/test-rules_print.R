@@ -41,30 +41,30 @@ test_that("get_rules() returns the correct rule functions", {
 
 test_that("add_rule_msgs() adds messages correctly", {
   expect_identical(
-    add_rule_msgs(msgs = NA_character_, new_msgs = "One"),
+    unname(add_rule_msgs(msgs = NA_character_, new_msgs = "One")),
     "One"
   )
 
   expect_identical(
-    add_rule_msgs(msgs = c("One", "Two"), new_msgs = "Three"),
+    unname(add_rule_msgs(msgs = c("One", "Two"), new_msgs = "Three")),
     c("One", "Two", "Three")
   )
 
   expect_identical(
-    add_rule_msgs(
+    names(add_rule_msgs(
       msgs = c("One", "Two"),
       new_msgs = c("Three", "Four"),
-      levels = c("1", "2")
-    ),
-    c("One", "Two", "[Not applicable] Three", "[Rule not satisfied] Four")
+      levels = c("not_applicable", "suff_cond_not_satisfied")
+    )),
+    c("", "", "not_applicable", "suff_cond_not_satisfied")
   )
 
   expect_identical(
-    add_rule_msgs(
+    unname(add_rule_msgs(
       msgs = c("One", "Two"),
       new_msgs = c("Three", "Four"),
       levels = c(NA, NA)
-    ),
+    )),
     c("One", "Two", "Three", "Four")
   )
 })
