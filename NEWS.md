@@ -1,3 +1,3 @@
-# semrulesid 0.4.0
+# semrulesid 0.4.1
 
 * Initial CRAN submission.
