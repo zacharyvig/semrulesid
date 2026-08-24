@@ -79,6 +79,11 @@ test_models <- list(
                 type = "sem",
                 model = "L1 =~ Y1\nL1 <~ X1\nL1 ~~ NA*L1\nY1~~NA*Y1"
         ),
+        sem_complex = list(
+                # measurement model, latent structural path, latent-observed structural path, causal indicators, correlated errors
+                type = "sem",
+                model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL2 ~ L1\nY1 ~~ Y4\nL1 <~ X1 + X2\nX3 ~ L2"
+        ),
         mlm = list(
                 type = "sem",
                 model = "level: 1\nY1 ~ X1 + X2\nlevel: 2\nY2 ~ Y1 + X3"

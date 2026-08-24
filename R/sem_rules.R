@@ -41,7 +41,6 @@ NULL
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
   rule <- "N_theta Rule (t-Rule)"
-  applies_to <- c("reg", "cfa", "sem")
   # number of parameters (internal function)
   ntheta <- get_ntheta(partable)
   # number of means, variances, and covariances
@@ -59,17 +58,16 @@ rule_sem_ntheta <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = "N",
-    applies_to = applies_to
+    cond = "N"
   )
 }
+attr(rule_sem_ntheta, "applies_to") <- c("reg", "cfa", "sem")
 
 # Latent Scaling rule
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_latent_scaling <- function(partable) {
   rule <- "Latent Scaling Rule"
-  applies_to <- c("cfa", "sem")
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, "lv")
   if (length(vars$lv) == 0) {
@@ -80,8 +78,7 @@ rule_sem_latent_scaling <- function(partable) {
         new_msgs = "This rule only applies when there are latent variables in the model",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -102,17 +99,16 @@ rule_sem_latent_scaling <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
+attr(rule_sem_latent_scaling, "applies_to") <- c("cfa", "sem")
 
 # 2+ Emitted Paths rule
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_two_emitted_paths <- function(partable) {
   rule <- "2+ Emitted Paths Rule"
-  applies_to <- c("cfa", "sem")
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, "lv")
   if (length(vars$lv) == 0) {
@@ -123,8 +119,7 @@ rule_sem_two_emitted_paths <- function(partable) {
         new_msgs = "This rule only applies when there are latent variables in the model",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -165,8 +160,7 @@ rule_sem_two_emitted_paths <- function(partable) {
         new_msgs = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   } else {
@@ -212,17 +206,16 @@ rule_sem_two_emitted_paths <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
+attr(rule_sem_two_emitted_paths, "applies_to") <- c("cfa", "sem")
 
 # Exogenous X rule/MIMIC rules
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_exogenous_x <- function(partable) {
   rule <- "Exogenous X Rule"
-  applies_to <- c("sem")
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov", "ov.ind"))
   if (length(vars$lv) == 0) {
@@ -233,8 +226,7 @@ rule_sem_exogenous_x <- function(partable) {
         new_msgs = "This rule only applies when there are latent variables in the model",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -257,8 +249,7 @@ rule_sem_exogenous_x <- function(partable) {
         new_msgs = "This rule only applies when causal indicators or exogenous observed variables are in the model",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -287,7 +278,7 @@ rule_sem_exogenous_x <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
+attr(rule_sem_exogenous_x, "applies_to") <- c("cfa", "sem")

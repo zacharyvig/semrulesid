@@ -13,7 +13,7 @@ test_that("id2 returns the two-step object structure", {
   out <- id(
     make_partable(list(
       type = "sem",
-      model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL2 ~ L1"
+      model = test_models$sem_complex$model
     )),
     twostep = TRUE,
     lav_fun = NA
@@ -31,7 +31,7 @@ test_that("id2 printing shows both steps", {
       id2(
         make_partable(list(
           type = "sem",
-          model = "L1 =~ Y1 + Y2 + Y3\nL2 =~ Y4 + Y5 + Y6\nL2 ~ L1"
+          model = test_models$sem_complex$model
         )),
         lav_fun = NA
       )
@@ -44,12 +44,7 @@ test_that("id2 printing shows both steps", {
 })
 
 test_that("id2() creates the expected CFA and simultaneous-equations partables", {
-  model <- '
-    L1 =~ Y1 + Y2 + Y3
-    L2 =~ Y4 + Y5 + Y6
-
-    L2 ~ L1
-  '
+  model <- test_models$sem_complex$model
 
   expect_no_error(
     out <- id2(model, lav_fun = "sem")
@@ -103,30 +98,49 @@ test_that("id2() creates the expected CFA and simultaneous-equations partables",
       reg_pt$rhs %in% c("Y1", "Y2", "Y3", "Y4", "Y5", "Y6")
   ))
 
+  # Step 2: causal indicators become regressions.
+  expect_true(any(
+    reg_pt$lhs == "L1" &
+      reg_pt$op == "~" &
+      reg_pt$rhs == "X1"
+  ))
+
   # Confirm the transformed components carry their intended classifications.
   expect_identical(out$id_cfa$id_model_type, "cfa")
   expect_identical(out$id_reg$id_model_type, "reg")
 })
 
 test_that("id2() rejects non-SEM models", {
-  cfa_model <- '
-    L1 =~ Y1 + Y2 + Y3
-    L2 =~ Y4 + Y5 + Y6
-    L1 ~~ L2
-  '
-
-  reg_model <- '
-    Y1 ~ X1 + X2
-    Y2 ~ Y1 + X3
-  '
-
+  model <- test_models$cfa_three_pass$model
   expect_error(
-    id2(cfa_model, lav_fun = "cfa"),
+    id2(model, lav_fun = "cfa"),
     "only applicable to full SEMs"
   )
 
+  model <- test_models$reg_pass$model
   expect_error(
-    id2(reg_model, lav_fun = "sem"),
+    id2(model, lav_fun = "sem"),
     "only applicable to full SEMs"
   )
+})
+
+test_that("sem_to_cfa() and sem_to_reg() produce valid partables", {
+  partable <- make_partable(test_models$sem_complex)
+
+  expect_no_error(
+    cfa_pt <- sem_to_cfa(partable)
+  )
+  expect_no_error(
+    reg_pt <- sem_to_reg(partable)
+  )
+
+  expect_identical(class(cfa_pt), class(partable))
+  expect_identical(class(reg_pt), class(partable))
+
+  expect_identical(classify_model(cfa_pt), "cfa")
+  expect_identical(classify_model(reg_pt), "reg")
+
+  expect_false(any(cfa_pt$op == "~"))
+  expect_false(any(cfa_pt$op == "<~"))
+  expect_false(any(reg_pt$op == "=~"))
 })

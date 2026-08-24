@@ -80,7 +80,7 @@ print.semid <- function(
 
   for (i in seq_along(x$Rules)) {
     this_rule <- x$Rules[[i]]
-    applicable <- id_model_type %in% this_rule$applies_to
+    applicable <- id_model_type %in% attr(this_rule, "applies_to")
     # skip rules that are not applicable if na_rule_policy is "hide"
     if (na_rule_policy == "hide" && !applicable) {
       next

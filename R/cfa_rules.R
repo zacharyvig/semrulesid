@@ -33,7 +33,6 @@ NULL
 #' @keywords internal
 rule_cfa_three_indicator <- function(partable) {
   rule <- "Three Indicator Rule"
-  applies_to <- "cfa"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
@@ -44,8 +43,7 @@ rule_cfa_three_indicator <- function(partable) {
         new_msgs = "This rule only applies to confirmatory factor analysis models",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -69,8 +67,7 @@ rule_cfa_three_indicator <- function(partable) {
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -121,10 +118,10 @@ rule_cfa_three_indicator <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
+attr(rule_cfa_three_indicator, "applies_to") <- c("cfa", "sem")
 
 
 # Two indicator rules
@@ -132,7 +129,6 @@ rule_cfa_three_indicator <- function(partable) {
 #' @keywords internal
 rule_cfa_two_indicator <- function(partable) {
   rule <- "Two Indicator Rule"
-  applies_to <- "cfa"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
@@ -143,8 +139,7 @@ rule_cfa_two_indicator <- function(partable) {
         new_msgs = "This rule only applies to confirmatory factor analysis models",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -156,8 +151,7 @@ rule_cfa_two_indicator <- function(partable) {
         new_msgs = "This rule only applies when more than one latent variable is in the model",
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -181,8 +175,7 @@ rule_cfa_two_indicator <- function(partable) {
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
         levels = "not_applicable"
       ),
-      cond = NA_character_,
-      applies_to = applies_to
+      cond = NA_character_
     )
     return(out)
   }
@@ -243,7 +236,7 @@ rule_cfa_two_indicator <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
+attr(rule_cfa_two_indicator, "applies_to") <- "cfa"

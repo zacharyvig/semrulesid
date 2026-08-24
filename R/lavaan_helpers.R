@@ -52,8 +52,9 @@ lavaan_obj_to_partable <- function(x, lav_fun, ...) {
   lav_fun_orig <- get_lavaan_cmd(x)
   if (!is.na(lav_fun) && lav_fun_orig != lav_fun) {
     id_warn(
-      gettextf("The fitted lavaan object was created with %s, but you specified lav_fun='%s'. This may lead to unexpected results.",
-               format_lavaan_fun(lav_fun_orig), lav_fun)
+      gettextf("The fitted lavaan object was created with %s, but you specified lav_fun='%s'",
+               format_lavaan_fun(lav_fun_orig), lav_fun),
+      gettext("This may lead to unexpected results.")
     )
   }
   partable <- as.data.frame(
@@ -82,7 +83,7 @@ validate_lav_fun_arg <- function(lav_fun, options = c("lavaan", "sem", "cfa")) {
 #' @return A formatted character string of the function call
 format_lavaan_fun <- function(fun) {
   if (length(fun) != 1) {
-    id_stop(gettext("fun= must be a character string. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("fun= must be a character string."), internal = TRUE)
   }
   if (is.null(fun) || !is.character(fun) || is.na(fun)) {
     return(NULL)
@@ -97,7 +98,7 @@ format_lavaan_fun <- function(fun) {
 #' @return The function/command used to fit the model
 get_lavaan_cmd <- function(obj) {
   if (!inherits(obj, "lavaan")) {
-    id_stop(gettext("obj= must be a fitted lavaan object. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("obj= must be a fitted lavaan object."), internal = TRUE)
   }
   cmd <- obj@call$cmd
   if (is.null(cmd)) {

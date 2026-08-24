@@ -32,7 +32,6 @@ NULL
 #' @keywords internal
 rule_reg_null_byy <- function(partable) {
   rule <- "Null B_YY Rule"
-  applies_to <- "reg"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov", "eqs.x", "eqs.y"))
   ov.ox <- intersect(vars$eqs.x, vars$ov)
@@ -45,8 +44,7 @@ rule_reg_null_byy <- function(partable) {
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
         levels = "not_applicable"
-      ),
-      applies_to = applies_to
+      )
     )
     return(out)
   }
@@ -68,17 +66,16 @@ rule_reg_null_byy <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = "S",
-    applies_to = applies_to
+    cond = "S"
   )
 }
+attr(rule_reg_null_byy, "applies_to") <- "reg"
 
 # Fully Recursive model rule
 #' @rdname reg_rules
 #' @keywords internal
 rule_reg_fully_recursive <- function(partable) {
   rule <- "Fully Recursive Rule"
-  applies_to <- "reg"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "eqs.x", "ov.nox"))
   if (length(vars$lv) > 0) {
@@ -89,8 +86,7 @@ rule_reg_fully_recursive <- function(partable) {
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
         levels = "not_applicable"
-      ),
-      applies_to = applies_to
+      )
     )
     return(out)
   }
@@ -122,17 +118,16 @@ rule_reg_fully_recursive <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = "S",
-    applies_to = applies_to
+    cond = "S"
   )
 }
+attr(rule_reg_fully_recursive, "applies_to") <- "reg"
 
 # Recursive model with correlated errors rule
 #' @rdname reg_rules
 #' @keywords internal
 rule_reg_recursive_corr_err <- function(partable) {
   rule <- "Recur/Corr Err Rule"
-  applies_to <- "reg"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "eqs.x"))
   if (length(vars$lv) > 0) {
@@ -143,8 +138,7 @@ rule_reg_recursive_corr_err <- function(partable) {
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are no latent variables in the model",
         levels = "not_applicable"
-      ),
-      applies_to = applies_to
+      )
     )
     return(out)
   }
@@ -182,7 +176,7 @@ rule_reg_recursive_corr_err <- function(partable) {
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = "S",
-    applies_to = applies_to
+    cond = "S"
   )
 }
+attr(rule_reg_recursive_corr_err, "applies_to") <- "reg"

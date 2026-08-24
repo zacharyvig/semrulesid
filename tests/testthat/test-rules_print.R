@@ -6,18 +6,14 @@ test_that("rule functions produce the correct output", {
   for (fn in names(rules)) {
     expect_named(
       do.call(rules[[fn]], list(partable)),
-      c("rule", "pass", "msgs", "cond", "applies_to"),
+      c("rule", "pass", "msgs", "cond"),
       label = fn, ignore.order = FALSE
-    )
-    expect_in(
-      do.call(rules[[fn]], list(partable))$applies_to,
-      c("reg", "cfa", "sem")
     )
   }
 })
 
 test_that("printed rule titles should be correct length", {
-  rules <- get_rule_names(model_type = "all")
+  rules <- get_rule_names()
   partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
   test <- capture.output(id(partable, print_msgs = TRUE, lav_fun = NA))
   header <- grep("Pass", test)
@@ -31,7 +27,7 @@ test_that("printed rule titles should be correct length", {
 test_that("get_rules() returns the correct rule functions", {
   rules <- get_rules(rule = "*", model_type = "all")
   expect_true(all(sapply(rules, is.function)))
-  expect_true(all(names(rules) %in% get_rule_names(model_type = "all")))
+  expect_true(all(names(rules) %in% get_rule_names()))
   # test partial matching of rule names
   rules <- get_rules(rule = "latent_scaling", model_type = "sem")
   expect_length(rules, 1)

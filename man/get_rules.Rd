@@ -30,5 +30,4 @@ rules <- get_rules(rule = "*", model_type = "cfa")
 # Get a specific rule for a SEM model
 rules <- get_rules(rule = "latent_scaling", model_type = "sem")
 latent_scaling_rule <- rules[[1]]
-
 }

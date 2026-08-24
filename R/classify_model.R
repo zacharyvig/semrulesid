@@ -30,7 +30,7 @@ classify_model <- function(partable = NULL) {
     # no lvs but regressions present
     return("reg")
   } else {
-    id_stop(gettext("Cannot classify model. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("Cannot classify model."), internal = TRUE)
   }
 }
 

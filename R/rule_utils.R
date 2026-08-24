@@ -7,7 +7,7 @@
 #' @keywords internal
 check_recursion <- function(partable, start) {
   if (!is.character(start)) {
-    id_stop(gettext("start= must be a character vector. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("start= must be a character vector."), internal = TRUE)
   }
 
   # regressions
@@ -48,13 +48,16 @@ check_recursion <- function(partable, start) {
 #' @return A lavaan parameter table that has been converted to a CFA model.
 #' @noRd
 sem_to_cfa <- function(partable) {
-  vars <- get_partable_vars(partable, c("lv"))
-  lv_regs <- with(partable, op == "~" & (lhs %in% vars$lv | rhs %in% vars$lv))
+  vars <- get_partable_vars(partable, c("lv", "ov"))
+  lv_regs <- with(
+    partable,
+    (op == "~" | op == "<~") & (lhs %in% vars$lv | rhs %in% vars$lv)
+  )
   # replace directional arrows with double-sided ones
   partable$op[lv_regs] <- "~~"
   type <- classify_model(partable)
   if (type != "cfa") {
-    id_stop(gettext("sem_to_cfa() failed. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("sem_to_cfa() failed."), internal = TRUE)
   }
   partable
 }
@@ -65,9 +68,10 @@ sem_to_cfa <- function(partable) {
 #' equations model.
 #' @noRd
 sem_to_reg <- function(partable) {
-  vars <- get_partable_vars(partable, c("lv"))
-  lv_paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
-  partable <- partable[lv_paths, , drop = FALSE]
+  vars <- get_partable_vars(partable, c("lv", "ov"))
+  # first, drop first order indicators
+  fo_ind <- with(partable, op == "=~" & lhs %in% vars$lv & rhs %in% vars$ov)
+  partable <- partable[!fo_ind, , drop = FALSE]
   # handle higher order factors
   hof <- which(partable$op == "=~")
   # switch lhs and rhs
@@ -78,10 +82,10 @@ sem_to_reg <- function(partable) {
   # then change the operator to "~"
   partable$op[hof] <- "~"
   # handle causal indicators (for future use)
-  # partable$op[partable$op == "<~"] <- "~"
+  partable$op[partable$op == "<~"] <- "~"
   type <- classify_model(partable)
   if (type != "reg") {
-    id_stop(gettext("sem_to_reg() failed. This is an internal error. Please report this issue to the package maintainer."))
+    id_stop(gettext("sem_to_reg() failed."), internal = TRUE)
   }
   partable
 }
@@ -102,79 +106,81 @@ sem_to_reg <- function(partable) {
 #'
 #' @return A list object with the rule function(s) specified by the user.
 #'
-#' @export
-#'
 #' @examples
 #' # Get all rules for a CFA model
 #' rules <- get_rules(rule = "*", model_type = "cfa")
 #' # Get a specific rule for a SEM model
 #' rules <- get_rules(rule = "latent_scaling", model_type = "sem")
 #' latent_scaling_rule <- rules[[1]]
-#'
+#' @export
 get_rules <- function(rule = "*", model_type = "*") {
-  if (!all(is.character(rule))) {
-    id_stop(gettext("rule= must be a character vector"))
+  valid_types <- c("reg", "cfa", "sem")
+
+  if (!is.character(rule) || !length(rule) || anyNA(rule)) {
+    id_stop(gettext("rule= must be a non-missing character vector"))
   }
-  if (!all(is.character(model_type))) {
-    id_stop(gettext("model_type= must be a character vector"))
+
+  if (!is.character(model_type) || !length(model_type) || anyNA(model_type)) {
+    id_stop(gettext("model_type= must be a non-missing character vector"))
   }
-  if ("*" %in% model_type) model_type <- "all"
-  model_type <- unique(model_type)
-  if (!all(model_type %in% c("all", "reg", "cfa", "sem"))) {
-    id_stop(gettext("model_type= must be one of 'all', 'reg', 'cfa', or 'sem'"))
+
+  if (any(model_type %in% c("*", "all"))) {
+    model_type <- valid_types
   }
-  pull_fns <- function(fns) {
-    mget(fns, envir = asNamespace("semrulesid"), mode = "function")
+
+  if (!all(model_type %in% valid_types)) {
+    id_stop(gettext("Unknown model type"))
   }
-  rules <- get_rule_names(model_type)
-  if (any(rule %in% c("*", "all"))) {
-    return(pull_fns(rules))
-  } else {
-    rule <- grep(rule, rules, value = TRUE)
-    if (length(rule) == 0) {
-      id_stop(gettext("Specified rule does not exist"))
-    }
-    if (length(rule) > 1) {
-      id_warn(gettext("Multiple rules matched the specified rule. Returning all matches."))
-    }
-    return(pull_fns(rule))
+
+  rules <- mget(
+    get_rule_names(),
+    envir = asNamespace("semrulesid"),
+    mode = "function"
+  )
+
+  # Keep rules applicable to one or more requested model types.
+  rules <- rules[vapply(
+    rules,
+    function(x) any(model_type %in% attr(x, "applies_to")),
+    logical(1)
+  )]
+
+  # Keep requested rules, unless "*" or "all" was requested.
+  if (!any(rule %in% c("*", "all"))) {
+    rules <- rules[vapply(
+      names(rules),
+      function(x) any(grepl(rule, x)),
+      logical(1)
+    )]
   }
+
+  if (!length(rules)) {
+    id_stop(gettext("No matching rules found"))
+  }
+
+  rules
 }
 
 # internal function for extracting rule function names
 #' @noRd
-get_rule_names <- function(model_type = c("all", "reg", "cfa", "sem")) {
-  model_type <- match.arg(model_type, several.ok = TRUE)
-  prefix <- if ("all" %in% model_type) {
-    "^rule_"
-  } else {
-    sprintf("^rule_%s", model_type)
-  }
+get_rule_names <- function() {
   ns <- asNamespace("semrulesid")
   objs <- ls(envir = ns, all.names = TRUE)
-  out <- sapply(prefix, function(p) {
-    grep(p, objs, value = TRUE)
-  })
+  out <- grep("^rule_", objs, value = TRUE)
   unname(c(out, recursive = TRUE))
 }
 
 # internal function for building rule output lists
 #' @noRd
 build_rule_out <- function(rule, pass, msgs = NA_character_,
-                           cond = c("N", "S", "NS", NA_character_),
-                           applies_to = c("reg", "cfa", "sem")) {
+                           cond = c("N", "S", "NS", NA_character_)) {
   cond <- match.arg(cond)
-  if (is.null(applies_to)) {
-    id_warn(gettext("applies_to= is NULL. This is an internal error. Please report this issue to the package maintainer."))
-  }
-  applies_to <- match.arg(applies_to, several.ok = TRUE)
   msgs <- if (isTRUE(pass) || any(!is.na(msgs))) msgs else NA_character_
   list(
     rule = rule,
     pass = pass,
     msgs = msgs,
-    cond = cond,
-    applies_to = applies_to
+    cond = cond
   )
 }
 
@@ -284,7 +290,7 @@ get_rule_level_labels <- function(type = c("codes", "labels", "order")) {
     return(codes)
   } else if (type == "labels") {
     labs <- c(
-      "Rule not applicable",
+      "Rule not applicable to this model specification",
       "Sufficient condition not satisfied",
       "Identification failure"
     )

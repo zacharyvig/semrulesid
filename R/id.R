@@ -146,14 +146,8 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
 
     if (id_model_type != "sem") {
       id_stop(
-        gettext("The two-step identification rule is only applicable to full SEMs.")
-      )
-    }
-
-    vars <- get_partable_vars(partable, c("ov.cind"))
-    if (length(vars$ov.cind) > 0) {
-      id_stop(
-        gettext("The two-step identification rule is currently not supported for models with causal indicators.")
+        gettext("The two-step identification rule is only applicable to full SEMs."),
+        gettext("Use id() instead of id2() for CFA or simultaneous equations models.")
       )
     }
 
@@ -192,7 +186,7 @@ id.data.frame <- function(x, print_msgs = TRUE, lav_fun = "sem",
   }
 
   # evaluate rules
-  rule_names <- get_rule_names("all")
+  rule_names <- get_rule_names()
   rule_names_ord <- order_rules(rule_names)
   # apply rules to partable
   rules <- c(
