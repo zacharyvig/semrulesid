@@ -15,7 +15,8 @@ Description: Evaluates selected necessary and sufficient identification
   status and applicability and provides diagnostic messages to
   support model specification and respecification. The package is
   intended as a diagnostic aid and does not implement a universal
-  identification algorithm.
+  identification algorithm. For more details, see Bollen
+  (2026, ISBN:978-1009312820).
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

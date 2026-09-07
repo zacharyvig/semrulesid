@@ -22,6 +22,9 @@
 #'        "show" prints them in the main table with a message indicating they
 #'        are not applicable.
 #' @param ... Arguments passed to print.semscale if applicable.
+#' 
+#' @return The function prints the rules list to the console and returns the
+#' \code{semid} object invisibly.
 #'
 #' @export
 print.semid <- function(
@@ -225,6 +228,10 @@ print.semid <- function(
 #' @param window Integer. The width of the output window.
 #' @param name_value_sep Character. The separator between the meta labels and
 #'        values.
+#' 
+#' @return The function prints the two-step rules list to the console and
+#' returns the \code{semid2} object invisibly.
+#' 
 #' @export
 print.semid2 <- function(
   x, ...,
@@ -309,6 +316,9 @@ print.semid2 <- function(
 #' @param print_lav_fun Logical. If \code{TRUE}, the lavaan function is printed
 #'        in a header before the rules output.
 #' @param ... Not currently used.
+#' 
+#' @return The function prints the scaling table to the console and returns the
+#' \code{semscale} object invisibly.
 #'
 #' @export
 print.semscale <- function(
