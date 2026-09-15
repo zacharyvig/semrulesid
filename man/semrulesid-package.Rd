@@ -6,7 +6,7 @@
 \alias{semrulesid-package}
 \title{semrulesid package outline}
 \description{
-Evaluates selected necessary and sufficient identification conditions in structural equation models (SEMs), including latent-variable scaling constraints. Output reports rule status and applicability and provides diagnostic messages to support model specification and respecification. The package is intended as a diagnostic aid and does not implement a universal identification algorithm.
+Evaluates selected necessary and sufficient identification conditions in structural equation models (SEMs), including latent-variable scaling constraints. Output reports rule status and applicability and provides diagnostic messages to support model specification and respecification. The package is intended as a diagnostic aid and does not implement a universal identification algorithm. For more details, see Bollen (2026, ISBN:978-1009312820).
 }
 \section{Purpose}{
  `semrulesid` allows the user to input a Structural

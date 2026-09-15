@@ -57,6 +57,10 @@ printed in a header before the rules output.}
 \item{print_lav_fun}{Logical. If \code{TRUE}, the lavaan function is printed
 in a header before the rules output.}
 }
+\value{
+The function prints the scaling table to the console and returns the
+\code{semscale} object invisibly.
+}
 \description{
 Printing function for scaling table
 }

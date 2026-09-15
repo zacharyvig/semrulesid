@@ -39,6 +39,10 @@ in a header before the rules output.}
 \item{name_value_sep}{Character. The separator between the meta labels and
 values.}
 }
+\value{
+The function prints the two-step rules list to the console and
+returns the \code{semid2} object invisibly.
+}
 \description{
 Printing function for two-step rules lists
 }

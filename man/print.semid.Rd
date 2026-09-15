@@ -58,6 +58,10 @@ are not applicable.}
 
 \item{...}{Arguments passed to print.semscale if applicable.}
 }
+\value{
+The function prints the rules list to the console and returns the
+\code{semid} object invisibly.
+}
 \description{
 Printing function for rules list
 }
