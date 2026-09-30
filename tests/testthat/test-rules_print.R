@@ -1,15 +1,89 @@
 source(testthat::test_path("..", "test_models.R"))
 
+make_partable <- function(model) {
+  lavaan::lavaanify(
+    model$model,
+    warn = FALSE,
+    auto = TRUE,
+    model_type = model$type
+  )
+}
+
 test_that("rule functions produce the correct output", {
   rules <- get_rules(rule = "*", model_type = "*")
   partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
   for (fn in names(rules)) {
+    metadata <- attr(rules[[fn]], "metadata")
+    expect_true(is.list(metadata), label = fn)
+    expect_true(all(c("fn", "rule", "applies_to") %in% names(metadata)), label = fn)
+
+    out <- do.call(rules[[fn]], list(partable))
     expect_named(
-      do.call(rules[[fn]], list(partable)),
-      c("rule", "pass", "msgs", "cond"),
+      out,
+      c("metadata", "pass", "msgs", "cond"),
       label = fn, ignore.order = FALSE
     )
+    expect_identical(out$metadata$fn, fn, label = fn)
+    expect_identical(out$metadata$rule, metadata$rule, label = fn)
+    expect_identical(out$metadata$applies_to, metadata$applies_to, label = fn)
   }
+})
+
+test_that("print() emits applicable rows for id()", {
+  partables <- list(
+    reg = lavaan::lavaanify("y ~ x", warn = FALSE),
+    cfa = lavaan::lavaanify("f =~ y1 + y2 + y3", warn = FALSE),
+    sem = lavaan::lavaanify("f =~ y1 + y2 + y3; f ~ x", warn = FALSE)
+  )
+  expected_rules <- c(
+    reg = "Null B_YY Rule",
+    cfa = "Two Indicator Rule",
+    sem = "N_theta Rule (t-Rule)"
+  )
+
+  for (model in names(partables)) {
+    printed <- capture.output(
+      print(id(partables[[model]], print_msgs = FALSE, lav_fun = NA), na_rule_policy = "hide")
+    )
+    expect_gt(length(printed), 3, label = model)
+    expect_true(any(grepl(expected_rules[[model]], printed, fixed = TRUE)), label = model)
+  }
+})
+
+test_that("print() emits applicable rows for id2()", {
+  printed <- capture.output(
+    print(
+      id2(
+        make_partable(list(
+          type = "sem",
+          model = test_models$sem_complex$model
+        )),
+        lav_fun = NA
+      )
+    )
+  )
+
+  expect_true(any(grepl("Two-Step Rule Check", printed, fixed = TRUE)))
+  expect_true(any(grepl("Step 1: Measurement Model", printed, fixed = TRUE)))
+  expect_true(any(grepl("Step 2: Latent Variable/Structural Model", printed, fixed = TRUE)))
+  expect_true(sum(grepl("N_theta Rule (t-Rule)", printed, fixed = TRUE)) >= 2)
+})
+
+test_that("print() emits applicable rows for scaling()", {
+  printed <- capture.output(
+    print(
+      scaling(
+        make_partable(test_models$sem_scaling_pass),
+        lv = "L1",
+        lav_fun = NA
+      ),
+      print_msgs = TRUE
+    )
+  )
+
+  expect_true(any(grepl("Latent Variable Scaling", printed, fixed = TRUE)))
+  expect_true(any(grepl("LV is scaled", printed, fixed = TRUE)))
+  expect_true(any(grepl("Scaling indicator(s)", printed, fixed = TRUE)))
 })
 
 test_that("printed rule titles should be correct length", {
@@ -19,7 +93,7 @@ test_that("printed rule titles should be correct length", {
   header <- grep("Pass", test)
   blank <- sub("^(\\s+)([A-Za-z\\s]+)$", "\\1", test[header], perl = TRUE)
   for (rule in rules) {
-    title <- do.call(rule, list(partable))$rule
+    title <- do.call(rule, list(partable))$metadata$rule
     expect_lt(nchar(!!title), nchar(blank))
   }
 })

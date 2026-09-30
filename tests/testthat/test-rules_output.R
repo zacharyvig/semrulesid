@@ -9,6 +9,23 @@ make_partable <- function(model) {
   )
 }
 
+test_that("rule outputs carry metadata fields", {
+  rules <- get_rules(rule = "*", model_type = "*")
+  partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
+
+  for (fn in names(rules)) {
+    metadata <- attr(rules[[fn]], "metadata")
+    expect_true(is.list(metadata), label = fn)
+    expect_true(all(c("fn", "rule", "applies_to") %in% names(metadata)), label = fn)
+
+    out <- do.call(rules[[fn]], list(partable))
+    expect_true(all(c("metadata", "pass", "msgs", "cond") %in% names(out)), label = fn)
+    expect_identical(out$metadata$fn, fn, label = fn)
+    expect_identical(out$metadata$rule, metadata$rule, label = fn)
+    expect_identical(out$metadata$applies_to, metadata$applies_to, label = fn)
+  }
+})
+
 test_that("regression rules identify recursive and non-recursive models", {
   rules <- get_rules(model_type = "reg")
   for (model_name in c("reg_pass", "reg_corr_err_pass", "reg_feedback_fail")) {

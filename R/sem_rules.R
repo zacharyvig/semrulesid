@@ -40,7 +40,8 @@ NULL
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
-  rule <- "N_theta Rule (t-Rule)"
+  metadata <- attr(rule_sem_ntheta, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # number of parameters (internal function)
   ntheta <- get_ntheta(partable)
   # number of means, variances, and covariances
@@ -54,25 +55,28 @@ rule_sem_ntheta <- function(partable) {
       levels = "identification_failure"
     )
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = "N"
   )
 }
-attr(rule_sem_ntheta, "applies_to") <- c("reg", "cfa", "sem")
+attr(rule_sem_ntheta, "metadata") <- list(
+  fn = "rule_sem_ntheta",
+  rule = "N_theta Rule (t-Rule)",
+  applies_to = c("reg", "cfa", "sem")
+)
 
 # Latent Scaling rule
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_latent_scaling <- function(partable) {
-  rule <- "Latent Scaling Rule"
+  metadata <- attr(rule_sem_latent_scaling, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, "lv")
   if (length(vars$lv) == 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
@@ -95,25 +99,28 @@ rule_sem_latent_scaling <- function(partable) {
   } else {
     msgs <- NA_character_
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = cond
   )
 }
-attr(rule_sem_latent_scaling, "applies_to") <- c("cfa", "sem")
+attr(rule_sem_latent_scaling, "metadata") <- list(
+  fn = "rule_sem_latent_scaling",
+  rule = "Latent Scaling Rule",
+  applies_to = c("cfa", "sem")
+)
 
 # 2+ Emitted Paths rule
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_two_emitted_paths <- function(partable) {
-  rule <- "2+ Emitted Paths Rule"
+  metadata <- attr(rule_sem_two_emitted_paths, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, "lv")
   if (length(vars$lv) == 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
@@ -153,8 +160,7 @@ rule_sem_two_emitted_paths <- function(partable) {
     return(c3 >= 2)
   })
   if (all(!free_var | !free_var.nox)) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule",
@@ -202,25 +208,28 @@ rule_sem_two_emitted_paths <- function(partable) {
     )
   }
   if (length(msgs) == 0) msgs <- NA_character_
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = cond
   )
 }
-attr(rule_sem_two_emitted_paths, "applies_to") <- c("cfa", "sem")
+attr(rule_sem_two_emitted_paths, "metadata") <- list(
+  fn = "rule_sem_two_emitted_paths",
+  rule = "2+ Emitted Paths Rule",
+  applies_to = c("cfa", "sem")
+)
 
 # Exogenous X rule/MIMIC rules
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_exogenous_x <- function(partable) {
-  rule <- "Exogenous X Rule"
+  metadata <- attr(rule_sem_exogenous_x, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov", "ov.ind"))
   if (length(vars$lv) == 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when there are latent variables in the model",
@@ -242,8 +251,7 @@ rule_sem_exogenous_x <- function(partable) {
     )
   }, simplify = TRUE)
   if (all(n.exogx == 0)) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when causal indicators or exogenous observed variables are in the model",
@@ -274,11 +282,14 @@ rule_sem_exogenous_x <- function(partable) {
       levels = "not_applicable"
     )
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = cond
   )
 }
-attr(rule_sem_exogenous_x, "applies_to") <- c("cfa", "sem")
+attr(rule_sem_exogenous_x, "metadata") <- list(
+  fn = "rule_sem_exogenous_x",
+  rule = "Exogenous X Rule",
+  applies_to = c("cfa", "sem")
+)

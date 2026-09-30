@@ -31,14 +31,14 @@ NULL
 #' @rdname reg_rules
 #' @keywords internal
 rule_reg_null_byy <- function(partable) {
-  rule <- "Null B_YY Rule"
+  metadata <- attr(rule_reg_null_byy, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov", "eqs.x", "eqs.y"))
   ov.ox <- intersect(vars$eqs.x, vars$ov)
   ov.nox <- intersect(vars$eqs.y, vars$ov)
   if (length(vars$lv) > 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       cond = NA_character_,
       msgs = add_rule_msgs(
@@ -62,25 +62,28 @@ rule_reg_null_byy <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
 }
-attr(rule_reg_null_byy, "applies_to") <- "reg"
+attr(rule_reg_null_byy, "metadata") <- list(
+  fn = "rule_reg_null_byy",
+  rule = "Null B_YY Rule",
+  applies_to = "reg"
+)
 
 # Fully Recursive model rule
 #' @rdname reg_rules
 #' @keywords internal
 rule_reg_fully_recursive <- function(partable) {
-  rule <- "Fully Recursive Rule"
+  metadata <- attr(rule_reg_fully_recursive, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "eqs.x", "ov.nox"))
   if (length(vars$lv) > 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       cond = NA_character_,
       msgs = add_rule_msgs(
@@ -114,25 +117,28 @@ rule_reg_fully_recursive <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
 }
-attr(rule_reg_fully_recursive, "applies_to") <- "reg"
+attr(rule_reg_fully_recursive, "metadata") <- list(
+  fn = "rule_reg_fully_recursive",
+  rule = "Fully Recursive Rule",
+  applies_to = "reg"
+)
 
 # Recursive model with correlated errors rule
 #' @rdname reg_rules
 #' @keywords internal
 rule_reg_recursive_corr_err <- function(partable) {
-  rule <- "Recur/Corr Err Rule"
+  metadata <- attr(rule_reg_recursive_corr_err, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "eqs.x"))
   if (length(vars$lv) > 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       cond = NA_character_,
       msgs = add_rule_msgs(
@@ -172,11 +178,14 @@ rule_reg_recursive_corr_err <- function(partable) {
     pass <- TRUE
     msgs <- NA_character_
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = "S"
   )
 }
-attr(rule_reg_recursive_corr_err, "applies_to") <- "reg"
+attr(rule_reg_recursive_corr_err, "metadata") <- list(
+  fn = "rule_reg_recursive_corr_err",
+  rule = "Recur/Corr Err Rule",
+  applies_to = "reg"
+)

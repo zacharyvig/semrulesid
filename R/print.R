@@ -83,20 +83,21 @@ print.semid <- function(
 
   for (i in seq_along(x$Rules)) {
     this_rule <- x$Rules[[i]]
-    applicable <- id_model_type %in% attr(this_rule, "applies_to")
+    rule_meta <- this_rule$metadata
+    applicable <- id_model_type %in% rule_meta$applies_to
     # skip rules that are not applicable if na_rule_policy is "hide"
     if (na_rule_policy == "hide" && !applicable) {
       next
     }
     # save rules that are not applicable for footnote printing if na_rule_policy is "footnote"
     if (na_rule_policy == "footnote" && !applicable) {
-      footnote_rules <- c(footnote_rules, this_rule$rule)
+      footnote_rules <- c(footnote_rules, rule_meta$rule)
       next
     }
     row <- c(
       # rule title
       "rule_title" = format(
-        this_rule$rule,
+        rule_meta$rule,
         width = window - cols_width
       ),
       # did the rule pass?

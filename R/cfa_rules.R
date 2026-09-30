@@ -32,12 +32,12 @@ NULL
 #' @rdname cfa_rules
 #' @keywords internal
 rule_cfa_three_indicator <- function(partable) {
-  rule <- "Three Indicator Rule"
+  metadata <- attr(rule_cfa_three_indicator, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies to confirmatory factor analysis models",
@@ -59,8 +59,7 @@ rule_cfa_three_indicator <- function(partable) {
   }, simplify = TRUE)
   # build output
   if(any(nov.ind[nlv.ind == 0] < 3)) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = paste("This rule only applies when all first-order latent variables have three or more indicators:",
@@ -114,26 +113,29 @@ rule_cfa_three_indicator <- function(partable) {
       levels = "suff_cond_not_satisfied"
     )
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = cond
   )
 }
-attr(rule_cfa_three_indicator, "applies_to") <- c("cfa", "sem")
+attr(rule_cfa_three_indicator, "metadata") <- list(
+  fn = "rule_cfa_three_indicator",
+  rule = "Three Indicator Rule",
+  applies_to = c("cfa", "sem")
+)
 
 
 # Two indicator rules
 #' @rdname cfa_rules
 #' @keywords internal
 rule_cfa_two_indicator <- function(partable) {
-  rule <- "Two Indicator Rule"
+  metadata <- attr(rule_cfa_two_indicator, "metadata")
+  build_output <- get_output_fn(metadata = metadata)
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov.ind", "eqs.y"))
   if (length(vars$eqs.y) > 0) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies to confirmatory factor analysis models",
@@ -144,8 +146,7 @@ rule_cfa_two_indicator <- function(partable) {
     return(out)
   }
   if (length(vars$lv) < 2) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = "This rule only applies when more than one latent variable is in the model",
@@ -167,8 +168,7 @@ rule_cfa_two_indicator <- function(partable) {
   }, simplify = TRUE)
   # build output
   if (any(nov.ind[nlv.ind == 0] < 2)) {
-    out <- build_rule_out(
-      rule = rule,
+    out <- build_output(
       pass = NA,
       msgs = add_rule_msgs(
         new_msgs = paste("This rule only applies when all first-order latent variables have two or more indicators:",
@@ -232,11 +232,14 @@ rule_cfa_two_indicator <- function(partable) {
       levels = "suff_cond_not_satisfied"
     )
   }
-  build_rule_out(
-    rule = rule,
+  build_output(
     pass = pass,
     msgs = msgs,
     cond = cond
   )
 }
-attr(rule_cfa_two_indicator, "applies_to") <- "cfa"
+attr(rule_cfa_two_indicator, "metadata") <- list(
+  fn = "rule_cfa_two_indicator",
+  rule = "Two Indicator Rule",
+  applies_to = "cfa"
+)

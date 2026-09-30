@@ -141,7 +141,7 @@ get_rules <- function(rule = "*", model_type = "*") {
   # Keep rules applicable to one or more requested model types.
   rules <- rules[vapply(
     rules,
-    function(x) any(model_type %in% attr(x, "applies_to")),
+    function(x) any(model_type %in% attr(x, "metadata")$applies_to),
     logical(1)
   )]
 
@@ -170,14 +170,29 @@ get_rule_names <- function() {
   unname(c(out, recursive = TRUE))
 }
 
+# internal function for retrieving a rule output function for a specific rule
+# rule metadata is fixed at the time of function creation
+#' @noRd
+get_output_fn <- function(metadata) {
+  force(metadata)
+  function(pass, msgs = NA_character_, cond = c("N", "S", "NS", NA_character_), ...) {
+    build_rule_out(
+      metadata = metadata,
+      pass = pass,
+      msgs = msgs,
+      cond = cond
+    )
+  }
+}
+
 # internal function for building rule output lists
 #' @noRd
-build_rule_out <- function(rule, pass, msgs = NA_character_,
+build_rule_out <- function(metadata, pass, msgs = NA_character_,
                            cond = c("N", "S", "NS", NA_character_)) {
   cond <- match.arg(cond)
   msgs <- if (isTRUE(pass) || any(!is.na(msgs))) msgs else NA_character_
   list(
-    rule = rule,
+    metadata = metadata,
     pass = pass,
     msgs = msgs,
     cond = cond
